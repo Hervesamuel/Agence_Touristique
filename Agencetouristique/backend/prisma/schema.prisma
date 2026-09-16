@@ -1,19 +1,251 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model Test {
-  id        Int      @id @default(autoincrement())
-  message   String
-  createdAt DateTime @default(now())
+// =====================================================
+// MODELE : AGENCE
+// =====================================================
+
+model Agence {
+  idagc        Int          @id @default(autoincrement())
+  nom          String
+  tel          String
+  logo         String?
+  email        String       @unique
+  mdp          String
+  description  String?      @db.Text
+
+  // Relation 1 — 1 avec Responsable
+  idresp       Int          @unique
+  responsable  Responsable  @relation(fields: [idresp], references: [idresp])
+
+  // Relation 1 — 0..* avec Agent
+  agents       Agent[]
+
+  // Relation 1 — 0..* avec Chauffeur
+  chauffeurs   Chauffeur[]
+
+  // Relation 1 — 0..* avec Vehicule
+  vehicules    Vehicule[]
+
+  // Relation 1 — 0..* avec Circuit
+  circuits     Circuit[]
+}
+// =====================================================
+// MODELE : RESPONSABLE
+// =====================================================
+
+model Responsable {
+  idresp       Int      @id @default(autoincrement())
+  nom          String
+  tel          String
+  photo        String?
+  email        String   @unique
+  mdp          String
+  genre        String
+  ville        String
+
+  // Relation 1 — 1 avec Agence
+  agence       Agence?
+  
+  // Relation 1 — 0..* avec Agent
+  agents       Agent[]
+}
+
+// =====================================================
+// MODELE : AGENT
+// =====================================================
+
+model Agent {
+  idagt        Int           @id @default(autoincrement())
+  nom          String
+  tel          String
+  photo        String?
+  email        String        @unique
+  mdp          String
+  genre        String
+  ville        String
+  statut       String
+
+  // Relation 0..* Agent — 1 Agence
+  idagc        Int
+  agence       Agence        @relation(fields: [idagc], references: [idagc])
+
+  // Relation 0..* Agent — 1 Responsable
+  idresp       Int
+  responsable  Responsable   @relation(fields: [idresp], references: [idresp])
+
+  // Relation 1 — 0..* avec Reservation
+  reservations Reservation[]
+
+  // Relation 1 — 0..* avec RendezVous
+  rendezVous   RendezVous[]
+}
+
+
+// =====================================================
+// MODELE : CHAUFFEUR
+// =====================================================
+
+model Chauffeur {
+  idchauffeur  Int        @id @default(autoincrement())
+  nom          String
+  tel          String
+  photo        String?
+  email        String     @unique
+  mdp          String
+  genre        String
+  ville        String
+  statut       String
+
+  // Relation 0..* Chauffeur — 1 Agence
+  idagc        Int
+  agence       Agence     @relation(fields: [idagc], references: [idagc])
+
+  // Relation 1 — 0..1 avec Vehicule
+  vehicule     Vehicule?
+}
+
+
+// =====================================================
+// MODELE : VEHICULE
+// =====================================================
+
+model Vehicule {
+  idveh           Int        @id @default(autoincrement())
+  immatriculation String     @unique
+  marque          String
+  modele          String
+  capacite        Int
+  photo           String?
+  status          String
+
+  // Relation 0..1 Vehicule — 1 Chauffeur
+  idchauffeur     Int?       @unique
+  chauffeur       Chauffeur? @relation(fields: [idchauffeur], references: [idchauffeur])
+
+  // Relation 0..* Vehicule — 1 Agence
+  idagc           Int
+  agence          Agence     @relation(fields: [idagc], references: [idagc])
+}
+
+
+// =====================================================
+// MODELE : CIRCUIT
+// =====================================================
+
+model Circuit {
+  idcircuit    Int           @id @default(autoincrement())
+  nom          String
+  description  String        @db.Text
+  destination  String
+  capacite     Int
+  photo        String?
+  status       String
+
+  // Relation 0..* Circuit — 1 Agence
+  idagc        Int
+  agence       Agence        @relation(fields: [idagc], references: [idagc])
+
+  // Relation 1 — 0..* avec Reservation
+  reservations Reservation[]
+}
+
+
+// =====================================================
+// MODELE : RESERVATION
+// =====================================================
+
+model Reservation {
+  idres           Int        @id @default(autoincrement())
+  datereservation DateTime   @default(now())
+  datevoyage      DateTime
+  dateretour      DateTime
+  lieu            String
+
+  // Relation 0..* Reservation — 1 Circuit
+  idcircuit       Int
+  circuit         Circuit    @relation(fields: [idcircuit], references: [idcircuit])
+
+  // Relation 0..* Reservation — 1 Agent
+  idagt           Int
+  agent            Agent      @relation(fields: [idagt], references: [idagt])
+
+  // Relation 1 — 0..1 avec Recu
+  recu            Recu?
+}
+
+
+// =====================================================
+// MODELE : RENDEZ-VOUS
+// =====================================================
+
+model RendezVous {
+  idrdv        Int      @id @default(autoincrement())
+  date         DateTime
+  heure        DateTime
+  motif        String
+  statut       String
+  commentaire  String?  @db.Text
+
+  // Relation 0..* RendezVous — 1 Agent
+  idagt        Int
+  agent        Agent    @relation(fields: [idagt], references: [idagt])
+}
+
+
+// =====================================================
+// MODELE : RECU
+// =====================================================
+
+model Recu {
+  idrec        Int         @id @default(autoincrement())
+  description  String      @db.Text
+  daterecu     DateTime    @default(now())
+  heure        DateTime
+
+  // Relation 0..1 Recu — 1 Reservation
+  idres        Int         @unique
+  reservation  Reservation @relation(fields: [idres], references: [idres])
+}
+
+
+// =====================================================
+// MODELE : UTILISATEUR
+// =====================================================
+
+model Utilisateur {
+  idruti        Int            @id @default(autoincrement())
+  nom           String
+  tel           String
+  photo         String?
+  email         String         @unique
+  mdp           String
+  genre         String
+  ville         String
+
+  // Relation 1 — 0..* avec Notification
+  notifications Notification[]
+}
+
+
+// =====================================================
+// MODELE : NOTIFICATION
+// =====================================================
+
+model Notification {
+  idnot         Int         @id @default(autoincrement())
+  message       String      @db.Text
+  date          DateTime    @default(now())
+  reference     String
+  type          String
+  status        String
+
+  // Relation 0..* Notification — 1 Utilisateur
+  idutilisateur Int
+  utilisateur   Utilisateur @relation(fields: [idutilisateur], references: [idruti])
 }
