@@ -1,17 +1,23 @@
-// Importe Express pour créer notre application
+// Importe Express pour créer l'application
 const express = require("express");
 
-// Crée une instance de l'application Express
+// Importation des routes Agence
+const agenceRoutes = require("./routes/agenceRoutes");
+
+// Création d'une instance de l'application Express
 const app = express();
 
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
 
+// Utilisation des routes Agence
+app.use("/api/agences", agenceRoutes);
+
 // Route de test
 app.get("/", (req, res) => {
-  res.json({
-    message: "API AgenceTouristique opérationnelle",
-  });
+    res.json({
+        message: "API AgenceTouristique opérationnelle",
+    });
 });
 
 // Exporte l'application
