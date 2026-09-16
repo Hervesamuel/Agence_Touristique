@@ -3,15 +3,30 @@ const express = require("express");
 
 // Importation des routes Agence
 const agenceRoutes = require("./routes/agenceRoutes");
-
+// Importation des routes Responsable
+const responsableRoutes = require("./routes/responsableRoutes");
 // Création d'une instance de l'application Express
 const app = express();
 
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
 
-// Utilisation des routes Agence
+// ROUTE DE L'AGENCE
 app.use("/api/agences", agenceRoutes);
+
+// ROUTE DE RESPONSABLE
+app.use("/api/responsables", responsableRoutes);
+
+
+
+
+
+
+
+
+
+
+
 
 // Route de test
 app.get("/", (req, res) => {
