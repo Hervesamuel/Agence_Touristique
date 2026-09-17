@@ -7,6 +7,8 @@ const agenceRoutes = require("./routes/agenceRoutes");
 const responsableRoutes = require("./routes/responsableRoutes");
 // Création d'une instance de l'application Express
 const app = express();
+// Importation des routes Agent
+const agentRoutes = require("./routes/agentRoutes");
 
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
@@ -16,6 +18,9 @@ app.use("/api/agences", agenceRoutes);
 
 // ROUTE DE RESPONSABLE
 app.use("/api/responsables", responsableRoutes);
+
+// ROUTE DE L'AGENT
+app.use("/api/agents", agentRoutes);
 
 
 
