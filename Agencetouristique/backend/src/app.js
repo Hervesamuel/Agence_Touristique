@@ -19,8 +19,8 @@ const circuitRoutes = require("./routes/circuitRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 // Importation des routes Rendezvous
 const rendezVousRoutes = require("./routes/rendezVousRoutes");
-
-
+// Importation des routes Recu
+const recuRoutes = require("./routes/recuRoutes");
 
 
 
@@ -47,7 +47,8 @@ app.use("/api/circuits", circuitRoutes);
 app.use("/api/reservations", reservationRoutes);
 // ROUTE DE RENDEZ-VOUS
 app.use("/api/rendez-vous", rendezVousRoutes);
-
+// ROUTE DE RECU
+app.use("/api/recus", recuRoutes);
 
 
 // Route de test
