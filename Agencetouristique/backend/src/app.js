@@ -17,8 +17,8 @@ const vehiculeRoutes = require("./routes/vehiculeRoutes");
 const circuitRoutes = require("./routes/circuitRoutes");
 // Importation des routes Reservation
 const reservationRoutes = require("./routes/reservationRoutes");
-
-
+// Importation des routes Rendezvous
+const rendezVousRoutes = require("./routes/rendezVousRoutes");
 
 
 
@@ -45,8 +45,8 @@ app.use("/api/vehicules", vehiculeRoutes);
 app.use("/api/circuits", circuitRoutes);
 // ROUTE DE RESERVATION
 app.use("/api/reservations", reservationRoutes);
-
-
+// ROUTE DE RENDEZ-VOUS
+app.use("/api/rendez-vous", rendezVousRoutes);
 
 
 
