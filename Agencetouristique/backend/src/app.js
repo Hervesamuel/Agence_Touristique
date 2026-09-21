@@ -21,7 +21,8 @@ const reservationRoutes = require("./routes/reservationRoutes");
 const rendezVousRoutes = require("./routes/rendezVousRoutes");
 // Importation des routes Recu
 const recuRoutes = require("./routes/recuRoutes");
-
+// Importation de route utilisateur 
+const utilisateurRoutes = require("./routes/utilisateurRoutes");
 
 
 // Middleware permettant à Express de comprendre les données JSON
@@ -49,6 +50,8 @@ app.use("/api/reservations", reservationRoutes);
 app.use("/api/rendez-vous", rendezVousRoutes);
 // ROUTE DE RECU
 app.use("/api/recus", recuRoutes);
+// ROUTE UTILISATEUR 
+app.use("/api/utilisateurs", utilisateurRoutes);
 
 
 // Route de test
