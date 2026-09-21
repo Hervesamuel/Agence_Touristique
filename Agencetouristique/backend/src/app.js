@@ -15,8 +15,8 @@ const chauffeurRoutes = require("./routes/chauffeurRoutes");
 const vehiculeRoutes = require("./routes/vehiculeRoutes");  
 // Importation des routes Circuit
 const circuitRoutes = require("./routes/circuitRoutes");
-
-
+// Importation des routes Reservation
+const reservationRoutes = require("./routes/reservationRoutes");
 
 
 
@@ -43,7 +43,8 @@ app.use("/api/chauffeurs", chauffeurRoutes);
 app.use("/api/vehicules", vehiculeRoutes);
 // ROUTE DE CIRCUIT
 app.use("/api/circuits", circuitRoutes);
-
+// ROUTE DE RESERVATION
+app.use("/api/reservations", reservationRoutes);
 
 
 
