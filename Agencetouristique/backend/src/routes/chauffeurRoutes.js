@@ -23,7 +23,7 @@ const chauffeurSchema = require("../utils/chauffeurSchema");
 
 router.post(
     "/",
-    validate(chauffeurSchema),
+    validate(chauffeurSchema.create),
     chauffeurController.createChauffeur
 );
 

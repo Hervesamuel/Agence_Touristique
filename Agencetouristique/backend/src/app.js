@@ -11,6 +11,8 @@ const app = express();
 const agentRoutes = require("./routes/agentRoutes");
 // Importation des routes Chauffeur
 const chauffeurRoutes = require("./routes/chauffeurRoutes");
+// Importation des routes Vehicule
+const vehiculeRoutes = require("./routes/vehiculeRoutes");  
 
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
@@ -27,6 +29,8 @@ app.use("/api/agents", agentRoutes);
 // ROUTE DE CHAUFFEUR 
 app.use("/api/chauffeurs", chauffeurRoutes);
 
+// ROUTE DE VEHICULE
+app.use("/api/vehicules", vehiculeRoutes);
 
 
 
