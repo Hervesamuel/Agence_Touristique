@@ -13,36 +13,58 @@ const validate = require("../middlewares/validate");
 // Importation du schéma de validation Vehicule
 const vehiculeSchema = require("../utils/vehiculeSchema");
 
-// Route POST : Creer un véhicule
+// Importation du middleware d'authentification
+const authenticateToken = require("../middlewares/authMiddleware");
+
+// Importation du middleware d'autorisation par rôle
+const authorizeRoles = require("../middlewares/roleMiddleware");
+
+// Route POST : créer un véhicule
+// Accessible uniquement au Responsable
 router.post(
     "/",
+    authenticateToken,
+    authorizeRoles("RESPONSABLE"),
     validate(vehiculeSchema.create),
     vehiculeController.createVehicule
 );
-// Route GET : Récuperer tous les céhicules
 
+// Route GET : récupérer tous les véhicules
+// Accessible au Responsable, à l'Agent et au Chauffeur
 router.get(
     "/",
+    authenticateToken,
+    authorizeRoles("RESPONSABLE", "AGENT", "CHAUFFEUR"),
     vehiculeController.getAllVehicules
 );
-// Route GET : Récuoerer un véhicule par id
+
+// Route GET : récupérer un véhicule par ID
+// Accessible au Responsable, à l'Agent et au Chauffeur
 router.get(
     "/:id",
+    authenticateToken,
+    authorizeRoles("RESPONSABLE", "AGENT", "CHAUFFEUR"),
     vehiculeController.getVehiculeById
 );
 
-// ROUTE PUT : MODIFIER UN VEHICUL
+// Route PUT : modifier un véhicule
+// Accessible uniquement au Responsable
 router.put(
     "/:id",
+    authenticateToken,
+    authorizeRoles("RESPONSABLE"),
     validate(vehiculeSchema.update),
     vehiculeController.updateVehicule
 );
 
-// DELETE
+// Route DELETE : supprimer un véhicule
+// Accessible uniquement au Responsable
 router.delete(
     "/:id",
+    authenticateToken,
+    authorizeRoles("RESPONSABLE"),
     vehiculeController.deleteVehicule
 );
 
-
+// Exportation du routeur
 module.exports = router;
