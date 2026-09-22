@@ -10,5 +10,7 @@ const agenceController = require("../controllers/agenceController");
 // Route permettant de créer une agence
 router.post("/", agenceController.createAgence);
 
+
+
 // Exportation du routeur
 module.exports = router;

@@ -25,8 +25,8 @@ const recuRoutes = require("./routes/recuRoutes");
 const utilisateurRoutes = require("./routes/utilisateurRoutes");
 // Importation de route notification
 const notificationRoutes = require("./routes/notificationRoutes");
-
-
+// Importation de route authentification
+const authRoutes = require("./routes/authRoutes")
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
 
@@ -56,6 +56,8 @@ app.use("/api/recus", recuRoutes);
 app.use("/api/utilisateurs", utilisateurRoutes);
 // ROUTE NOTIFICATION
 app.use("/api/notifications", notificationRoutes);
+// ROUTE AUTHENTIFICATION
+app.use("/api/auth", authRoutes);
 
 
 // Route de test

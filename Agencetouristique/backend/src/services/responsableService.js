@@ -20,8 +20,44 @@ const prisma = new PrismaClient({
     adapter
 });
 
-// Création d'un responsable
+// =====================================================
+// CREATION D'UN RESPONSABLE
+// =====================================================
+
 const createResponsable = async (data) => {
+
+    // Vérification de l'utilisation de l'email dans les comptes
+    const existingResponsable = await prisma.responsable.findUnique({
+        where: {
+            email: data.email
+        }
+    });
+
+    const existingAgent = await prisma.agent.findUnique({
+        where: {
+            email: data.email
+        }
+    });
+
+    const existingChauffeur = await prisma.chauffeur.findUnique({
+        where: {
+            email: data.email
+        }
+    });
+
+    // Vérification de l'unicité globale de l'email
+    if (
+        existingResponsable ||
+        existingAgent ||
+        existingChauffeur
+    ) {
+        const error = new Error(
+            "Cette adresse email est déjà utilisée par un autre compte"
+        );
+
+        error.statusCode = 409;
+        throw error;
+    }
 
     // Hashage du mot de passe
     const hashedPassword = await bcrypt.hash(data.mdp, 10);
@@ -36,13 +72,28 @@ const createResponsable = async (data) => {
             mdp: hashedPassword,
             genre: data.genre,
             ville: data.ville
+        },
+
+        // Sélection des informations retournées
+        // Le mot de passe n'est pas envoyé
+        select: {
+            idresp: true,
+            nom: true,
+            tel: true,
+            photo: true,
+            email: true,
+            genre: true,
+            ville: true
         }
     });
 
     return responsable;
 };
 
-// Exportation du service
+// =====================================================
+// EXPORTATION DU SERVICE
+// =====================================================
+
 module.exports = {
     createResponsable
 };

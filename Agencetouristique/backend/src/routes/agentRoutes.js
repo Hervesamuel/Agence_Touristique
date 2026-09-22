@@ -13,6 +13,11 @@ const validate = require("../middlewares/validate");
 // Importation du schéma de validation Agent
 const agentSchemas = require("../utils/agentSchema");
 
+// Route permettant de récuperer toutes les agent
+const authenticateToken = require("../middlewares/authMiddleware");
+
+
+
 // Route POST : créer un agent
 router.post(
     "/",
@@ -29,6 +34,7 @@ router.get(
 // Route GET : récupérer tous les agents
 router.get(
     "/",
+    authenticateToken,
     agentController.getAllAgents
 );
 

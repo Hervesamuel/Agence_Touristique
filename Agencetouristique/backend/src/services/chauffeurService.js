@@ -29,11 +29,45 @@ const prisma = new PrismaClient({
 // =====================================================
 
 const createChauffeur = async (data) => {
+
+    // Vérification de l'utilisation de l'email dans les comptes
+    const existingResponsable = await prisma.responsable.findUnique({
+        where: {
+            email: data.email
+        }
+    });
+
+    const existingAgent = await prisma.agent.findUnique({
+        where: {
+            email: data.email
+        }
+    });
+
+    const existingChauffeur = await prisma.chauffeur.findUnique({
+        where: {
+            email: data.email
+        }
+    });
+
+    // Vérification de l'unicité globale de l'email
+    if (
+        existingResponsable ||
+        existingAgent ||
+        existingChauffeur
+    ) {
+        const error = new Error(
+            "Cette adresse email est déjà utilisée par un autre compte"
+        );
+
+        error.statusCode = 409;
+        throw error;
+    }
+
     // Hashage du mot de passe
     const hashedPassword = await bcrypt.hash(data.mdp, 10);
 
     // Création du chauffeur dans la base de données
-        const chauffeur = await prisma.chauffeur.create({
+    const chauffeur = await prisma.chauffeur.create({
         data: {
             nom: data.nom,
             tel: data.tel,
@@ -69,6 +103,7 @@ const createChauffeur = async (data) => {
 // =====================================================
 
 const getAllChauffeurs = async () => {
+
     // Récupération de tous les chauffeurs
     const chauffeurs = await prisma.chauffeur.findMany({
 
@@ -100,6 +135,7 @@ const getAllChauffeurs = async () => {
 // =====================================================
 
 const getChauffeurById = async (id) => {
+
     // Recherche du chauffeur par son identifiant
     const chauffeur = await prisma.chauffeur.findUnique({
         where: {
@@ -153,18 +189,25 @@ const updateChauffeur = async (id, data) => {
     // Préparation des données à modifier
     const updateData = {};
 
-    if (data.nom !== undefined) updateData.nom = data.nom;
-    if (data.tel !== undefined) updateData.tel = data.tel;
-    if (data.photo !== undefined) updateData.photo = data.photo;
-    if (data.genre !== undefined) updateData.genre = data.genre;
-    if (data.ville !== undefined) updateData.ville = data.ville;
-    if (data.statut !== undefined) updateData.statut = data.statut;
-    if (data.idagc !== undefined) updateData.idagc = data.idagc;
-
-    // Vérification de l'unicité de l'adresse email
+    // Vérification de l'email lors d'une modification
     if (data.email !== undefined) {
 
-        const emailExiste = await prisma.chauffeur.findFirst({
+        // Recherche de l'email dans Responsable
+        const existingResponsable = await prisma.responsable.findUnique({
+            where: {
+                email: data.email
+            }
+        });
+
+        // Recherche de l'email dans Agent
+        const existingAgent = await prisma.agent.findUnique({
+            where: {
+                email: data.email
+            }
+        });
+
+        // Recherche de l'email dans les autres Chauffeurs
+        const otherChauffeur = await prisma.chauffeur.findFirst({
             where: {
                 email: data.email,
                 NOT: {
@@ -173,17 +216,32 @@ const updateChauffeur = async (id, data) => {
             }
         });
 
-        if (emailExiste) {
+        // Vérification de l'unicité globale de l'email
+        if (
+            existingResponsable ||
+            existingAgent ||
+            otherChauffeur
+        ) {
             const error = new Error(
-                "Cette adresse email est déjà utilisée par un autre chauffeur"
+                "Cette adresse email est déjà utilisée par un autre compte"
             );
 
             error.statusCode = 409;
             throw error;
         }
 
+        // Ajout du nouvel email aux données à modifier
         updateData.email = data.email;
     }
+
+    // Ajout uniquement des champs reçus
+    if (data.nom !== undefined) updateData.nom = data.nom;
+    if (data.tel !== undefined) updateData.tel = data.tel;
+    if (data.photo !== undefined) updateData.photo = data.photo;
+    if (data.genre !== undefined) updateData.genre = data.genre;
+    if (data.ville !== undefined) updateData.ville = data.ville;
+    if (data.statut !== undefined) updateData.statut = data.statut;
+    if (data.idagc !== undefined) updateData.idagc = data.idagc;
 
     // Hashage du nouveau mot de passe
     if (data.mdp !== undefined) {
