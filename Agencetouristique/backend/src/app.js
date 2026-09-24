@@ -1,6 +1,7 @@
 // Importe Express pour créer l'application
 const express = require("express");
-
+// Importation de CORS
+const cors = require("cors");
 // Importation des routes Agence
 const agenceRoutes = require("./routes/agenceRoutes");
 // Importation des routes Responsable
@@ -29,7 +30,8 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const authRoutes = require("./routes/authRoutes")
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
-
+// Autorisation des requêtes provenant du frontend
+app.use(cors());
 // ROUTE DE L'AGENCE
 app.use("/api/agences", agenceRoutes);
 

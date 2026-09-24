@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 // Importation du service d'authentification
 import { login } from "../../services/authService";
 
-function Login({ onLogin }) {
+
+function Login() {
+  const navigate = useNavigate();
   // Gestion des données du formulaire
   const [email, setEmail] = useState("");
   const [mdp, setMdp] = useState("");
@@ -27,8 +30,8 @@ function Login({ onLogin }) {
       // Affichage des informations reçues
       console.log("Connexion réussie :", data);
 
-      // Mise à jour de l'état d'authentification
-      onLogin();
+     // Redirection vers le Dashboard
+    navigate("/dashboard", { replace: true });
     }  catch (error) {
   // Affichage d'un message adapté à l'erreur
   if (error.message === "Failed to fetch") {
@@ -147,6 +150,9 @@ function Login({ onLogin }) {
       </div>
     </div>
   );
+
 }
+
+
 
 export default Login;
