@@ -119,6 +119,13 @@ const login = async (email, mdp) => {
             throw error;
         }
 
+        // Vérification du statut du compte
+        if (agent.statut !== "Actif") {
+            const error = new Error("Votre compte a été désactivé. Veuillez contacter votre responsable.");
+            error.statusCode = 403;
+            throw error;
+        }
+
         // Création du token JWT
         const token = jwt.sign(
             {
