@@ -9,7 +9,6 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 
 // Importation de bcrypt pour sécuriser les mots de passe
 const bcrypt = require("bcrypt");
-
 // Création de l'adaptateur PostgreSQL
 const adapter = new PrismaPg({
     connectionString: process.env.DATABASE_URL

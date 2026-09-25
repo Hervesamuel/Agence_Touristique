@@ -33,8 +33,8 @@ function Sidebar({ isOpen, onClose }) {
         {/* En-tête de la plateforme */}
         <div className="h-20 flex items-center px-6 border-b border-slate-800 shrink-0">
           <div>
-            <h1 className="text-xl font-bold">AgenceTouristique</h1>
-            <p className="text-xs text-slate-400 mt-1">Gestion de plateforme</p>
+            <h1 className="text-xl font-bold">MADATours</h1>
+            <p className="text-xs text-slate-400 mt-1">Madagascar</p>
           </div>
         </div>
 

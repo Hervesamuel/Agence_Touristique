@@ -8,8 +8,21 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 // Création de l'instance Prisma
 const prisma = new PrismaClient({ adapter });
 
-const selectFields = { idres: true, datereservation: true, datevoyage: true, dateretour: true, lieu: true, idcircuit: true, idagt: true };
-
+const selectFields = {
+    idres: true,
+    datereservation: true,
+    datevoyage: true,
+    dateretour: true,
+    lieu: true,
+    idcircuit: true,
+    idagt: true,
+    agent: {
+        select: { idagt: true, nom: true }
+    },
+    circuit: {
+        select: { idcircuit: true, nom: true }
+    }
+};
 // =====================================================// CREATION D'UNE RESERVATION// =====================================================
 const createReservation = async (data) => {
     try {

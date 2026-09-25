@@ -45,20 +45,32 @@ const login = async (email, mdp) => {
         );
 
         if (!passwordCorrect) {
-            const error = new Error(
-                "Email ou mot de passe incorrect"
-            );
-
+            const error = new Error("Email ou mot de passe incorrect");
             error.statusCode = 401;
             throw error;
         }
+
+        // Récupération de l'agence liée au responsable
+        const agence = await prisma.agence.findUnique({
+            where: {
+                idresp: responsable.idresp
+            },
+            select: {
+                idagc: true
+            }
+        });
+
+        // Vérification de l'agence récupérée (debug temporaire)
+        console.log("DEBUG - idresp recherché :", responsable.idresp);
+        console.log("DEBUG - agence trouvée :", agence);
 
         // Création du token JWT
         const token = jwt.sign(
             {
                 id: responsable.idresp,
                 email: responsable.email,
-                role: "RESPONSABLE"
+                role: "RESPONSABLE",
+                idagc: agence?.idagc
             },
             process.env.JWT_SECRET,
             {
@@ -71,6 +83,8 @@ const login = async (email, mdp) => {
             token: token,
             user: {
                 id: responsable.idresp,
+                idresp: responsable.idresp,
+                idagc: agence?.idagc,
                 nom: responsable.nom,
                 email: responsable.email,
                 role: "RESPONSABLE"

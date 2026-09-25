@@ -19,4 +19,29 @@ const API = {
   notifications: `${API_URL}/notifications`,
 };
 
+// =====================================================
+// REQUETE AUTHENTIFIEE
+// =====================================================
+
+const fetchAuth = async (url, options = {}) => {
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  // Ajout du token JWT
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return fetch(url, {
+    ...options,
+    headers,
+  });
+};
+
+export { fetchAuth };
+
 export default API;

@@ -8,6 +8,9 @@ import API from "./api";
 // Importation du token d'authentification
 import { getToken } from "./authService";
 
+// Clé utilisée pour le cache hors-ligne
+const CACHE_KEY = "dashboardCache";
+
 // =====================================================
 // RECUPERATION DES DONNEES DU DASHBOARD
 // =====================================================
@@ -94,8 +97,8 @@ const getDashboardData = async () => {
       );
     }
 
-    // Retour des données du dashboard
-    return {
+    // Regroupement des données du dashboard
+    const dashboardData = {
       agents,
       chauffeurs,
       vehicules,
@@ -103,9 +106,30 @@ const getDashboardData = async () => {
       reservations,
       rendezVous,
     };
+
+    // Mise en cache pour permettre l'accès hors-ligne
+    try {
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ data: dashboardData, savedAt: new Date().toISOString() })
+      );
+    } catch (cacheError) {
+      // Le cache n'est pas critique : on ignore une éventuelle erreur (ex: quota dépassé)
+      console.warn("Impossible de mettre en cache les données du dashboard :", cacheError);
+    }
+
+    return dashboardData;
   } catch (error) {
+    // Cas d'une absence de connexion réseau
     if (error instanceof TypeError) {
-      throw new Error("Impossible de contacter le serveur.");
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data } = JSON.parse(cached);
+        return data;
+      }
+      throw new Error(
+        "Impossible de contacter le serveur et aucune donnée en cache disponible."
+      );
     }
 
     throw error;
