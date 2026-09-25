@@ -4,8 +4,7 @@ import { getUser } from "../../services/authService";
 
 function AgentForm({ onClose, onCreated }) {
   const responsable = getUser();
-    console.log("UTILISATEUR CONNECTÉ :", responsable);
-    console.log("ID AGENCE :", responsable?.idagc);
+
   const [formData, setFormData] = useState({
     nom: "",
     tel: "",
@@ -87,6 +86,7 @@ function AgentForm({ onClose, onCreated }) {
             <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl p-3 font-medium">
               {globalError}
             </div>
+
           )}
 
           {/* Nom */}

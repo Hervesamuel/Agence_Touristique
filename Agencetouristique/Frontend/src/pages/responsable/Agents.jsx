@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAgents, deleteAgent } from "../../services/agentService";
+import { getAgents, updateAgent } from "../../services/agentService";
 import AgentForm from "./AgentForm";
 
 function Agents() {
@@ -12,8 +12,8 @@ function Agents() {
   const [loading, setLoading] = useState(true);
   // Gestion des erreurs
   const [error, setError] = useState("");
-  // Gestion de la suppression (id de l'agent en cours de suppression)
-  const [deletingId, setDeletingId] = useState(null);
+  // Gestion de la bascule activer/désactiver (id de l'agent en cours de traitement)
+  const [togglingId, setTogglingId] = useState(null);
   // Gestion de l'affichage du formulaire d'ajout
   const [showForm, setShowForm] = useState(false);
 
@@ -34,23 +34,30 @@ function Agents() {
     fetchAgents();
   }, []);
 
-  // Suppression d'un agent
-  const handleDelete = async (agent) => {
-    const confirmed = window.confirm(
-      `Voulez-vous vraiment supprimer le compte de "${agent.nom}" ? Cette action est irréversible.`
-    );
-    if (!confirmed) return;
+    // Activation / désactivation d'un agent
+    const handleToggleStatus = async (agent) => {
+      const nextStatut = agent.statut === "Actif" ? "Inactif" : "Actif";
+      const actionLabel = nextStatut === "Actif" ? "activer" : "désactiver";
 
-    try {
-      setDeletingId(agent.idagt);
-      await deleteAgent(agent.idagt);
-      setAgents((prev) => prev.filter((a) => a.idagt !== agent.idagt));
-    } catch (err) {
-      alert(err.message || "Impossible de supprimer cet agent.");
-    } finally {
-      setDeletingId(null);
-    }
-  };
+      const confirmed = window.confirm(
+        `Voulez-vous ${actionLabel} le compte de "${agent.nom}" ?`
+      );
+      if (!confirmed) return;
+
+      try {
+        setTogglingId(agent.idagt);
+        const response = await updateAgent(agent.idagt, { statut: nextStatut });
+        const updatedAgent = response.data || response;
+
+        setAgents((prev) =>
+          prev.map((a) => (a.idagt === agent.idagt ? { ...a, statut: updatedAgent.statut } : a))
+        );
+      } catch (err) {
+        alert(err.message || "Impossible de modifier le statut de cet agent.");
+      } finally {
+        setTogglingId(null);
+      }
+    };
 
   // Rafraîchissement de la liste après création d'un agent
   const handleAgentCreated = () => {
@@ -130,17 +137,30 @@ function Agents() {
               key={agent.idagt}
               className="relative bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
             >
-              {/* Bouton de suppression */}
+                            {/* Badge de statut */}
+              <span
+                className={`absolute top-3 right-14 text-xxs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
+                  agent.statut === "Actif" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"
+                }`}
+              >
+                {agent.statut}
+              </span>
+
+              {/* Bouton activer / désactiver */}
               <button
                 type="button"
-                onClick={() => handleDelete(agent)}
-                disabled={deletingId === agent.idagt}
-                aria-label={`Supprimer l'agent ${agent.nom}`}
-                title="Supprimer cet agent"
-                className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => handleToggleStatus(agent)}
+                disabled={togglingId === agent.idagt}
+                aria-label={agent.statut === "Actif" ? `Désactiver ${agent.nom}` : `Activer ${agent.nom}`}
+                title={agent.statut === "Actif" ? "Désactiver ce compte" : "Activer ce compte"}
+                className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  agent.statut === "Actif"
+                    ? "text-emerald-600 hover:bg-red-50 hover:text-red-600"
+                    : "text-slate-400 hover:bg-emerald-50 hover:text-emerald-600"
+                }`}
               >
-                {deletingId === agent.idagt ? (
-                  <span className="w-4 h-4 border-2 border-red-300 border-t-red-600 rounded-full animate-spin" />
+                {togglingId === agent.idagt ? (
+                  <span className="w-4 h-4 border-2 border-slate-300 border-t-emerald-600 rounded-full animate-spin" />
                 ) : (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -152,16 +172,13 @@ function Agents() {
                     strokeLinejoin="round"
                     className="w-5 h-5"
                   >
-                    <path d="M3 6h18" />
-                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
+                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+                    <line x1="12" y1="2" x2="12" y2="12" />
                   </svg>
                 )}
               </button>
 
-              <div className="flex items-center gap-3 mb-3 pr-8">
+              <div className="flex items-center gap-3 mb-3 pr-8 mt-6">
                 <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">
                   {agent.nom?.[0]}
                 </div>
