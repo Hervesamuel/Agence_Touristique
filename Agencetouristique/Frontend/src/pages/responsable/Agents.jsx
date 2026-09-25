@@ -8,6 +8,8 @@ function Agents() {
   const [agents, setAgents] = useState([]);
   // Gestion de la recherche
   const [search, setSearch] = useState("");
+// Gestion du filtre de statut
+  const [statusFilter, setStatusFilter] = useState("Tous");
   // Gestion du chargement
   const [loading, setLoading] = useState(true);
   // Gestion des erreurs
@@ -73,12 +75,13 @@ function Agents() {
   };
 
   // Filtrage des agents
-  const filteredAgents = agents.filter((agent) => {
+    const filteredAgents = agents.filter((agent) => {
     const searchValue = search.toLowerCase();
-    return (
+    const matchSearch =
       agent.nom?.toLowerCase().includes(searchValue) ||
-      agent.email?.toLowerCase().includes(searchValue)
-    );
+      agent.email?.toLowerCase().includes(searchValue);
+    const matchStatus = statusFilter === "Tous" || agent.statut === statusFilter;
+    return matchSearch && matchStatus;
   });
 
   // Affichage pendant le chargement
@@ -110,9 +113,9 @@ function Agents() {
         </button>
       </div>
 
-      {/* Zone de recherche */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-8 shadow-sm">
-        <div className="w-full sm:max-w-md">
+            {/* Zone de recherche et filtres */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
           <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">Rechercher un agent</label>
           <input
             id="search"
@@ -122,6 +125,19 @@ function Agents() {
             placeholder="Nom, prénom ou email..."
             className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           />
+        </div>
+        <div>
+          <label htmlFor="statusFilter" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">Statut</label>
+          <select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+          >
+            <option value="Tous">Tous</option>
+            <option value="Actif">Actif</option>
+            <option value="Inactif">Inactif</option>
+          </select>
         </div>
       </div>
 

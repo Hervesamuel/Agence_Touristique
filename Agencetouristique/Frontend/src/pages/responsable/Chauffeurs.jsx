@@ -10,7 +10,7 @@ function Chauffeurs() {
   const [error, setError] = useState("");
   const [togglingId, setTogglingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
-
+  const [statusFilter, setStatusFilter] = useState("Tous");
   useEffect(() => {
     const fetchChauffeurs = async () => {
       try {
@@ -66,12 +66,13 @@ function Chauffeurs() {
     fetchChauffeurs();
   };
 
-  const filteredChauffeurs = chauffeurs.filter((chauffeur) => {
+    const filteredChauffeurs = chauffeurs.filter((chauffeur) => {
     const searchValue = search.toLowerCase();
-    return (
+    const matchSearch =
       chauffeur.nom?.toLowerCase().includes(searchValue) ||
-      chauffeur.email?.toLowerCase().includes(searchValue)
-    );
+      chauffeur.email?.toLowerCase().includes(searchValue);
+    const matchStatus = statusFilter === "Tous" || chauffeur.statut === statusFilter;
+    return matchSearch && matchStatus;
   });
 
   if (loading) return <div className="p-8 text-center text-slate-500 font-medium">Chargement des chauffeurs...</div>;
@@ -98,8 +99,9 @@ function Chauffeurs() {
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-8 shadow-sm">
-        <div className="w-full sm:max-w-md">
+      {/* Zone de recherche et filtres */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
           <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">Rechercher un chauffeur</label>
           <input
             id="search"
@@ -109,6 +111,19 @@ function Chauffeurs() {
             placeholder="Nom ou email..."
             className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           />
+        </div>
+        <div>
+          <label htmlFor="statusFilter" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">Statut</label>
+          <select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+          >
+            <option value="Tous">Tous</option>
+            <option value="Actif">Actif</option>
+            <option value="Inactif">Inactif</option>
+          </select>
         </div>
       </div>
 
