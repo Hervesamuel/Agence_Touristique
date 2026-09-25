@@ -13,6 +13,11 @@ import Sidebar from "../components/navigation/Sidebar";
 // Importation de la Navbar
 import Navbar from "../components/navigation/Navbar";
 import Chauffeurs from "../pages/responsable/Chauffeurs";
+
+import Circuits from "../pages/responsable/Circuits";
+
+
+
 function ProtectedLayout() {
   // Gestion de l'état d'ouverture de la Sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -59,6 +64,8 @@ function AppRoutes() {
         <Route path="/agents" element={<Agents />} />
         {/* Gestion des chauffeurs */}
         <Route path="/chauffeurs" element={<Chauffeurs />} />
+        {/* Gestion des circuits */}
+        <Route path="/circuits" element={<Circuits />} />
       </Route>
        
 
