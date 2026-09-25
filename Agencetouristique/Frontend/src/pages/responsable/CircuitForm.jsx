@@ -109,7 +109,6 @@ function CircuitForm({ onClose, onCreated }) {
       await createCircuit({
         ...formData,
         capacite: Number(formData.capacite),
-        photo: null,
         idagc: responsable.idagc,
       });
       onCreated?.();

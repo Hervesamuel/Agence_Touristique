@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 // Structure des liens du menu principal
 const mainNav = [
-  { label: "Dashboard", icon: "▦", path: "/dashboard" },
+  { label: "Tableau de Bord", icon: "▦", path: "/dashboard" },
   { label: "Circuits", icon: "⌁", path: "/circuits" },
   { label: "Véhicules", icon: "▣", path: "/vehicules" },
   { label: "Chauffeurs", icon: "♙", path: "/chauffeurs" },
@@ -83,7 +83,7 @@ function Sidebar({ isOpen, onClose }) {
             className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-800 transition"
           >
             <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-semibold shrink-0">
-              RS
+              RP
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">Responsable</p>

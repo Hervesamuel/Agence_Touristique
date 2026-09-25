@@ -13,9 +13,10 @@ import Sidebar from "../components/navigation/Sidebar";
 // Importation de la Navbar
 import Navbar from "../components/navigation/Navbar";
 import Chauffeurs from "../pages/responsable/Chauffeurs";
-
+// Importation de la page de gestion des circuits
 import Circuits from "../pages/responsable/Circuits";
-
+// Importation de la page de gestion des véhicules
+import Vehicules from "../pages/responsable/Vehicules";
 
 
 function ProtectedLayout() {
@@ -66,6 +67,10 @@ function AppRoutes() {
         <Route path="/chauffeurs" element={<Chauffeurs />} />
         {/* Gestion des circuits */}
         <Route path="/circuits" element={<Circuits />} />
+        {/* Gestion des véhicules */}
+        <Route path="/vehicules" element={<Vehicules />} />
+
+
       </Route>
        
 
