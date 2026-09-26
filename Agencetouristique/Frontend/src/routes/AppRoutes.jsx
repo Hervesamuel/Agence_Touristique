@@ -19,6 +19,14 @@ import Circuits from "../pages/responsable/Circuits";
 import Vehicules from "../pages/responsable/Vehicules";
 
 import RendezVous from "../pages/responsable/RendezVous";
+
+import Parametres from "../pages/responsable/Parametres";
+
+
+
+
+
+
 function ProtectedLayout() {
   // Gestion de l'état d'ouverture de la Sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -71,6 +79,8 @@ function AppRoutes() {
         <Route path="/vehicules" element={<Vehicules />} />
         {/* Gestion des Rendez_vous */}
         <Route path="/rendez-vous" element={<RendezVous />} />
+        {/* Gestion des paramètres */}
+        <Route path="/parametres" element={<Parametres />} />
 
       </Route>
        
