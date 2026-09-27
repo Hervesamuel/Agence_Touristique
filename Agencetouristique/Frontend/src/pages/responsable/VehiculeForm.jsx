@@ -122,24 +122,24 @@ function VehiculeForm({ vehicule, onClose, onCreated }) {
 
   return (
     <div className="fixed inset-0 bg-slate-900/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-5 border-b border-slate-200 sticky top-0 bg-white z-10">
-          <h2 className="text-lg font-bold text-slate-900">
+      <div className="bg-white dark:bg-slate-800 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
             {isEditMode ? "Modifier le véhicule" : "Ajouter un véhicule"}
           </h2>
-          <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors" aria-label="Fermer">✕</button>
+          <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300 transition-colors" aria-label="Fermer">✕</button>
         </div>
 
         <form onSubmit={handleSubmit} noValidate className="p-5 space-y-4">
           {globalError && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl p-3 font-medium">{globalError}</div>
+            <div className="bg-red-50 border border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400 text-sm rounded-xl p-3 font-medium">{globalError}</div>
           )}
 
           {/* Photo du véhicule */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Photo du véhicule</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Photo du véhicule</label>
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 flex items-center justify-center overflow-hidden shrink-0">
                 {formData.photo ? (
                   <img src={formData.photo} alt="Aperçu du véhicule" className="w-full h-full object-cover" />
                 ) : (
@@ -147,73 +147,73 @@ function VehiculeForm({ vehicule, onClose, onCreated }) {
                 )}
               </div>
               <div className="flex-1 space-y-2">
-                <label className="inline-block px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
+                <label className="inline-block px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors">
                   Choisir une image
                   <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                 </label>
                 {formData.photo && (
-                  <button type="button" onClick={handleRemovePhoto} className="block text-xs text-red-600 hover:text-red-700 font-medium">
+                  <button type="button" onClick={handleRemovePhoto} className="block text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium">
                     Retirer la photo
                   </button>
                 )}
               </div>
             </div>
-            {errors.photo && <p className="text-xs text-red-600 mt-1">{errors.photo}</p>}
+            {errors.photo && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.photo}</p>}
           </div>
 
           {/* Immatriculation */}
           <div>
-            <label htmlFor="immatriculation" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Immatriculation</label>
+            <label htmlFor="immatriculation" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Immatriculation</label>
             <input
               id="immatriculation" name="immatriculation" type="text"
               value={formData.immatriculation} onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.immatriculation ? "border-red-400" : isValid("immatriculation") ? "border-emerald-300" : "border-slate-300"}`}
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.immatriculation ? "border-red-400 dark:border-red-500/60" : isValid("immatriculation") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"}`}
               placeholder="ex: 1234-ABC"
             />
-            {errors.immatriculation && <p className="text-xs text-red-600 mt-1">{errors.immatriculation}</p>}
+            {errors.immatriculation && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.immatriculation}</p>}
           </div>
 
           {/* Marque + Modèle */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="marque" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Marque</label>
+              <label htmlFor="marque" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Marque</label>
               <input
                 id="marque" name="marque" type="text"
                 value={formData.marque} onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.marque ? "border-red-400" : isValid("marque") ? "border-emerald-300" : "border-slate-300"}`}
+                className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.marque ? "border-red-400 dark:border-red-500/60" : isValid("marque") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"}`}
                 placeholder="ex: Toyota"
               />
-              {errors.marque && <p className="text-xs text-red-600 mt-1">{errors.marque}</p>}
+              {errors.marque && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.marque}</p>}
             </div>
             <div>
-              <label htmlFor="modele" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Modèle</label>
+              <label htmlFor="modele" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Modèle</label>
               <input
                 id="modele" name="modele" type="text"
                 value={formData.modele} onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.modele ? "border-red-400" : isValid("modele") ? "border-emerald-300" : "border-slate-300"}`}
+                className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.modele ? "border-red-400 dark:border-red-500/60" : isValid("modele") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"}`}
                 placeholder="ex: Hiace"
               />
-              {errors.modele && <p className="text-xs text-red-600 mt-1">{errors.modele}</p>}
+              {errors.modele && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.modele}</p>}
             </div>
           </div>
 
           {/* Capacité + Statut */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="capacite" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Capacité (places)</label>
+              <label htmlFor="capacite" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Capacité (places)</label>
               <input
                 id="capacite" name="capacite" type="text" inputMode="numeric"
                 value={formData.capacite} onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.capacite ? "border-red-400" : isValid("capacite") ? "border-emerald-300" : "border-slate-300"}`}
+                className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.capacite ? "border-red-400 dark:border-red-500/60" : isValid("capacite") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"}`}
                 placeholder="ex: 15"
               />
-              {errors.capacite && <p className="text-xs text-red-600 mt-1">{errors.capacite}</p>}
+              {errors.capacite && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.capacite}</p>}
             </div>
             <div>
-              <label htmlFor="status" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Statut</label>
+              <label htmlFor="status" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Statut</label>
               <select
                 id="status" name="status" value={formData.status} onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white"
               >
                 <option value="Disponible">Disponible</option>
                 <option value="Indisponible">Indisponible</option>
@@ -222,7 +222,7 @@ function VehiculeForm({ vehicule, onClose, onCreated }) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <button type="button" onClick={onClose} className="w-full sm:w-auto px-5 py-3 border border-slate-300 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors order-2 sm:order-1">Annuler</button>
+            <button type="button" onClick={onClose} className="w-full sm:w-auto px-5 py-3 border border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors order-2 sm:order-1">Annuler</button>
             <button type="submit" disabled={submitting} className="w-full sm:w-auto flex-1 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed order-1 sm:order-2">
               {submitting ? (isEditMode ? "Modification..." : "Création...") : (isEditMode ? "Enregistrer" : "Créer le véhicule")}
             </button>
