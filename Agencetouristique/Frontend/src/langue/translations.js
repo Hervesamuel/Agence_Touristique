@@ -19,6 +19,7 @@ const translations = {
     langue_soustitre: "Choisissez la langue de l'application",
     langue_fr: "Français",
     langue_mg: "Malagasy",
+    langue_en: "Anglais",
 
     retour_dashboard: "Retour au Dashboard",
   },
@@ -41,8 +42,32 @@ const translations = {
     langue_soustitre: "Fidio ny fiteny ampiasaina",
     langue_fr: "Frantsay",
     langue_mg: "Malagasy",
+    langue_en: "Anglisy",
 
     retour_dashboard: "Hiverina any amin'ny Dashboard",
+  },
+  en: {
+    parametres_titre: "Settings",
+    parametres_soustitre: "Customize your experience",
+
+    taille_texte_titre: "Text size",
+    taille_texte_soustitre: "Adjust the text size across the application",
+    taille_petit: "Small",
+    taille_normal: "Normal",
+    taille_grand: "Large",
+
+    apparence_titre: "Appearance",
+    apparence_soustitre: "Choose the appearance of the application",
+    theme_clair: "Light",
+    theme_sombre: "Dark",
+
+    langue_titre: "Language",
+    langue_soustitre: "Choose the application language",
+    langue_fr: "French",
+    langue_mg: "Malagasy",
+    langue_en: "English",
+
+    retour_dashboard: "Back to Dashboard",
   },
 };
 

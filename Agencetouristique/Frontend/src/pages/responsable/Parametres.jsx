@@ -88,7 +88,7 @@ function Parametres() {
         <h2 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">{t("langue_titre")}</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{t("langue_soustitre")}</p>
 
-        <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
           <button
             type="button"
             onClick={() => changeLanguage("fr")}
@@ -106,13 +106,26 @@ function Parametres() {
             type="button"
             onClick={() => changeLanguage("mg")}
             className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
+              language === "mg"
+                ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
+                : "border-slate-200 dark:border-slate-600 hover:border-slate-300"
+            }`}
+          >
+            <span className="text-2xl">🇲🇬</span>
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{t("langue_mg")}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => changeLanguage("en")}
+            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
               language === "en"
                 ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
                 : "border-slate-200 dark:border-slate-600 hover:border-slate-300"
             }`}
           >
-            <span className="text-2xl">MG</span>
-            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{t("Malagasy")}</span>
+            <span className="text-2xl">🇬🇧</span>
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{t("langue_en")}</span>
           </button>
         </div>
       </div>
