@@ -22,6 +22,19 @@ const translations = {
     langue_en: "Anglais",
 
     retour_dashboard: "Retour au Dashboard",
+
+    nav_principal: "Principal",
+    nav_dashboard: "Tableau de Bord",
+    nav_circuits: "Circuits",
+    nav_vehicules: "Véhicules",
+    nav_chauffeurs: "Chauffeurs",
+    nav_agents: "Agents",
+    nav_reservations: "Réservations",
+    nav_rendezvous: "Rendez-vous",
+    nav_systeme: "Système",
+    nav_parametres: "Paramètres",
+    sidebar_role: "Responsable",
+    sidebar_titre_role: "Administrateur",
   },
   mg: {
     parametres_titre: "Kirakira",
@@ -45,6 +58,19 @@ const translations = {
     langue_en: "Anglisy",
 
     retour_dashboard: "Hiverina any amin'ny Dashboard",
+
+    nav_principal: "Fototra",
+    nav_dashboard: "Tabilao Fitantanana",
+    nav_circuits: "Lalana",
+    nav_vehicules: "Fiara",
+    nav_chauffeurs: "Mpamily",
+    nav_agents: "Mpiasa",
+    nav_reservations: "Fanovana",
+    nav_rendezvous: "Fotoam-pihaonana",
+    nav_systeme: "Rafitra",
+    nav_parametres: "Kirakira",
+    sidebar_role: "Tompon'andraikitra",
+    sidebar_titre_role: "Mpitantana",
   },
   en: {
     parametres_titre: "Settings",
@@ -68,42 +94,6 @@ const translations = {
     langue_en: "English",
 
     retour_dashboard: "Back to Dashboard",
-  },
-
-    fr: {
-    // ... clés existantes ...
-
-    nav_principal: "Principal",
-    nav_dashboard: "Tableau de Bord",
-    nav_circuits: "Circuits",
-    nav_vehicules: "Véhicules",
-    nav_chauffeurs: "Chauffeurs",
-    nav_agents: "Agents",
-    nav_reservations: "Réservations",
-    nav_rendezvous: "Rendez-vous",
-    nav_systeme: "Système",
-    nav_parametres: "Paramètres",
-    sidebar_role: "Responsable",
-    sidebar_titre_role: "Administrateur",
-  },
-  mg: {
-    // ... clés existantes ...
-
-    nav_principal: "Fototra",
-    nav_dashboard: "Tabilao Fitantanana",
-    nav_circuits: "Lalana",
-    nav_vehicules: "Fiara",
-    nav_chauffeurs: "Mpamily",
-    nav_agents: "Mpiasa",
-    nav_reservations: "Fanovana",
-    nav_rendezvous: "Fotoam-pihaonana",
-    nav_systeme: "Rafitra",
-    nav_parametres: "Kirakira",
-    sidebar_role: "Tompon'andraikitra",
-    sidebar_titre_role: "Mpitantana",
-  },
-  en: {
-    // ... clés existantes ...
 
     nav_principal: "Main",
     nav_dashboard: "Dashboard",
