@@ -1,17 +1,20 @@
 import { NavLink } from "react-router-dom";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 // Structure des liens du menu principal
 const mainNav = [
-  { label: "Tableau de Bord", icon: "▦", path: "/dashboard" },
-  { label: "Circuits", icon: "⌁", path: "/circuits" },
-  { label: "Véhicules", icon: "▣", path: "/vehicules" },
-  { label: "Chauffeurs", icon: "♙", path: "/chauffeurs" },
-  { label: "Agents", icon: "♙", path: "/agents" },
-  { label: "Réservations", icon: "▤", path: "/reservations" },
-  { label: "Rendez-vous", icon: "◷", path: "/rendez-vous" },
+  { key: "nav_dashboard", icon: "▦", path: "/dashboard" },
+  { key: "nav_circuits", icon: "⌁", path: "/circuits" },
+  { key: "nav_vehicules", icon: "▣", path: "/vehicules" },
+  { key: "nav_chauffeurs", icon: "♙", path: "/chauffeurs" },
+  { key: "nav_agents", icon: "♙", path: "/agents" },
+  { key: "nav_reservations", icon: "▤", path: "/reservations" },
+  { key: "nav_rendezvous", icon: "◷", path: "/rendez-vous" },
 ];
 
 function Sidebar({ isOpen, onClose }) {
+  const { t } = useLanguage();
+
   // Fermeture du menu mobile après navigation
   const handleNavigation = () => {
     if (onClose) onClose();
@@ -40,7 +43,7 @@ function Sidebar({ isOpen, onClose }) {
 
         {/* Navigation principale */}
         <nav className="flex-1 px-4 py-6 overflow-y-auto">
-          <p className="text-xs uppercase tracking-wider text-slate-500 px-3 mb-3">Principal</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 px-3 mb-3">{t("nav_principal")}</p>
           <div className="space-y-1">
             {mainNav.map((item) => (
               <NavLink
@@ -54,13 +57,13 @@ function Sidebar({ isOpen, onClose }) {
                 }
               >
                 <span className="w-5 text-center">{item.icon}</span>
-                <span>{item.label}</span>
+                <span>{t(item.key)}</span>
               </NavLink>
             ))}
           </div>
 
           {/* Section système */}
-          <p className="text-xs uppercase tracking-wider text-slate-500 px-3 mb-3 mt-8">Système</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 px-3 mb-3 mt-8">{t("nav_systeme")}</p>
           <NavLink
             to="/parametres"
             onClick={handleNavigation}
@@ -71,7 +74,7 @@ function Sidebar({ isOpen, onClose }) {
             }
           >
             <span className="w-5 text-center">⚙</span>
-            <span>Paramètres</span>
+            <span>{t("nav_parametres")}</span>
           </NavLink>
         </nav>
 
@@ -86,8 +89,8 @@ function Sidebar({ isOpen, onClose }) {
               RP
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">Responsable</p>
-              <p className="text-xs text-slate-400 truncate">Administrateur</p>
+              <p className="text-sm font-medium truncate">{t("sidebar_role")}</p>
+              <p className="text-xs text-slate-400 truncate">{t("sidebar_titre_role")}</p>
             </div>
           </NavLink>
         </div>

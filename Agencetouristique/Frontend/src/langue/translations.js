@@ -69,6 +69,55 @@ const translations = {
 
     retour_dashboard: "Back to Dashboard",
   },
+
+    fr: {
+    // ... clés existantes ...
+
+    nav_principal: "Principal",
+    nav_dashboard: "Tableau de Bord",
+    nav_circuits: "Circuits",
+    nav_vehicules: "Véhicules",
+    nav_chauffeurs: "Chauffeurs",
+    nav_agents: "Agents",
+    nav_reservations: "Réservations",
+    nav_rendezvous: "Rendez-vous",
+    nav_systeme: "Système",
+    nav_parametres: "Paramètres",
+    sidebar_role: "Responsable",
+    sidebar_titre_role: "Administrateur",
+  },
+  mg: {
+    // ... clés existantes ...
+
+    nav_principal: "Fototra",
+    nav_dashboard: "Tabilao Fitantanana",
+    nav_circuits: "Lalana",
+    nav_vehicules: "Fiara",
+    nav_chauffeurs: "Mpamily",
+    nav_agents: "Mpiasa",
+    nav_reservations: "Fanovana",
+    nav_rendezvous: "Fotoam-pihaonana",
+    nav_systeme: "Rafitra",
+    nav_parametres: "Kirakira",
+    sidebar_role: "Tompon'andraikitra",
+    sidebar_titre_role: "Mpitantana",
+  },
+  en: {
+    // ... clés existantes ...
+
+    nav_principal: "Main",
+    nav_dashboard: "Dashboard",
+    nav_circuits: "Circuits",
+    nav_vehicules: "Vehicles",
+    nav_chauffeurs: "Drivers",
+    nav_agents: "Agents",
+    nav_reservations: "Bookings",
+    nav_rendezvous: "Appointments",
+    nav_systeme: "System",
+    nav_parametres: "Settings",
+    sidebar_role: "Manager",
+    sidebar_titre_role: "Administrator",
+  },
 };
 
 export default translations;
