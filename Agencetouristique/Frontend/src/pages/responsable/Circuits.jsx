@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCircuits, updateCircuit } from "../../services/circuitService";
+import { useLanguage } from "../../contexts/LanguageContext";
 import CircuitForm from "./CircuitForm";
 
 function Circuits() {
+  const { t } = useLanguage();
   const [circuits, setCircuits] = useState([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("Tous");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [togglingId, setTogglingId] = useState(null);
@@ -19,7 +22,7 @@ function Circuits() {
         const response = await getCircuits();
         setCircuits(response.data || response || []);
       } catch (err) {
-        setError(err.message || "Impossible de récupérer les circuits.");
+        setError(err.message || t("circuits_erreur_liste"));
       } finally {
         setLoading(false);
       }
@@ -30,9 +33,9 @@ function Circuits() {
   // Bascule du statut de disponibilité d'un circuit
   const handleToggleStatus = async (circuit) => {
     const nextStatus = circuit.status === "Disponible" ? "Indisponible" : "Disponible";
-    const actionLabel = nextStatus === "Disponible" ? "rendre disponible" : "rendre indisponible";
+    const confirmKey = nextStatus === "Disponible" ? "circuits_confirm_disponible" : "circuits_confirm_indisponible";
 
-    const confirmed = window.confirm(`Voulez-vous ${actionLabel} le circuit "${circuit.nom}" ?`);
+    const confirmed = window.confirm(t(confirmKey).replace("{nom}", circuit.nom));
     if (!confirmed) return;
 
     try {
@@ -46,7 +49,7 @@ function Circuits() {
         )
       );
     } catch (err) {
-      alert(err.message || "Impossible de modifier le statut de ce circuit.");
+      alert(err.message || t("circuits_erreur_statut"));
     } finally {
       setTogglingId(null);
     }
@@ -58,7 +61,7 @@ function Circuits() {
         const response = await getCircuits();
         setCircuits(response.data || response || []);
       } catch (err) {
-        setError(err.message || "Impossible de récupérer les circuits.");
+        setError(err.message || t("circuits_erreur_liste"));
       }
     };
     fetchCircuits();
@@ -66,56 +69,70 @@ function Circuits() {
 
   const filteredCircuits = circuits.filter((circuit) => {
     const searchValue = search.toLowerCase();
-    return (
+    const matchSearch =
       circuit.nom?.toLowerCase().includes(searchValue) ||
-      circuit.destination?.toLowerCase().includes(searchValue)
-    );
+      circuit.destination?.toLowerCase().includes(searchValue);
+    const matchStatus = statusFilter === "Tous" || circuit.status === statusFilter;
+    return matchSearch && matchStatus;
   });
 
-  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400 font-medium">Chargement des circuits...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400 font-medium">{t("circuits_chargement")}</div>;
 
   if (error) return <div className="p-8 text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 m-6 rounded-xl border border-red-200 dark:border-red-800 font-medium">{error}</div>;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-900 min-h-screen">
       <Link to="/dashboard" className="md:hidden inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors mb-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-xl shadow-sm">
-        <span>←</span> <span>Retour au Dashboard</span>
+        <span>←</span> <span>{t("retour_dashboard")}</span>
       </Link>
 
       {/* Zone fixée : en-tête + recherche */}
       <div className="sticky top-0 z-20 bg-slate-50/50 dark:bg-slate-900 pt-0 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Circuits</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Gestion des circuits de l'agence</p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">{t("circuits_titre")}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">{t("circuits_soustitre")}</p>
           </div>
           <button
             type="button"
             onClick={() => setShowForm(true)}
             className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all"
           >
-            <span>＋</span> Ajouter un circuit
+            <span>＋</span> {t("circuits_ajouter")}
           </button>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm">
-          <div className="w-full sm:max-w-md">
-            <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">Rechercher un circuit</label>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">{t("circuits_rechercher_label")}</label>
             <input
               id="search"
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Nom ou destination..."
+              placeholder={t("circuits_rechercher_placeholder")}
               className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             />
+          </div>
+          <div>
+            <label htmlFor="statusFilter" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">{t("circuits_statut_label")}</label>
+            <select
+              id="statusFilter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+            >
+              <option value="Tous">{t("circuits_statut_tous")}</option>
+              <option value="Disponible">{t("circuits_statut_disponible")}</option>
+              <option value="Indisponible">{t("circuits_statut_indisponible")}</option>
+            </select>
           </div>
         </div>
       </div>
 
       {filteredCircuits.length === 0 ? (
         <div className="text-center py-16 text-slate-400 dark:text-slate-500 font-medium">
-          Aucun circuit trouvé.
+          {t("circuits_aucun")}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -134,7 +151,7 @@ function Circuits() {
                     isAvailable ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
                   }`}
                 >
-                  {circuit.status}
+                  {isAvailable ? t("circuits_statut_disponible") : t("circuits_statut_indisponible")}
                 </span>
 
                 {/* Bouton bascule disponibilité */}
@@ -142,8 +159,12 @@ function Circuits() {
                   type="button"
                   onClick={() => handleToggleStatus(circuit)}
                   disabled={isToggling}
-                  aria-label={isAvailable ? `Rendre indisponible ${circuit.nom}` : `Rendre disponible ${circuit.nom}`}
-                  title={isAvailable ? "Rendre indisponible" : "Rendre disponible"}
+                  aria-label={
+                    isAvailable
+                      ? t("circuits_aria_rendre_indisponible").replace("{nom}", circuit.nom)
+                      : t("circuits_aria_rendre_disponible").replace("{nom}", circuit.nom)
+                  }
+                  title={isAvailable ? t("circuits_title_rendre_indisponible") : t("circuits_title_rendre_disponible")}
                   className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                     isAvailable
                       ? "text-emerald-600 dark:text-emerald-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
@@ -183,7 +204,7 @@ function Circuits() {
 
                 <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
                   <span>👥</span>
-                  <span>{circuit.capacite} places</span>
+                  <span>{circuit.capacite} {t("circuits_places")}</span>
                 </div>
               </div>
             );

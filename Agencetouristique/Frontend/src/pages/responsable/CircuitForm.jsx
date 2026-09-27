@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { createCircuit } from "../../services/circuitService";
 import { getUser } from "../../services/authService";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 function CircuitForm({ onClose, onCreated }) {
+  const { t } = useLanguage();
   const responsable = getUser();
 
   const [formData, setFormData] = useState({
@@ -40,23 +42,23 @@ function CircuitForm({ onClose, onCreated }) {
   const validateField = (name, value) => {
     switch (name) {
       case "nom":
-        if (value.trim().length === 0) return "Le nom du circuit est obligatoire";
-        if (value.trim().length < 2) return "Le nom doit contenir au moins 2 caractères";
+        if (value.trim().length === 0) return t("circuitform_err_nom_requis");
+        if (value.trim().length < 2) return t("circuitform_err_nom_court");
         return "";
 
       case "description":
-        if (value.trim().length === 0) return "La description est obligatoire";
-        if (value.trim().length < 10) return "La description doit contenir au moins 10 caractères";
+        if (value.trim().length === 0) return t("circuitform_err_description_requise");
+        if (value.trim().length < 10) return t("circuitform_err_description_courte");
         return "";
 
       case "destination":
-        if (value.trim().length === 0) return "La destination est obligatoire";
-        if (value.trim().length < 2) return "La destination doit contenir au moins 2 caractères";
+        if (value.trim().length === 0) return t("circuitform_err_destination_requise");
+        if (value.trim().length < 2) return t("circuitform_err_destination_courte");
         return "";
 
       case "capacite":
-        if (value.trim().length === 0) return "La capacité est obligatoire";
-        if (Number(value) <= 0) return "La capacité doit être supérieure à 0";
+        if (value.trim().length === 0) return t("circuitform_err_capacite_requise");
+        if (Number(value) <= 0) return t("circuitform_err_capacite_positive");
         return "";
 
       default:
@@ -100,7 +102,7 @@ function CircuitForm({ onClose, onCreated }) {
     if (!validateAll()) return;
 
     if (!responsable?.idagc) {
-      setGlobalError("Impossible de déterminer votre agence. Veuillez vous reconnecter.");
+      setGlobalError(t("circuitform_erreur_agence"));
       return;
     }
 
@@ -114,7 +116,7 @@ function CircuitForm({ onClose, onCreated }) {
       onCreated?.();
       onClose?.();
     } catch (err) {
-      setGlobalError(err.message || "Impossible de créer le circuit.");
+      setGlobalError(err.message || t("circuitform_erreur_creation"));
     } finally {
       setSubmitting(false);
     }
@@ -128,12 +130,12 @@ function CircuitForm({ onClose, onCreated }) {
       <div className="bg-white dark:bg-slate-800 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         {/* En-tête */}
         <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Ajouter un circuit</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("circuitform_titre_ajouter")}</h2>
           <button
             type="button"
             onClick={onClose}
             className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300 transition-colors"
-            aria-label="Fermer"
+            aria-label={t("circuitform_fermer_aria")}
           >
             ✕
           </button>
@@ -149,7 +151,7 @@ function CircuitForm({ onClose, onCreated }) {
           {/* Nom du circuit */}
           <div>
             <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Nom du circuit
+              {t("circuitform_label_nom")}
             </label>
             <div className="relative">
               <input
@@ -161,7 +163,7 @@ function CircuitForm({ onClose, onCreated }) {
                 className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
                   errors.nom ? "border-red-400 dark:border-red-500/60" : isFieldValid("nom") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="ex: Circuit Nord Diego"
+                placeholder={t("circuitform_placeholder_nom")}
               />
               {isFieldValid("nom") && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
@@ -173,7 +175,7 @@ function CircuitForm({ onClose, onCreated }) {
           {/* Destination */}
           <div>
             <label htmlFor="destination" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Destination
+              {t("circuitform_label_destination")}
             </label>
             <div className="relative">
               <input
@@ -185,7 +187,7 @@ function CircuitForm({ onClose, onCreated }) {
                 className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
                   errors.destination ? "border-red-400 dark:border-red-500/60" : isFieldValid("destination") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="ex: Nosy Be, Diego Suarez"
+                placeholder={t("circuitform_placeholder_destination")}
               />
               {isFieldValid("destination") && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
@@ -198,7 +200,7 @@ function CircuitForm({ onClose, onCreated }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="capacite" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-                Capacité (places)
+                {t("circuitform_label_capacite")}
               </label>
               <div className="relative">
                 <input
@@ -211,7 +213,7 @@ function CircuitForm({ onClose, onCreated }) {
                   className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
                     errors.capacite ? "border-red-400 dark:border-red-500/60" : isFieldValid("capacite") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
                   }`}
-                  placeholder="ex: 20"
+                  placeholder={t("circuitform_placeholder_capacite")}
                 />
                 {isFieldValid("capacite") && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
@@ -222,7 +224,7 @@ function CircuitForm({ onClose, onCreated }) {
 
             <div>
               <label htmlFor="status" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-                Statut
+                {t("circuitform_label_statut")}
               </label>
               <select
                 id="status"
@@ -231,8 +233,8 @@ function CircuitForm({ onClose, onCreated }) {
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white"
               >
-                <option value="Disponible">Disponible</option>
-                <option value="Indisponible">Indisponible</option>
+                <option value="Disponible">{t("circuitform_statut_disponible")}</option>
+                <option value="Indisponible">{t("circuitform_statut_indisponible")}</option>
               </select>
             </div>
           </div>
@@ -240,7 +242,7 @@ function CircuitForm({ onClose, onCreated }) {
           {/* Description */}
           <div>
             <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Description
+              {t("circuitform_label_description")}
             </label>
             <textarea
               id="description"
@@ -251,7 +253,7 @@ function CircuitForm({ onClose, onCreated }) {
               className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none resize-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
                 errors.description ? "border-red-400 dark:border-red-500/60" : isFieldValid("description") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
               }`}
-              placeholder="Décrivez le circuit : itinéraire, points d'intérêt, durée..."
+              placeholder={t("circuitform_placeholder_description")}
             />
             <div className="flex items-center justify-between mt-1">
               {errors.description ? (
@@ -270,14 +272,14 @@ function CircuitForm({ onClose, onCreated }) {
               onClick={onClose}
               className="w-full sm:w-auto px-5 py-3 border border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors order-2 sm:order-1"
             >
-              Annuler
+              {t("circuitform_btn_annuler")}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="w-full sm:w-auto flex-1 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed order-1 sm:order-2"
             >
-              {submitting ? "Création..." : "Créer le circuit"}
+              {submitting ? t("circuitform_btn_creation") : t("circuitform_btn_creer")}
             </button>
           </div>
         </form>
