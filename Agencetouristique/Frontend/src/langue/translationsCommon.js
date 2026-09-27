@@ -1,0 +1,118 @@
+const translationsCommon = {
+  fr: {
+    retour_dashboard: "Retour au Dashboard",
+    btn_annuler: "Annuler",
+
+    statut_tous: "Tous",
+    statut_actif: "Actif",
+    statut_inactif: "Inactif",
+
+    genre_masculin: "Masculin",
+    genre_feminin: "Féminin",
+
+    action_activer: "activer",
+    action_desactiver: "désactiver",
+
+    err_nom_obligatoire: "Le nom est obligatoire",
+    err_nom_court: "Le nom doit contenir au moins 2 caractères",
+    err_tel_obligatoire: "Le téléphone est obligatoire",
+    err_tel_invalide: "Le numéro de téléphone est invalide",
+    err_email_obligatoire: "L'email est obligatoire",
+    err_email_invalide: "L'adresse email est invalide",
+    err_mdp_obligatoire: "Le mot de passe est obligatoire",
+    err_mdp_court: "Le mot de passe doit contenir au moins 8 caractères",
+    err_ville_obligatoire: "La ville est obligatoire",
+    err_ville_courte: "La ville doit contenir au moins 2 caractères",
+
+    nav_principal: "Principal",
+    nav_dashboard: "Tableau de Bord",
+    nav_circuits: "Circuits",
+    nav_vehicules: "Véhicules",
+    nav_chauffeurs: "Chauffeurs",
+    nav_agents: "Agents",
+    nav_reservations: "Réservations",
+    nav_rendezvous: "Rendez-vous",
+    nav_systeme: "Système",
+    nav_parametres: "Paramètres",
+    sidebar_role: "Responsable",
+    sidebar_titre_role: "Administrateur",
+  },
+  mg: {
+    retour_dashboard: "Hiverina any amin'ny Dashboard",
+    btn_annuler: "Aoka ihany",
+
+    statut_tous: "Rehetra",
+    statut_actif: "Mavitrika",
+    statut_inactif: "Tsy mavitrika",
+
+    genre_masculin: "Lahy",
+    genre_feminin: "Vavy",
+
+    action_activer: "hampandeha",
+    action_desactiver: "hanajanona",
+
+    err_nom_obligatoire: "Takiana ny anarana",
+    err_nom_court: "Tokony ho tarehintsoratra 2 farafahakeliny ny anarana",
+    err_tel_obligatoire: "Takiana ny laharana finday",
+    err_tel_invalide: "Tsy mety ny laharana finday",
+    err_email_obligatoire: "Takiana ny mailaka",
+    err_email_invalide: "Tsy mety ny mailaka",
+    err_mdp_obligatoire: "Takiana ny teny miafina",
+    err_mdp_court: "Tokony ho tarehintsoratra 8 farafahakeliny ny teny miafina",
+    err_ville_obligatoire: "Takiana ny tanàna",
+    err_ville_courte: "Tokony ho tarehintsoratra 2 farafahakeliny ny tanàna",
+
+    nav_principal: "Fototra",
+    nav_dashboard: "Tabilao Fitantanana",
+    nav_circuits: "Lalana",
+    nav_vehicules: "Fiara",
+    nav_chauffeurs: "Mpamily",
+    nav_agents: "Mpiasa",
+    nav_reservations: "Fanovana",
+    nav_rendezvous: "Fotoam-pihaonana",
+    nav_systeme: "Rafitra",
+    nav_parametres: "Kirakira",
+    sidebar_role: "Tompon'andraikitra",
+    sidebar_titre_role: "Mpitantana",
+  },
+  en: {
+    retour_dashboard: "Back to Dashboard",
+    btn_annuler: "Cancel",
+
+    statut_tous: "All",
+    statut_actif: "Active",
+    statut_inactif: "Inactive",
+
+    genre_masculin: "Male",
+    genre_feminin: "Female",
+
+    action_activer: "activate",
+    action_desactiver: "deactivate",
+
+    err_nom_obligatoire: "Name is required",
+    err_nom_court: "Name must be at least 2 characters",
+    err_tel_obligatoire: "Phone number is required",
+    err_tel_invalide: "Invalid phone number",
+    err_email_obligatoire: "Email is required",
+    err_email_invalide: "Invalid email address",
+    err_mdp_obligatoire: "Password is required",
+    err_mdp_court: "Password must be at least 8 characters",
+    err_ville_obligatoire: "City is required",
+    err_ville_courte: "City must be at least 2 characters",
+
+    nav_principal: "Main",
+    nav_dashboard: "Dashboard",
+    nav_circuits: "Circuits",
+    nav_vehicules: "Vehicles",
+    nav_chauffeurs: "Drivers",
+    nav_agents: "Agents",
+    nav_reservations: "Bookings",
+    nav_rendezvous: "Appointments",
+    nav_systeme: "System",
+    nav_parametres: "Settings",
+    sidebar_role: "Manager",
+    sidebar_titre_role: "Administrator",
+  },
+};
+
+export default translationsCommon;

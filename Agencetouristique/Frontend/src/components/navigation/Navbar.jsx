@@ -1,25 +1,27 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { useLanguage } from "../../contexts/LanguageContext";
 
-// Informations affichées selon la page
-const pageInformations = {
-  "/dashboard": { title: "Dashboard", description: "Vue d'ensemble de votre agence" },
-  "/circuits": { title: "Circuits", description: "Gestion des circuits touristiques" },
-  "/vehicules": { title: "Véhicules", description: "Gestion des véhicules de l'agence" },
-  "/chauffeurs": { title: "Chauffeurs", description: "Gestion des chauffeurs" },
-  "/agents": { title: "Agents", description: "Gestion des agents de l'agence" },
-  "/reservations": { title: "Réservations", description: "Gestion des réservations" },
-  "/rendez-vous": { title: "Rendez-vous", description: "Gestion des rendez-vous" },
-  "/parametres": { title: "Paramètres", description: "Configuration de la plateforme" },
-  "/profil": { title: "Mon profil", description: "Gestion de votre profil" },
-  "/notifications": { title: "Notifications", description: "Consultez vos notifications" },
+// Mapping route -> clés de traduction (titre + description)
+const pageKeys = {
+  "/dashboard": { titleKey: "navbar_dashboard_titre", descKey: "navbar_dashboard_description" },
+  "/circuits": { titleKey: "navbar_circuits_titre", descKey: "navbar_circuits_description" },
+  "/vehicules": { titleKey: "navbar_vehicules_titre", descKey: "navbar_vehicules_description" },
+  "/chauffeurs": { titleKey: "navbar_chauffeurs_titre", descKey: "navbar_chauffeurs_description" },
+  "/agents": { titleKey: "navbar_agents_titre", descKey: "navbar_agents_description" },
+  "/reservations": { titleKey: "navbar_reservations_titre", descKey: "navbar_reservations_description" },
+  "/rendez-vous": { titleKey: "navbar_rendezvous_titre", descKey: "navbar_rendezvous_description" },
+  "/parametres": { titleKey: "navbar_parametres_titre", descKey: "navbar_parametres_description" },
+  "/profil": { titleKey: "navbar_profil_titre", descKey: "navbar_profil_description" },
+  "/notifications": { titleKey: "navbar_notifications_titre", descKey: "navbar_notifications_description" },
 };
 
 function Navbar({ onMenuClick }) {
   const location = useLocation();
+  const { t } = useLanguage();
 
-  const currentPage = pageInformations[location.pathname] || {
-    title: "AgenceTouristique",
-    description: "Gestion de plateforme",
+  const currentPageKeys = pageKeys[location.pathname] || {
+    titleKey: "navbar_defaut_titre",
+    descKey: "navbar_defaut_description",
   };
 
   return (
@@ -31,15 +33,15 @@ function Navbar({ onMenuClick }) {
           type="button"
           onClick={onMenuClick}
           className="md:hidden w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 text-xl"
-          aria-label="Ouvrir le menu"
+          aria-label={t("navbar_menu_aria")}
         >
           ☰
         </button>
 
         {/* Informations de la page */}
         <div className="min-w-0">
-          <h2 className="text-base sm:text-lg font-semibold text-slate-800 dark:text-slate-100 truncate">{currentPage.title}</h2>
-          <p className="hidden sm:block text-sm text-slate-500 dark:text-slate-400 truncate">{currentPage.description}</p>
+          <h2 className="text-base sm:text-lg font-semibold text-slate-800 dark:text-slate-100 truncate">{t(currentPageKeys.titleKey)}</h2>
+          <p className="hidden sm:block text-sm text-slate-500 dark:text-slate-400 truncate">{t(currentPageKeys.descKey)}</p>
         </div>
       </div>
 
@@ -53,7 +55,7 @@ function Navbar({ onMenuClick }) {
               isActive ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" : "hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
             }`
           }
-          aria-label="Notifications"
+          aria-label={t("navbar_notifications_aria")}
         >
           <span className="text-lg">🔔</span>
           {/* Badge des notifications */}
@@ -66,8 +68,8 @@ function Navbar({ onMenuClick }) {
             RS
           </div>
           <div className="hidden lg:block">
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">Responsable</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Responsable d'agence</p>
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{t("navbar_role")}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t("navbar_sous_role")}</p>
           </div>
         </NavLink>
       </div>

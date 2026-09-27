@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createAgent } from "../../services/agentService";
 import { getUser } from "../../services/authService";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 // Composant du drapeau malgache
 function FlagMadagascar({ className = "w-5 h-4" }) {
@@ -18,6 +19,7 @@ function FlagMadagascar({ className = "w-5 h-4" }) {
 }
 
 function AgentForm({ onClose, onCreated }) {
+  const { t } = useLanguage();
   const responsable = getUser();
 
   const [formData, setFormData] = useState({
@@ -60,28 +62,28 @@ function AgentForm({ onClose, onCreated }) {
   const validateField = (name, value) => {
     switch (name) {
       case "nom":
-        if (value.trim().length === 0) return "Le nom est obligatoire";
-        if (value.trim().length < 2) return "Le nom doit contenir au moins 2 caractères";
+        if (value.trim().length === 0) return t("err_nom_obligatoire");
+        if (value.trim().length < 2) return t("err_nom_court");
         return "";
 
       case "tel":
-        if (value.trim().length === 0) return "Le téléphone est obligatoire";
-        if (value.replace(/\s/g, "").length < 8) return "Le numéro de téléphone est invalide";
+        if (value.trim().length === 0) return t("err_tel_obligatoire");
+        if (value.replace(/\s/g, "").length < 8) return t("err_tel_invalide");
         return "";
 
       case "email":
-        if (value.trim().length === 0) return "L'email est obligatoire";
-        if (!/^\S+@\S+\.\S+$/.test(value)) return "L'adresse email est invalide";
+        if (value.trim().length === 0) return t("err_email_obligatoire");
+        if (!/^\S+@\S+\.\S+$/.test(value)) return t("err_email_invalide");
         return "";
 
       case "mdp":
-        if (value.length === 0) return "Le mot de passe est obligatoire";
-        if (value.length < 8) return "Le mot de passe doit contenir au moins 8 caractères";
+        if (value.length === 0) return t("err_mdp_obligatoire");
+        if (value.length < 8) return t("err_mdp_court");
         return "";
 
       case "ville":
-        if (value.trim().length === 0) return "La ville est obligatoire";
-        if (value.trim().length < 2) return "La ville doit contenir au moins 2 caractères";
+        if (value.trim().length === 0) return t("err_ville_obligatoire");
+        if (value.trim().length < 2) return t("err_ville_courte");
         return "";
 
       default:
@@ -127,7 +129,7 @@ function AgentForm({ onClose, onCreated }) {
     if (!validateAll()) return;
 
     if (!responsable?.idagc) {
-      setGlobalError("Impossible de déterminer votre agence. Veuillez vous reconnecter.");
+      setGlobalError(t("agentform_erreur_agence"));
       return;
     }
 
@@ -141,7 +143,7 @@ function AgentForm({ onClose, onCreated }) {
       onCreated?.();
       onClose?.();
     } catch (err) {
-      setGlobalError(err.message || "Impossible de créer l'agent.");
+      setGlobalError(err.message || t("agentform_erreur_defaut"));
     } finally {
       setSubmitting(false);
     }
@@ -155,7 +157,7 @@ function AgentForm({ onClose, onCreated }) {
       <div className="bg-white dark:bg-slate-800 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         {/* En-tête */}
         <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Ajouter un agent</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">{t("agentform_titre")}</h2>
           <button
             type="button"
             onClick={onClose}
@@ -175,7 +177,7 @@ function AgentForm({ onClose, onCreated }) {
 
           {/* Nom */}
           <div>
-            <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Nom complet</label>
+            <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("agentform_nom_label")}</label>
             <input
               id="nom"
               name="nom"
@@ -183,14 +185,14 @@ function AgentForm({ onClose, onCreated }) {
               value={formData.nom}
               onChange={handleChange}
               className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.nom ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
-              placeholder="ex: Rakoto Jean"
+              placeholder={t("agentform_nom_placeholder")}
             />
             {errors.nom && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.nom}</p>}
           </div>
 
           {/* Téléphone */}
           <div>
-            <label htmlFor="tel" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Téléphone</label>
+            <label htmlFor="tel" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("agentform_tel_label")}</label>
             <div className="flex items-stretch">
               {/* Badge drapeau + indicatif Madagascar */}
               <span
@@ -207,7 +209,7 @@ function AgentForm({ onClose, onCreated }) {
                 value={formData.tel}
                 onChange={handleChange}
                 className={`w-full min-w-0 px-4 py-2.5 border rounded-r-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.tel ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
-                placeholder="ex: 034 12 345 67"
+                placeholder={t("agentform_tel_placeholder")}
               />
             </div>
             {errors.tel && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.tel}</p>}
@@ -215,7 +217,7 @@ function AgentForm({ onClose, onCreated }) {
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Email</label>
+            <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("agentform_email_label")}</label>
             <input
               id="email"
               name="email"
@@ -223,14 +225,14 @@ function AgentForm({ onClose, onCreated }) {
               value={formData.email}
               onChange={handleChange}
               className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.email ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
-              placeholder="ex: agent@madatours.mg"
+              placeholder={t("agentform_email_placeholder")}
             />
             {errors.email && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.email}</p>}
           </div>
 
           {/* Mot de passe temporaire */}
           <div>
-            <label htmlFor="mdp" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Mot de passe temporaire</label>
+            <label htmlFor="mdp" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("agentform_mdp_label")}</label>
             <input
               id="mdp"
               name="mdp"
@@ -238,16 +240,16 @@ function AgentForm({ onClose, onCreated }) {
               value={formData.mdp}
               onChange={handleChange}
               className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.mdp ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
-              placeholder="8 caractères minimum"
+              placeholder={t("agentform_mdp_placeholder")}
             />
             {errors.mdp && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.mdp}</p>}
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">L'agent pourra le modifier après sa première connexion.</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t("agentform_mdp_hint")}</p>
           </div>
 
           {/* Genre + Statut sur la même ligne (desktop) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="genre" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Genre</label>
+              <label htmlFor="genre" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("agentform_genre_label")}</label>
               <select
                 id="genre"
                 name="genre"
@@ -255,13 +257,13 @@ function AgentForm({ onClose, onCreated }) {
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               >
-                <option value="Masculin">Masculin</option>
-                <option value="Féminin">Féminin</option>
+                <option value="Masculin">{t("genre_masculin")}</option>
+                <option value="Féminin">{t("genre_feminin")}</option>
               </select>
             </div>
 
             <div>
-              <label htmlFor="statut" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Statut</label>
+              <label htmlFor="statut" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("agents_statut_label")}</label>
               <select
                 id="statut"
                 name="statut"
@@ -269,15 +271,15 @@ function AgentForm({ onClose, onCreated }) {
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               >
-                <option value="Actif">Actif</option>
-                <option value="Inactif">Inactif</option>
+                <option value="Actif">{t("statut_actif")}</option>
+                <option value="Inactif">{t("statut_inactif")}</option>
               </select>
             </div>
           </div>
 
           {/* Ville */}
           <div>
-            <label htmlFor="ville" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Ville</label>
+            <label htmlFor="ville" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("agentform_ville_label")}</label>
             <input
               id="ville"
               name="ville"
@@ -285,7 +287,7 @@ function AgentForm({ onClose, onCreated }) {
               value={formData.ville}
               onChange={handleChange}
               className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.ville ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
-              placeholder="ex: Antananarivo"
+              placeholder={t("agentform_ville_placeholder")}
             />
             {errors.ville && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.ville}</p>}
           </div>
@@ -297,14 +299,14 @@ function AgentForm({ onClose, onCreated }) {
               onClick={onClose}
               className="w-full sm:w-auto px-5 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors order-2 sm:order-1"
             >
-              Annuler
+              {t("btn_annuler")}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="w-full sm:w-auto flex-1 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed order-1 sm:order-2"
             >
-              {submitting ? "Création..." : "Créer l'agent"}
+              {submitting ? t("agentform_creation_en_cours") : t("agentform_creer_btn")}
             </button>
           </div>
         </form>

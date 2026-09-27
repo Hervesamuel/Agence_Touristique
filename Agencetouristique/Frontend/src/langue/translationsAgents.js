@@ -1,0 +1,43 @@
+const translationsAgents = {
+  fr: {
+    agents_titre: "Agents",
+    agents_soustitre: "Gestion des agents de l'agence",
+    agents_ajouter_btn: "Ajouter un agent",
+    agents_rechercher_label: "Rechercher un agent",
+    agents_rechercher_placeholder: "Nom, prénom ou email...",
+    agents_statut_label: "Statut",
+    agents_aucun: "Aucun agent trouvé.",
+    agents_chargement: "Chargement des agents...",
+    agents_erreur_defaut: "Impossible de récupérer les agents.",
+    agents_confirm_toggle: 'Voulez-vous {action} le compte de "{nom}" ?',
+    agents_erreur_toggle: "Impossible de modifier le statut de cet agent.",
+  },
+  mg: {
+    agents_titre: "Mpiasa",
+    agents_soustitre: "Fitantanana ny mpiasan'ny agansy",
+    agents_ajouter_btn: "Hampiditra mpiasa",
+    agents_rechercher_label: "Hikaroka mpiasa",
+    agents_rechercher_placeholder: "Anarana na mailaka...",
+    agents_statut_label: "Sata",
+    agents_aucun: "Tsy misy mpiasa hita.",
+    agents_chargement: "Maka ny mpiasa...",
+    agents_erreur_defaut: "Tsy afaka naka ny mpiasa.",
+    agents_confirm_toggle: 'Tianao {action} ve ny kaonty an\'i "{nom}" ?',
+    agents_erreur_toggle: "Tsy afaka nanova ny satan'ity mpiasa ity.",
+  },
+  en: {
+    agents_titre: "Agents",
+    agents_soustitre: "Manage the agency's agents",
+    agents_ajouter_btn: "Add an agent",
+    agents_rechercher_label: "Search for an agent",
+    agents_rechercher_placeholder: "Name or email...",
+    agents_statut_label: "Status",
+    agents_aucun: "No agent found.",
+    agents_chargement: "Loading agents...",
+    agents_erreur_defaut: "Unable to retrieve agents.",
+    agents_confirm_toggle: 'Do you want to {action} the account of "{nom}"?',
+    agents_erreur_toggle: "Unable to change this agent's status.",
+  },
+};
+
+export default translationsAgents;
