@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Transition douce lors du changement de thème (clair/sombre) */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 3s;
+  transition-timing-function: ease;
+}

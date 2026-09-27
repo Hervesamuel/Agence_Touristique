@@ -125,14 +125,14 @@ function CircuitForm({ onClose, onCreated }) {
 
   return (
     <div className="fixed inset-0 bg-slate-900/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-slate-800 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         {/* En-tête */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-200 sticky top-0 bg-white z-10">
-          <h2 className="text-lg font-bold text-slate-900">Ajouter un circuit</h2>
+        <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Ajouter un circuit</h2>
           <button
             type="button"
             onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300 transition-colors"
             aria-label="Fermer"
           >
             ✕
@@ -141,14 +141,14 @@ function CircuitForm({ onClose, onCreated }) {
 
         <form onSubmit={handleSubmit} noValidate className="p-5 space-y-4">
           {globalError && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl p-3 font-medium">
+            <div className="bg-red-50 border border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400 text-sm rounded-xl p-3 font-medium">
               {globalError}
             </div>
           )}
 
           {/* Nom du circuit */}
           <div>
-            <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+            <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
               Nom du circuit
             </label>
             <div className="relative">
@@ -158,21 +158,21 @@ function CircuitForm({ onClose, onCreated }) {
                 type="text"
                 value={formData.nom}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
-                  errors.nom ? "border-red-400" : isFieldValid("nom") ? "border-emerald-300" : "border-slate-300"
+                className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
+                  errors.nom ? "border-red-400 dark:border-red-500/60" : isFieldValid("nom") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
                 }`}
                 placeholder="ex: Circuit Nord Diego"
               />
               {isFieldValid("nom") && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500">✓</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
               )}
             </div>
-            {errors.nom && <p className="text-xs text-red-600 mt-1">{errors.nom}</p>}
+            {errors.nom && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.nom}</p>}
           </div>
 
           {/* Destination */}
           <div>
-            <label htmlFor="destination" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+            <label htmlFor="destination" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
               Destination
             </label>
             <div className="relative">
@@ -182,22 +182,22 @@ function CircuitForm({ onClose, onCreated }) {
                 type="text"
                 value={formData.destination}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
-                  errors.destination ? "border-red-400" : isFieldValid("destination") ? "border-emerald-300" : "border-slate-300"
+                className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
+                  errors.destination ? "border-red-400 dark:border-red-500/60" : isFieldValid("destination") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
                 }`}
                 placeholder="ex: Nosy Be, Diego Suarez"
               />
               {isFieldValid("destination") && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500">✓</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
               )}
             </div>
-            {errors.destination && <p className="text-xs text-red-600 mt-1">{errors.destination}</p>}
+            {errors.destination && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.destination}</p>}
           </div>
 
           {/* Capacité + Statut sur la même ligne (desktop) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="capacite" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+              <label htmlFor="capacite" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
                 Capacité (places)
               </label>
               <div className="relative">
@@ -208,20 +208,20 @@ function CircuitForm({ onClose, onCreated }) {
                   inputMode="numeric"
                   value={formData.capacite}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
-                    errors.capacite ? "border-red-400" : isFieldValid("capacite") ? "border-emerald-300" : "border-slate-300"
+                  className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
+                    errors.capacite ? "border-red-400 dark:border-red-500/60" : isFieldValid("capacite") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
                   }`}
                   placeholder="ex: 20"
                 />
                 {isFieldValid("capacite") && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500">✓</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
                 )}
               </div>
-              {errors.capacite && <p className="text-xs text-red-600 mt-1">{errors.capacite}</p>}
+              {errors.capacite && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.capacite}</p>}
             </div>
 
             <div>
-              <label htmlFor="status" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+              <label htmlFor="status" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
                 Statut
               </label>
               <select
@@ -229,7 +229,7 @@ function CircuitForm({ onClose, onCreated }) {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white"
               >
                 <option value="Disponible">Disponible</option>
                 <option value="Indisponible">Indisponible</option>
@@ -239,7 +239,7 @@ function CircuitForm({ onClose, onCreated }) {
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+            <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
               Description
             </label>
             <textarea
@@ -248,18 +248,18 @@ function CircuitForm({ onClose, onCreated }) {
               rows={4}
               value={formData.description}
               onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none resize-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
-                errors.description ? "border-red-400" : isFieldValid("description") ? "border-emerald-300" : "border-slate-300"
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none resize-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${
+                errors.description ? "border-red-400 dark:border-red-500/60" : isFieldValid("description") ? "border-emerald-300 dark:border-emerald-500/60" : "border-slate-300 dark:border-slate-600"
               }`}
               placeholder="Décrivez le circuit : itinéraire, points d'intérêt, durée..."
             />
             <div className="flex items-center justify-between mt-1">
               {errors.description ? (
-                <p className="text-xs text-red-600">{errors.description}</p>
+                <p className="text-xs text-red-600 dark:text-red-400">{errors.description}</p>
               ) : (
                 <span />
               )}
-              <p className="text-xs text-slate-400">{formData.description.length}/1000</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">{formData.description.length}/1000</p>
             </div>
           </div>
 
@@ -268,7 +268,7 @@ function CircuitForm({ onClose, onCreated }) {
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto px-5 py-3 border border-slate-300 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors order-2 sm:order-1"
+              className="w-full sm:w-auto px-5 py-3 border border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors order-2 sm:order-1"
             >
               Annuler
             </button>

@@ -32,9 +32,7 @@ function Circuits() {
     const nextStatus = circuit.status === "Disponible" ? "Indisponible" : "Disponible";
     const actionLabel = nextStatus === "Disponible" ? "rendre disponible" : "rendre indisponible";
 
-    const confirmed = window.confirm(
-      `Voulez-vous ${actionLabel} le circuit "${circuit.nom}" ?`
-    );
+    const confirmed = window.confirm(`Voulez-vous ${actionLabel} le circuit "${circuit.nom}" ?`);
     if (!confirmed) return;
 
     try {
@@ -74,20 +72,20 @@ function Circuits() {
     );
   });
 
-  if (loading) return <div className="p-8 text-center text-slate-500 font-medium">Chargement des circuits...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400 font-medium">Chargement des circuits...</div>;
 
-  if (error) return <div className="p-8 text-center text-red-600 bg-red-50 m-6 rounded-xl border border-red-200 font-medium">{error}</div>;
+  if (error) return <div className="p-8 text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 m-6 rounded-xl border border-red-200 dark:border-red-800 font-medium">{error}</div>;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 bg-slate-50/50 min-h-screen">
-      <Link to="/dashboard" className="md:hidden inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-emerald-600 transition-colors mb-5 bg-white border border-slate-200 px-3 py-2 rounded-xl shadow-sm">
+    <div className="p-4 sm:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-900 min-h-screen">
+      <Link to="/dashboard" className="md:hidden inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors mb-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-xl shadow-sm">
         <span>←</span> <span>Retour au Dashboard</span>
       </Link>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+            <div className="sticky top-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 bg-slate-50 dark:bg-slate-900 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Circuits</h1>
-          <p className="text-sm text-slate-500 mt-1.5 font-medium">Gestion des circuits de l'agence</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Circuits</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Gestion des circuits de l'agence</p>
         </div>
         <button
           type="button"
@@ -98,22 +96,22 @@ function Circuits() {
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-8 shadow-sm">
+            <div className="sticky top-[120px] sm:top-16 z-10 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 mb-8 shadow-sm">
         <div className="w-full sm:max-w-md">
-          <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">Rechercher un circuit</label>
+          <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">Rechercher un circuit</label>
           <input
             id="search"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Nom ou destination..."
-            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           />
         </div>
       </div>
 
       {filteredCircuits.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 font-medium">
+        <div className="text-center py-16 text-slate-400 dark:text-slate-500 font-medium">
           Aucun circuit trouvé.
         </div>
       ) : (
@@ -125,12 +123,12 @@ function Circuits() {
             return (
               <div
                 key={circuit.idcircuit}
-                className="relative bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+                className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
               >
                 {/* Badge de statut */}
                 <span
                   className={`absolute top-3 right-14 text-xxs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
-                    isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"
+                    isAvailable ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
                   }`}
                 >
                   {circuit.status}
@@ -145,12 +143,12 @@ function Circuits() {
                   title={isAvailable ? "Rendre indisponible" : "Rendre disponible"}
                   className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                     isAvailable
-                      ? "text-emerald-600 hover:bg-red-50 hover:text-red-600"
-                      : "text-slate-400 hover:bg-emerald-50 hover:text-emerald-600"
+                      ? "text-emerald-600 dark:text-emerald-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
+                      : "text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400"
                   }`}
                 >
                   {isToggling ? (
-                    <span className="w-4 h-4 border-2 border-slate-300 border-t-emerald-600 rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-emerald-600 rounded-full animate-spin" />
                   ) : (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -169,18 +167,18 @@ function Circuits() {
                 </button>
 
                 <div className="flex items-start gap-3 mb-3 pr-8 mt-6">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
                     🗺️
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-slate-900 truncate">{circuit.nom}</p>
-                    <p className="text-xs text-slate-500 truncate">{circuit.destination}</p>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100 truncate">{circuit.nom}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{circuit.destination}</p>
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-600 line-clamp-2 mb-3">{circuit.description}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2 mb-3">{circuit.description}</p>
 
-                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
                   <span>👥</span>
                   <span>{circuit.capacite} places</span>
                 </div>

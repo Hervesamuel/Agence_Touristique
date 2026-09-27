@@ -39,18 +39,18 @@ function ProtectedLayout() {
   // Fermeture de la Sidebar après navigation
   const handleNavigation = () => setIsSidebarOpen(false);
 
-  return (
-    <div className="min-h-screen bg-slate-100 flex relative overflow-hidden">
+    return (
+    <div className="h-screen bg-slate-100 dark:bg-slate-900 flex relative overflow-hidden">
       {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={handleNavigation} />
 
       {/* Zone principale */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
         {/* Navbar */}
         <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
 
         {/* Contenu des pages */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>

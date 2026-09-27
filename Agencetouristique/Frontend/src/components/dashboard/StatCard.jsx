@@ -10,15 +10,15 @@ function StatCard({ title, value, description, type }) {
   const Icon = icons[type];
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">{title}</p>
-          <h3 className="text-3xl font-bold text-slate-800 mt-2">{value}</h3>
-          <p className="text-xs text-slate-500 mt-2">{description}</p>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</p>
+          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">{value}</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{description}</p>
         </div>
         {/* Rendu conditionnel : affiche l'icône seulement si le type est reconnu */}
-        <div className="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+        <div className="w-11 h-11 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
           {Icon && <Icon size={22} strokeWidth={2} />}
         </div>
       </div>

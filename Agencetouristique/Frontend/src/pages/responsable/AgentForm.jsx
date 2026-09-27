@@ -152,14 +152,14 @@ function AgentForm({ onClose, onCreated }) {
 
   return (
     <div className="fixed inset-0 bg-slate-900/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-slate-800 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         {/* En-tête */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-200 sticky top-0 bg-white">
-          <h2 className="text-lg font-bold text-slate-900">Ajouter un agent</h2>
+        <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Ajouter un agent</h2>
           <button
             type="button"
             onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
             aria-label="Fermer"
           >
             ✕
@@ -168,33 +168,33 @@ function AgentForm({ onClose, onCreated }) {
 
         <form onSubmit={handleSubmit} noValidate className="p-5 space-y-4">
           {globalError && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl p-3 font-medium">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-xl p-3 font-medium">
               {globalError}
             </div>
           )}
 
           {/* Nom */}
           <div>
-            <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Nom complet</label>
+            <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Nom complet</label>
             <input
               id="nom"
               name="nom"
               type="text"
               value={formData.nom}
               onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.nom ? "border-red-400" : "border-slate-300"}`}
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.nom ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
               placeholder="ex: Rakoto Jean"
             />
-            {errors.nom && <p className="text-xs text-red-600 mt-1">{errors.nom}</p>}
+            {errors.nom && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.nom}</p>}
           </div>
 
           {/* Téléphone */}
           <div>
-            <label htmlFor="tel" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Téléphone</label>
+            <label htmlFor="tel" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Téléphone</label>
             <div className="flex items-stretch">
               {/* Badge drapeau + indicatif Madagascar */}
               <span
-                className={`flex items-center gap-1.5 px-3 border border-r-0 rounded-l-lg bg-slate-50 text-sm font-medium text-slate-600 shrink-0 ${errors.tel ? "border-red-400" : "border-slate-300"}`}
+                className={`flex items-center gap-1.5 px-3 border border-r-0 rounded-l-lg bg-slate-50 dark:bg-slate-700 text-sm font-medium text-slate-600 dark:text-slate-300 shrink-0 ${errors.tel ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
               >
                 <FlagMadagascar />
                 <span>+261</span>
@@ -206,54 +206,54 @@ function AgentForm({ onClose, onCreated }) {
                 inputMode="numeric"
                 value={formData.tel}
                 onChange={handleChange}
-                className={`w-full min-w-0 px-4 py-2.5 border rounded-r-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.tel ? "border-red-400" : "border-slate-300"}`}
+                className={`w-full min-w-0 px-4 py-2.5 border rounded-r-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.tel ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
                 placeholder="ex: 034 12 345 67"
               />
             </div>
-            {errors.tel && <p className="text-xs text-red-600 mt-1">{errors.tel}</p>}
+            {errors.tel && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.tel}</p>}
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Email</label>
+            <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Email</label>
             <input
               id="email"
               name="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.email ? "border-red-400" : "border-slate-300"}`}
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.email ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
               placeholder="ex: agent@madatours.mg"
             />
-            {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.email}</p>}
           </div>
 
           {/* Mot de passe temporaire */}
           <div>
-            <label htmlFor="mdp" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Mot de passe temporaire</label>
+            <label htmlFor="mdp" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Mot de passe temporaire</label>
             <input
               id="mdp"
               name="mdp"
               type="text"
               value={formData.mdp}
               onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.mdp ? "border-red-400" : "border-slate-300"}`}
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.mdp ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
               placeholder="8 caractères minimum"
             />
-            {errors.mdp && <p className="text-xs text-red-600 mt-1">{errors.mdp}</p>}
-            <p className="text-xs text-slate-400 mt-1">L'agent pourra le modifier après sa première connexion.</p>
+            {errors.mdp && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.mdp}</p>}
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">L'agent pourra le modifier après sa première connexion.</p>
           </div>
 
           {/* Genre + Statut sur la même ligne (desktop) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="genre" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Genre</label>
+              <label htmlFor="genre" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Genre</label>
               <select
                 id="genre"
                 name="genre"
                 value={formData.genre}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               >
                 <option value="Masculin">Masculin</option>
                 <option value="Féminin">Féminin</option>
@@ -261,13 +261,13 @@ function AgentForm({ onClose, onCreated }) {
             </div>
 
             <div>
-              <label htmlFor="statut" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Statut</label>
+              <label htmlFor="statut" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Statut</label>
               <select
                 id="statut"
                 name="statut"
                 value={formData.statut}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               >
                 <option value="Actif">Actif</option>
                 <option value="Inactif">Inactif</option>
@@ -277,17 +277,17 @@ function AgentForm({ onClose, onCreated }) {
 
           {/* Ville */}
           <div>
-            <label htmlFor="ville" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Ville</label>
+            <label htmlFor="ville" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Ville</label>
             <input
               id="ville"
               name="ville"
               type="text"
               value={formData.ville}
               onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${errors.ville ? "border-red-400" : "border-slate-300"}`}
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.ville ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
               placeholder="ex: Antananarivo"
             />
-            {errors.ville && <p className="text-xs text-red-600 mt-1">{errors.ville}</p>}
+            {errors.ville && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.ville}</p>}
           </div>
 
           {/* Boutons */}
@@ -295,7 +295,7 @@ function AgentForm({ onClose, onCreated }) {
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto px-5 py-3 border border-slate-300 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors order-2 sm:order-1"
+              className="w-full sm:w-auto px-5 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors order-2 sm:order-1"
             >
               Annuler
             </button>

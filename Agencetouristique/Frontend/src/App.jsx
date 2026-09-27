@@ -1,15 +1,16 @@
 import { BrowserRouter } from "react-router-dom";
-// Importation des routes de l'application
 import AppRoutes from "./routes/AppRoutes";
-// 
 import { FontSizeProvider } from "./contexts/FontSizeContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
   return (
     <BrowserRouter>
-      <FontSizeProvider>
-        <AppRoutes />
-      </FontSizeProvider>
+      <ThemeProvider>
+        <FontSizeProvider>
+          <AppRoutes />
+        </FontSizeProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

@@ -85,23 +85,23 @@ function Agents() {
   });
 
   // Affichage pendant le chargement
-  if (loading) return <div className="p-8 text-center text-slate-500 font-medium">Chargement des agents...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400 font-medium">Chargement des agents...</div>;
 
   // Affichage en cas d'erreur
-  if (error) return <div className="p-8 text-center text-red-600 bg-red-50 m-6 rounded-xl border border-red-200 font-medium">{error}</div>;
+  if (error) return <div className="p-8 text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 m-6 rounded-xl border border-red-200 dark:border-red-800 font-medium">{error}</div>;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 bg-slate-50/50 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-900 min-h-screen">
       {/* Retour vers le Dashboard sur mobile */}
-      <Link to="/dashboard" className="md:hidden inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-emerald-600 transition-colors mb-5 bg-white border border-slate-200 px-3 py-2 rounded-xl shadow-sm">
+      <Link to="/dashboard" className="md:hidden inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors mb-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-xl shadow-sm">
         <span>←</span> <span>Retour au Dashboard</span>
       </Link>
 
       {/* En-tête */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Agents</h1>
-          <p className="text-sm text-slate-500 mt-1.5 font-medium">Gestion des agents de l'agence</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Agents</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Gestion des agents de l'agence</p>
         </div>
         {/* Bouton d'ajout */}
         <button
@@ -114,25 +114,25 @@ function Agents() {
       </div>
 
             {/* Zone de recherche et filtres */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 mb-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">Rechercher un agent</label>
+          <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">Rechercher un agent</label>
           <input
             id="search"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Nom, prénom ou email..."
-            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
           />
         </div>
         <div>
-          <label htmlFor="statusFilter" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">Statut</label>
+          <label htmlFor="statusFilter" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">Statut</label>
           <select
             id="statusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+            className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
           >
             <option value="Tous">Tous</option>
             <option value="Actif">Actif</option>
@@ -143,7 +143,7 @@ function Agents() {
 
       {/* Liste des agents */}
       {filteredAgents.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 font-medium">
+        <div className="text-center py-16 text-slate-400 dark:text-slate-500 font-medium">
           Aucun agent trouvé.
         </div>
       ) : (
@@ -151,12 +151,12 @@ function Agents() {
           {filteredAgents.map((agent) => (
             <div
               key={agent.idagt}
-              className="relative bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+              className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
             >
                             {/* Badge de statut */}
               <span
                 className={`absolute top-3 right-14 text-xxs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
-                  agent.statut === "Actif" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"
+                  agent.statut === "Actif" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
                 }`}
               >
                 {agent.statut}
@@ -171,12 +171,12 @@ function Agents() {
                 title={agent.statut === "Actif" ? "Désactiver ce compte" : "Activer ce compte"}
                 className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   agent.statut === "Actif"
-                    ? "text-emerald-600 hover:bg-red-50 hover:text-red-600"
-                    : "text-slate-400 hover:bg-emerald-50 hover:text-emerald-600"
+                    ? "text-emerald-600 dark:text-emerald-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
+                    : "text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400"
                 }`}
               >
                 {togglingId === agent.idagt ? (
-                  <span className="w-4 h-4 border-2 border-slate-300 border-t-emerald-600 rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-emerald-600 dark:border-t-emerald-400 rounded-full animate-spin" />
                 ) : (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -195,12 +195,12 @@ function Agents() {
               </button>
 
               <div className="flex items-center gap-3 mb-3 pr-8 mt-6">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
                   {agent.nom?.[0]}
                 </div>
                 <div className="min-w-0">
-                  <p className="font-semibold text-slate-900 truncate">{agent.nom}</p>
-                  <p className="text-xs text-slate-500 truncate">{agent.email}</p>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100 truncate">{agent.nom}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{agent.email}</p>
                 </div>
               </div>
             </div>

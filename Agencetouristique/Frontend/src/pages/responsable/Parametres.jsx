@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import useFontSize from "../../hooks/useFontSize";
+import useTheme from "../../hooks/useTheme";
+
+// Dans le composant, ajoute :
 
 function Parametres() {
   const { fontSize, changeFontSize } = useFontSize();
-
+  const { theme, changeTheme } = useTheme();
   const options = [
     { value: "petit", label: "Petit", preview: "text-xs" },
     { value: "normal", label: "Normal", preview: "text-sm" },
@@ -44,6 +47,40 @@ function Parametres() {
           ))}
         </div>
       </div>
+              {/* Section thème */}
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm max-w-md mt-6">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Apparence</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Choisissez l'apparence de l'application</p>
+
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => changeTheme("clair")}
+            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
+              theme === "clair"
+                ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
+                : "border-slate-200 dark:border-slate-600 hover:border-slate-300"
+            }`}
+          >
+            <span className="text-2xl">☀️</span>
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Clair</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => changeTheme("sombre")}
+            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
+              theme === "sombre"
+                ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
+                : "border-slate-200 dark:border-slate-600 hover:border-slate-300"
+            }`}
+          >
+            <span className="text-2xl">🌙</span>
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Sombre</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }

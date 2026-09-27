@@ -28,10 +28,10 @@ function Dashboard() {
   }, []);
 
   // Affichage pendant le chargement
-  if (loading) return <div className="p-8 text-center text-slate-500 font-medium">Chargement des données...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400 font-medium">Chargement des données...</div>;
 
   // Affichage en cas d'erreur
-  if (error) return <div className="p-8 text-center text-red-600 bg-red-50 m-6 rounded-xl border border-red-200 font-medium">{error}</div>;
+  if (error) return <div className="p-8 text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 m-6 rounded-xl border border-red-200 dark:border-red-800 font-medium">{error}</div>;
 
   // Récupération des données selon votre schéma Prisma (.data ou tableau direct selon votre API)
   const agents = data?.agents?.data || data?.agents || [];
@@ -58,10 +58,10 @@ function Dashboard() {
 
   // Style des statuts
   const getStatusStyle = (status) => {
-    if (status === "Confirmée" || status === "CONFIRMEE" || status === "Actif") return "bg-emerald-100 text-emerald-700";
-    if (status === "En attente" || status === "EN_ATTENTE" || status === "En Attente") return "bg-amber-100 text-amber-700";
-    if (status === "Annulée" || status === "ANNULEE") return "bg-red-100 text-red-700";
-    return "bg-blue-100 text-blue-700";
+    if (status === "Confirmée" || status === "CONFIRMEE" || status === "Actif") return "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400";
+    if (status === "En attente" || status === "EN_ATTENTE" || status === "En Attente") return "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400";
+    if (status === "Annulée" || status === "ANNULEE") return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
+    return "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400";
   };
 
   // Formatage des dates
@@ -84,8 +84,8 @@ function Dashboard() {
     <main className="p-4 sm:p-6 lg:p-8">
       {/* Message de bienvenue */}
       <section className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800">Bonjour le responsable 👋</h1>
-        <p className="text-slate-500 mt-1">Voici un aperçu de l'activité de votre agence aujourd'hui.</p>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Bonjour le responsable 👋</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">Voici un aperçu de l'activité de votre agence aujourd'hui.</p>
       </section>
 
       {/* Statistiques */}
@@ -96,17 +96,17 @@ function Dashboard() {
       {/* Réservations et rendez-vous */}
       <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Réservations */}
-        <div className="xl:col-span-2 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-          <div className="flex items-center justify-between p-6 border-b border-slate-200">
+        <div className="xl:col-span-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
+          <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
             <div>
-              <h2 className="font-semibold text-slate-800">Réservations récentes</h2>
-              <p className="text-sm text-slate-500 mt-1">Les dernières réservations enregistrées</p>
+              <h2 className="font-semibold text-slate-800 dark:text-slate-100">Réservations récentes</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Les dernières réservations enregistrées</p>
             </div>
-            <Link to="/reservations" className="text-sm text-emerald-600 font-medium hover:text-emerald-700">Voir tout</Link>
+            <Link to="/reservations" className="text-sm text-emerald-600 dark:text-emerald-400 font-medium hover:text-emerald-700 dark:hover:text-emerald-300">Voir tout</Link>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-500">
+              <thead className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="text-left px-6 py-4 font-medium">Agent Responsable</th>
                   <th className="text-left px-6 py-4 font-medium">Circuit</th>
@@ -114,26 +114,26 @@ function Dashboard() {
                   <th className="text-left px-6 py-4 font-medium">Lieu</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                 {reservations.length > 0 ? (
                   reservations.slice(0, 5).map((reservation, index) => (
                     <tr key={reservation.idres || index}>
-                      <td className="px-6 py-4 font-medium text-slate-700">
+                      <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-200">
                         {reservation.agent?.nom || `Agent #${reservation.idagt}`}
                       </td>
-                      <td className="px-6 py-4 text-slate-500">
+                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                         {reservation.circuit?.nom || `Circuit #${reservation.idcircuit}`}
                       </td>
-                      <td className="px-6 py-4 text-slate-500">
+                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                         {formatDate(reservation.datevoyage)}
                       </td>
-                      <td className="px-6 py-4 text-slate-500">
+                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                         {reservation.lieu || "-"}
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan="4" className="px-6 py-8 text-center text-slate-500">Aucune réservation enregistrée.</td></tr>
+                  <tr><td colSpan="4" className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">Aucune réservation enregistrée.</td></tr>
                 )}
               </tbody>
             </table>
@@ -141,21 +141,21 @@ function Dashboard() {
         </div>
 
         {/* Rendez-vous */}
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-          <div className="p-6 border-b border-slate-200">
-            <h2 className="font-semibold text-slate-800">Rendez-vous à venir</h2>
-            <p className="text-sm text-slate-500 mt-1">Prochains rendez-vous</p>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="font-semibold text-slate-800 dark:text-slate-100">Rendez-vous à venir</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Prochains rendez-vous</p>
           </div>
           <div className="p-6 space-y-4">
             {rendezVous.length > 0 ? (
               rendezVous.slice(0, 5).map((rdv, index) => (
-                <div key={rdv.idrdv || index} className="flex items-center gap-4 p-2 hover:bg-slate-50 rounded-lg transition">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+                <div key={rdv.idrdv || index} className="flex items-center gap-4 p-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
                     {rdv.date ? new Date(rdv.date).getDate() : "📅"}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-slate-800 truncate">{rdv.motif || "Rendez-vous"}</p>
-                    <p className="text-xs text-slate-400 font-medium mt-0.5">
+                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">{rdv.motif || "Rendez-vous"}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-0.5">
                       {formatDate(rdv.date)} à {formatTime(rdv.heure)}
                     </p>
                   </div>
@@ -165,7 +165,7 @@ function Dashboard() {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-slate-500 text-center py-4">Aucun rendez-vous planifié.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">Aucun rendez-vous planifié.</p>
             )}
           </div>
         </div>
