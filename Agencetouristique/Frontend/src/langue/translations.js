@@ -9,6 +9,9 @@ import translationsCircuits from "./translationsCircuits";
 import translationsCircuitForm from "./translationsCircuitForm";
 import translationsVehiculeForm from "./translationsVehiculeForm";
 import translationsVehicules from "./translationsVehicules";
+import translationsRendezVous from "./translationsRendezVous";
+import translationsRendezVous from "./translationsRendezVous";
+
 
 
 const translations = {
@@ -24,6 +27,8 @@ const translations = {
     ...translationsCircuits.fr,
     ...translationsVehiculeForm.fr,
     ...translationsVehicules.fr,
+    ...translationsRendezVous.fr,
+    ...translationsRendezVousForm.fr,
   },
   mg: {
     ...translationsCommon.mg,
@@ -37,6 +42,8 @@ const translations = {
     ...translationsCircuits.mg,
     ...translationsVehiculeForm.mg,
     ...translationsVehicules.mg,
+    ...translationsRendezVous.mg,
+    ...translationsRendezVousForm.mg,
   },
   en: {
     ...translationsCommon.en,
@@ -50,6 +57,8 @@ const translations = {
     ...translationsCircuits.en,
     ...translationsVehiculeForm.en,
     ...translationsVehicules.en,
+    ...translationsRendezVous.en,
+    ...translationsRendezVousForm.en,
   },
 };
 

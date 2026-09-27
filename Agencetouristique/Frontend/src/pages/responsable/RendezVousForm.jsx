@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { createRendezVous, updateRendezVous } from "../../services/rendezVousService";
 import { getAgents } from "../../services/agentService";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 // rdv (optionnel) : si fourni, le formulaire passe en mode modification
 function RendezVousForm({ rdv, onClose, onCreated }) {
+  const { t } = useLanguage();
   const isEditMode = Boolean(rdv);
 
   const [agents, setAgents] = useState([]);
@@ -35,7 +37,7 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
         const response = await getAgents();
         setAgents(response.data || response || []);
       } catch {
-        setGlobalError("Impossible de charger la liste des agents.");
+        setGlobalError(t("rdvform_erreur_agents"));
       }
     };
     fetchAgents();
@@ -47,11 +49,11 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
 
   // Validation par champ
   const validateField = (name, value) => {
-    if (name === "idagt" && !value) return "Veuillez choisir un agent";
-    if (name === "date" && !value) return "La date est obligatoire";
-    if (name === "date" && value < minDate) return "La date doit être au moins demain";
-    if (name === "heure" && !value) return "L'heure est obligatoire";
-    if (name === "motif" && value.trim().length < 3) return "Le motif doit contenir au moins 3 caractères";
+    if (name === "idagt" && !value) return t("rdvform_err_agent_requis");
+    if (name === "date" && !value) return t("rdvform_err_date_requise");
+    if (name === "date" && value < minDate) return t("rdvform_err_date_min");
+    if (name === "heure" && !value) return t("rdvform_err_heure_requise");
+    if (name === "motif" && value.trim().length < 3) return t("rdvform_err_motif_court");
     return "";
   };
 
@@ -101,7 +103,7 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
       onCreated?.();
       onClose?.();
     } catch (err) {
-      setGlobalError(err.message || "Impossible d'enregistrer le rendez-vous.");
+      setGlobalError(err.message || t("rdvform_erreur_enregistrement"));
     } finally {
       setSubmitting(false);
     }
@@ -114,9 +116,9 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
       <div className="bg-white dark:bg-slate-800 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10">
           <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-            {isEditMode ? "Modifier le rendez-vous" : "Ajouter un rendez-vous"}
+            {isEditMode ? t("rdvform_titre_modifier") : t("rdvform_titre_ajouter")}
           </h2>
-          <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" aria-label="Fermer">✕</button>
+          <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" aria-label={t("rdvform_fermer_aria")}>✕</button>
         </div>
 
         <form onSubmit={handleSubmit} noValidate className="p-5 space-y-4">
@@ -126,12 +128,12 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
 
           {/* Agent concerné */}
           <div>
-            <label htmlFor="idagt" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Agent</label>
+            <label htmlFor="idagt" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("rdvform_label_agent")}</label>
             <select
               id="idagt" name="idagt" value={formData.idagt} onChange={handleChange}
               className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 ${errors.idagt ? "border-red-400 dark:border-red-500" : "border-slate-300 dark:border-slate-600"}`}
             >
-              <option value="">Sélectionner un agent</option>
+              <option value="">{t("rdvform_select_agent_defaut")}</option>
               {agents.map((agent) => (
                 <option key={agent.idagt} value={agent.idagt}>{agent.nom}</option>
               ))}
@@ -142,7 +144,7 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
           {/* Date + Heure */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="date" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Date</label>
+              <label htmlFor="date" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("rdvform_label_date")}</label>
               <input
                 id="date" name="date" type="date" value={formData.date} onChange={handleChange}
                 min={minDate}
@@ -151,7 +153,7 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
               {errors.date && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.date}</p>}
             </div>
             <div>
-              <label htmlFor="heure" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Heure</label>
+              <label htmlFor="heure" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("rdvform_label_heure")}</label>
               <input
                 id="heure" name="heure" type="time" value={formData.heure} onChange={handleChange}
                 className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 ${errors.heure ? "border-red-400 dark:border-red-500" : isValid("heure") ? "border-emerald-300 dark:border-emerald-600" : "border-slate-300 dark:border-slate-600"}`}
@@ -162,42 +164,44 @@ function RendezVousForm({ rdv, onClose, onCreated }) {
 
           {/* Motif */}
           <div>
-            <label htmlFor="motif" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Motif</label>
+            <label htmlFor="motif" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("rdvform_label_motif")}</label>
             <input
               id="motif" name="motif" type="text" value={formData.motif} onChange={handleChange}
               className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${errors.motif ? "border-red-400 dark:border-red-500" : isValid("motif") ? "border-emerald-300 dark:border-emerald-600" : "border-slate-300 dark:border-slate-600"}`}
-              placeholder="ex: Préparation d'un voyage"
+              placeholder={t("rdvform_placeholder_motif")}
             />
             {errors.motif && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.motif}</p>}
           </div>
 
           {/* Statut */}
           <div>
-            <label htmlFor="statut" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Statut</label>
+            <label htmlFor="statut" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("rdvform_label_statut")}</label>
             <select
               id="statut" name="statut" value={formData.statut} onChange={handleChange}
               className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
             >
-              <option value="En attente">En attente</option>
-              <option value="Confirmé">Confirmé</option>
-              <option value="Annulé">Annulé</option>
+              <option value="En attente">{t("rdvform_statut_en_attente")}</option>
+              <option value="Confirmé">{t("rdvform_statut_confirme")}</option>
+              <option value="Annulé">{t("rdvform_statut_annule")}</option>
             </select>
           </div>
 
           {/* Commentaire */}
           <div>
-            <label htmlFor="commentaire" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Commentaire (facultatif)</label>
+            <label htmlFor="commentaire" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">{t("rdvform_label_commentaire")}</label>
             <textarea
               id="commentaire" name="commentaire" rows={3} value={formData.commentaire} onChange={handleChange}
               className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none resize-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-              placeholder="Précisions supplémentaires..."
+              placeholder={t("rdvform_placeholder_commentaire")}
             />
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <button type="button" onClick={onClose} className="w-full sm:w-auto px-5 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors order-2 sm:order-1">Annuler</button>
+            <button type="button" onClick={onClose} className="w-full sm:w-auto px-5 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors order-2 sm:order-1">{t("rdvform_btn_annuler")}</button>
             <button type="submit" disabled={submitting} className="w-full sm:w-auto flex-1 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed order-1 sm:order-2">
-              {submitting ? (isEditMode ? "Modification..." : "Création...") : (isEditMode ? "Enregistrer" : "Créer le rendez-vous")}
+              {submitting
+                ? (isEditMode ? t("rdvform_btn_modification") : t("rdvform_btn_creation"))
+                : (isEditMode ? t("rdvform_btn_enregistrer") : t("rdvform_btn_creer"))}
             </button>
           </div>
         </form>
