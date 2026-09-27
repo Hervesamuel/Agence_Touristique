@@ -3,6 +3,8 @@ import translationsParametres from "./translationsParametres";
 import translationsAgents from "./translationsAgents";
 import translationsAgentForm from "./translationsAgentForm";
 import translationsNavbar from "./translationsNavbar";
+import translationsChauffeurForm from "./translationsChauffeurForm";
+import translationsChauffeurs from "./translationsChauffeurs";
 
 const translations = {
   fr: {
@@ -11,6 +13,8 @@ const translations = {
     ...translationsAgents.fr,
     ...translationsAgentForm.fr,
     ...translationsNavbar.fr,
+    ...translationsChauffeurForm.fr,
+    ...translationsChauffeurs.fr,
   },
   mg: {
     ...translationsCommon.mg,
@@ -18,6 +22,8 @@ const translations = {
     ...translationsAgents.mg,
     ...translationsAgentForm.mg,
     ...translationsNavbar.mg,
+    ...translationsChauffeurForm.mg,
+    ...translationsChauffeurs.mg,
   },
   en: {
     ...translationsCommon.en,
@@ -25,6 +31,8 @@ const translations = {
     ...translationsAgents.en,
     ...translationsAgentForm.en,
     ...translationsNavbar.en,
+    ...translationsChauffeurForm.en,
+    ...translationsChauffeurs.en,
   },
 };
 

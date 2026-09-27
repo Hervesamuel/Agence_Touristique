@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createChauffeur } from "../../services/chauffeurServices";
 import { getUser } from "../../services/authService";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 
 // Composant du drapeau malgache (à ajouter en haut du fichier, avant le composant principal)
@@ -19,6 +20,7 @@ function FlagMadagascar({ className = "w-5 h-4" }) {
 }
 
 function ChauffeurForm({ onClose, onCreated }) {
+  const { t } = useLanguage();
   const responsable = getUser();
 
   const [formData, setFormData] = useState({
@@ -61,28 +63,28 @@ function ChauffeurForm({ onClose, onCreated }) {
   const validateField = (name, value) => {
     switch (name) {
       case "nom":
-        if (value.trim().length === 0) return "Le nom est obligatoire";
-        if (value.trim().length < 2) return "Le nom doit contenir au moins 2 caractères";
+        if (value.trim().length === 0) return t("err_nom_obligatoire");
+        if (value.trim().length < 2) return t("err_nom_court");
         return "";
 
       case "tel":
-        if (value.trim().length === 0) return "Le téléphone est obligatoire";
-        if (value.replace(/\s/g, "").length < 8) return "Le numéro de téléphone est invalide";
+        if (value.trim().length === 0) return t("err_tel_obligatoire");
+        if (value.replace(/\s/g, "").length < 8) return t("err_tel_invalide");
         return "";
 
       case "email":
-        if (value.trim().length === 0) return "L'email est obligatoire";
-        if (!/^\S+@\S+\.\S+$/.test(value)) return "L'adresse email est invalide";
+        if (value.trim().length === 0) return t("err_email_obligatoire");
+        if (!/^\S+@\S+\.\S+$/.test(value)) return t("err_email_invalide");
         return "";
 
       case "mdp":
-        if (value.length === 0) return "Le mot de passe est obligatoire";
-        if (value.length < 8) return "Le mot de passe doit contenir au moins 8 caractères";
+        if (value.length === 0) return t("err_mdp_obligatoire");
+        if (value.length < 8) return t("err_mdp_court");
         return "";
 
       case "ville":
-        if (value.trim().length === 0) return "La ville est obligatoire";
-        if (value.trim().length < 2) return "La ville doit contenir au moins 2 caractères";
+        if (value.trim().length === 0) return t("err_ville_obligatoire");
+        if (value.trim().length < 2) return t("err_ville_courte");
         return "";
 
       default:
@@ -128,7 +130,7 @@ function ChauffeurForm({ onClose, onCreated }) {
     if (!validateAll()) return;
 
     if (!responsable?.idagc) {
-      setGlobalError("Impossible de déterminer votre agence. Veuillez vous reconnecter.");
+      setGlobalError(t("chauffeurform_erreur_agence"));
       return;
     }
 
@@ -141,7 +143,7 @@ function ChauffeurForm({ onClose, onCreated }) {
       onCreated?.();
       onClose?.();
     } catch (err) {
-      setGlobalError(err.message || "Impossible de créer le chauffeur.");
+      setGlobalError(err.message || t("chauffeurform_erreur_defaut"));
     } finally {
       setSubmitting(false);
     }
@@ -155,7 +157,7 @@ function ChauffeurForm({ onClose, onCreated }) {
       <div className="bg-white dark:bg-slate-800 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         {/* En-tête */}
         <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Ajouter un chauffeur</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">{t("chauffeurform_titre")}</h2>
           <button
             type="button"
             onClick={onClose}
@@ -176,7 +178,7 @@ function ChauffeurForm({ onClose, onCreated }) {
           {/* Nom */}
           <div>
             <label htmlFor="nom" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Nom complet
+              {t("chauffeurform_nom_label")}
             </label>
             <div className="relative">
               <input
@@ -188,7 +190,7 @@ function ChauffeurForm({ onClose, onCreated }) {
                 className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                   errors.nom ? "border-red-400 dark:border-red-500" : isFieldValid("nom") ? "border-emerald-300 dark:border-emerald-600" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="ex: Randria Paul"
+                placeholder={t("chauffeurform_nom_placeholder")}
               />
               {isFieldValid("nom") && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
@@ -200,7 +202,7 @@ function ChauffeurForm({ onClose, onCreated }) {
                    {/* Téléphone */}
           <div>
             <label htmlFor="tel" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Téléphone
+              {t("chauffeurform_tel_label")}
             </label>
             <div className="relative flex items-stretch">
               {/* Badge drapeau + indicatif Madagascar */}
@@ -230,7 +232,7 @@ function ChauffeurForm({ onClose, onCreated }) {
                 className={`w-full min-w-0 px-4 py-2.5 pr-10 border rounded-r-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                   errors.tel ? "border-red-400 dark:border-red-500" : isFieldValid("tel") ? "border-emerald-300 dark:border-emerald-600" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="ex: 034 12 345 67"
+                placeholder={t("chauffeurform_tel_placeholder")}
               />
               {isFieldValid("tel") && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
@@ -242,7 +244,7 @@ function ChauffeurForm({ onClose, onCreated }) {
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Email
+              {t("chauffeurform_email_label")}
             </label>
             <div className="relative">
               <input
@@ -254,7 +256,7 @@ function ChauffeurForm({ onClose, onCreated }) {
                 className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                   errors.email ? "border-red-400 dark:border-red-500" : isFieldValid("email") ? "border-emerald-300 dark:border-emerald-600" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="ex: chauffeur@madatours.mg"
+                placeholder={t("chauffeurform_email_placeholder")}
               />
               {isFieldValid("email") && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
@@ -266,7 +268,7 @@ function ChauffeurForm({ onClose, onCreated }) {
           {/* Mot de passe temporaire */}
           <div>
             <label htmlFor="mdp" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Mot de passe temporaire
+              {t("chauffeurform_mdp_label")}
             </label>
             <div className="relative">
               <input
@@ -278,21 +280,21 @@ function ChauffeurForm({ onClose, onCreated }) {
                 className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                   errors.mdp ? "border-red-400 dark:border-red-500" : isFieldValid("mdp") ? "border-emerald-300 dark:border-emerald-600" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="8 caractères minimum"
+                placeholder={t("chauffeurform_mdp_placeholder")}
               />
               {isFieldValid("mdp") && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
               )}
             </div>
             {errors.mdp && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.mdp}</p>}
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Le chauffeur pourra le modifier après sa première connexion.</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t("chauffeurform_mdp_hint")}</p>
           </div>
 
           {/* Genre + Statut sur la même ligne (desktop) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="genre" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-                Genre
+                {t("chauffeurform_genre_label")}
               </label>
               <select
                 id="genre"
@@ -301,14 +303,14 @@ function ChauffeurForm({ onClose, onCreated }) {
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               >
-                <option value="Masculin">Masculin</option>
-                <option value="Féminin">Féminin</option>
+                <option value="Masculin">{t("genre_masculin")}</option>
+                <option value="Féminin">{t("genre_feminin")}</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="statut" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-                Statut
+                {t("agents_statut_label")}
               </label>
               <select
                 id="statut"
@@ -317,8 +319,8 @@ function ChauffeurForm({ onClose, onCreated }) {
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               >
-                <option value="Actif">Actif</option>
-                <option value="Inactif">Inactif</option>
+                <option value="Actif">{t("statut_actif")}</option>
+                <option value="Inactif">{t("statut_inactif")}</option>
               </select>
             </div>
           </div>
@@ -326,7 +328,7 @@ function ChauffeurForm({ onClose, onCreated }) {
           {/* Ville */}
           <div>
             <label htmlFor="ville" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
-              Ville
+              {t("chauffeurform_ville_label")}
             </label>
             <div className="relative">
               <input
@@ -338,7 +340,7 @@ function ChauffeurForm({ onClose, onCreated }) {
                 className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                   errors.ville ? "border-red-400 dark:border-red-500" : isFieldValid("ville") ? "border-emerald-300 dark:border-emerald-600" : "border-slate-300 dark:border-slate-600"
                 }`}
-                placeholder="ex: Antananarivo"
+                placeholder={t("chauffeurform_ville_placeholder")}
               />
               {isFieldValid("ville") && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400">✓</span>
@@ -354,14 +356,14 @@ function ChauffeurForm({ onClose, onCreated }) {
               onClick={onClose}
               className="w-full sm:w-auto px-5 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors order-2 sm:order-1"
             >
-              Annuler
+              {t("btn_annuler")}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="w-full sm:w-auto flex-1 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed order-1 sm:order-2"
             >
-              {submitting ? "Création..." : "Créer le chauffeur"}
+              {submitting ? t("chauffeurform_creation_en_cours") : t("chauffeurform_creer_btn")}
             </button>
           </div>
         </form>
