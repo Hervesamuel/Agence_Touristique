@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getVehicules, updateVehicule } from "../../services/vehiculeService";
+import { useLanguage } from "../../contexts/LanguageContext";
 import VehiculeForm from "./VehiculeForm";
 
 function Vehicules() {
+  const { t } = useLanguage();
   const [vehicules, setVehicules] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("Tous");
@@ -23,7 +25,7 @@ function Vehicules() {
         const response = await getVehicules();
         setVehicules(response.data || response || []);
       } catch (err) {
-        setError(err.message || "Impossible de récupérer les véhicules.");
+        setError(err.message || t("vehicules_erreur_liste"));
       } finally {
         setLoading(false);
       }
@@ -34,7 +36,9 @@ function Vehicules() {
   // Bascule du statut de disponibilité
   const handleToggleStatus = async (vehicule) => {
     const nextStatus = vehicule.status === "Disponible" ? "Indisponible" : "Disponible";
-    const confirmed = window.confirm(`Marquer "${vehicule.immatriculation}" comme ${nextStatus.toLowerCase()} ?`);
+    const confirmKey = nextStatus === "Disponible" ? "vehicules_confirm_disponible" : "vehicules_confirm_indisponible";
+
+    const confirmed = window.confirm(t(confirmKey).replace("{immat}", vehicule.immatriculation));
     if (!confirmed) return;
 
     try {
@@ -43,7 +47,7 @@ function Vehicules() {
       const updated = response.data || response;
       setVehicules((prev) => prev.map((v) => (v.idveh === vehicule.idveh ? { ...v, status: updated.status } : v)));
     } catch (err) {
-      alert(err.message || "Impossible de modifier le statut de ce véhicule.");
+      alert(err.message || t("vehicules_erreur_statut"));
     } finally {
       setTogglingId(null);
     }
@@ -56,7 +60,7 @@ function Vehicules() {
         const response = await getVehicules();
         setVehicules(response.data || response || []);
       } catch (err) {
-        setError(err.message || "Impossible de récupérer les véhicules.");
+        setError(err.message || t("vehicules_erreur_liste"));
       }
     };
     fetchVehicules();
@@ -76,54 +80,54 @@ function Vehicules() {
     return matchSearch && matchStatus && matchCapacite;
   });
 
-  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400 font-medium">Chargement des véhicules...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400 font-medium">{t("vehicules_chargement")}</div>;
   if (error) return <div className="p-8 text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 m-6 rounded-xl border border-red-200 dark:border-red-800 font-medium">{error}</div>;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-900 min-h-screen">
       <Link to="/dashboard" className="md:hidden inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors mb-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-xl shadow-sm">
-        <span>←</span> <span>Retour au Dashboard</span>
+        <span>←</span> <span>{t("retour_dashboard")}</span>
       </Link>
 
       {/* Titre + filtres regroupés dans UN SEUL bloc collant : plus de calcul de hauteur à deviner */}
       <div className="sticky top-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-5 bg-slate-50 dark:bg-slate-900">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Véhicules</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Gestion des véhicules de l'agence</p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">{t("vehicules_titre")}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">{t("vehicules_soustitre")}</p>
           </div>
           <button type="button" onClick={() => setShowForm(true)} className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all">
-            <span>＋</span> Ajouter un véhicule
+            <span>＋</span> {t("vehicules_ajouter")}
           </button>
         </div>
 
         {/* Zone de recherche et filtres */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">Rechercher</label>
+            <label htmlFor="search" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">{t("vehicules_rechercher_label")}</label>
             <input
               id="search" type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-              placeholder="Immatriculation, marque, modèle..."
+              placeholder={t("vehicules_rechercher_placeholder")}
               className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             />
           </div>
           <div>
-            <label htmlFor="statusFilter" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">Statut</label>
+            <label htmlFor="statusFilter" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">{t("vehicules_statut_label")}</label>
             <select
               id="statusFilter" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
               className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white"
             >
-              <option value="Tous">Tous</option>
-              <option value="Disponible">Disponible</option>
-              <option value="Indisponible">Indisponible</option>
+              <option value="Tous">{t("vehicules_statut_tous")}</option>
+              <option value="Disponible">{t("vehicules_statut_disponible")}</option>
+              <option value="Indisponible">{t("vehicules_statut_indisponible")}</option>
             </select>
           </div>
           <div>
-            <label htmlFor="minCapacite" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">Places min.</label>
+            <label htmlFor="minCapacite" className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2.5">{t("vehicules_places_min_label")}</label>
             <input
               id="minCapacite" type="text" inputMode="numeric" value={minCapacite}
               onChange={(e) => setMinCapacite(e.target.value.replace(/[^0-9]/g, ""))}
-              placeholder="ex: 10"
+              placeholder={t("vehicules_places_min_placeholder")}
               className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             />
           </div>
@@ -131,7 +135,7 @@ function Vehicules() {
       </div>
 
       {filteredVehicules.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 dark:text-slate-500 font-medium">Aucun véhicule trouvé.</div>
+        <div className="text-center py-16 text-slate-400 dark:text-slate-500 font-medium">{t("vehicules_aucun")}</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredVehicules.map((vehicule) => {
@@ -142,14 +146,14 @@ function Vehicules() {
               <div key={vehicule.idveh} className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                 {/* Badge de statut */}
                 <span className={`absolute top-3 right-24 text-xxs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${isAvailable ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"}`}>
-                  {vehicule.status}
+                  {isAvailable ? t("vehicules_statut_disponible") : t("vehicules_statut_indisponible")}
                 </span>
 
                 {/* Bouton modifier */}
                 <button
                   type="button"
                   onClick={() => setEditingVehicule(vehicule)}
-                  title="Modifier ce véhicule"
+                  title={t("vehicules_modifier_title")}
                   className="absolute top-3 right-14 w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-200 transition-colors"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
@@ -161,7 +165,7 @@ function Vehicules() {
                 {/* Bouton bascule disponibilité */}
                 <button
                   type="button" onClick={() => handleToggleStatus(vehicule)} disabled={isToggling}
-                  title={isAvailable ? "Rendre indisponible" : "Rendre disponible"}
+                  title={isAvailable ? t("vehicules_rendre_indisponible") : t("vehicules_rendre_disponible")}
                   className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isAvailable ? "text-emerald-600 dark:text-emerald-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400" : "text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400"}`}
                 >
                   {isToggling ? (
@@ -194,7 +198,7 @@ function Vehicules() {
                 </div>
 
                 <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  <span>👥</span><span>{vehicule.capacite} places</span>
+                  <span>👥</span><span>{vehicule.capacite} {t("vehicules_places")}</span>
                 </div>
               </div>
             );
