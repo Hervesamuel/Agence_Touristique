@@ -16,5 +16,5 @@ const createAgence = async (req, res) => {
     }
 };
 
-// Exportation du contrôleu
+// Exportation du contrôleur
 module.exports = { createAgence };

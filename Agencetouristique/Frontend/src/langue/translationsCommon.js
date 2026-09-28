@@ -36,6 +36,7 @@ const translationsCommon = {
     nav_parametres: "Paramètres",
     sidebar_role: "Responsable",
     sidebar_titre_role: "Administrateur",
+    nav_statistiques: "Statistiques",
   },
   mg: {
     retour_dashboard: "Hiverina any amin'ny Dashboard",
@@ -74,6 +75,8 @@ const translationsCommon = {
     nav_parametres: "Kirakira",
     sidebar_role: "Tompon'andraikitra",
     sidebar_titre_role: "Mpitantana",
+    nav_statistiques: "Antontan'isa",
+    
   },
   en: {
     retour_dashboard: "Back to Dashboard",
@@ -112,6 +115,7 @@ const translationsCommon = {
     nav_parametres: "Settings",
     sidebar_role: "Manager",
     sidebar_titre_role: "Administrator",
+    nav_statistiques: "Statistics",
   },
 };
 

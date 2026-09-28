@@ -1,9 +1,11 @@
 // Rôle : Afficher les statistiques de l'agence.
 
 import { useEffect, useState } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, Label, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 import { getDashboardData } from "../../services/dashboardService";
 import { useLanguage } from "../../contexts/LanguageContext";
+
+import { Bar, BarChart, CartesianGrid, Cell, Label, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 // =====================================================
 // ICÔNES (SVG inline, aucune dépendance externe)
@@ -40,7 +42,7 @@ const IconCalendar = (p) => (
 // =====================================================
 const RADIAN = Math.PI / 180;
 
-// Nombre affiché au milieu de chaque portion de l'anneau (comme dans le modèle)
+// Nombre affiché au milieu de chaque portion de l'anneau
 const renderLabelDansAnneau = ({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
   const radius = innerRadius + (outerRadius - innerRadius) / 2;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -62,7 +64,7 @@ const renderLabelDansAnneau = ({ cx, cy, midAngle, innerRadius, outerRadius, val
 };
 
 // Total affiché au centre du trou de l'anneau
-const renderTotalCentre = (total) => ({ viewBox }) => {
+const renderTotalCentre = (total, labelTotal) => ({ viewBox }) => {
   const { cx, cy } = viewBox;
 
   return (
@@ -84,7 +86,7 @@ const renderTotalCentre = (total) => ({ viewBox }) => {
         fontSize={11}
         className="fill-slate-500 dark:fill-slate-400"
       >
-        Total
+        {labelTotal}
       </text>
     </g>
   );
@@ -103,7 +105,7 @@ const tooltipStyle = {
   boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
 };
 
-// Couleurs sémantiques des statuts de rendez-vous (avec couleurs de secours)
+// Couleurs sémantiques des statuts de rendez-vous (clés = valeurs BRUTES du backend, ne pas traduire ici)
 const statutColors = {
   "Confirmé": "#3E8E63",
   "En attente": "#E0A33A",
@@ -114,8 +116,11 @@ const fallbackColors = ["#6B8E6B", "#7C9CB8", "#9B7EBD", "#B0A48A"];
 // Couleurs du graphique par genre
 const genreColors = ["#D9825B", "#3E8E63"];
 
+// Locale de formatage des mois selon la langue de l'application
+const localeParLangue = { fr: "fr-FR", mg: "mg-MG", en: "en-US" };
+
 function Statistiques() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -132,7 +137,7 @@ function Statistiques() {
         setData(result);
       } catch (err) {
         setError(
-          err.message || "Impossible de récupérer les statistiques."
+          err.message || t("stats_erreur")
         );
       } finally {
         setLoading(false);
@@ -146,7 +151,7 @@ function Statistiques() {
   if (loading) {
     return (
       <div className="p-8 text-center text-slate-500 dark:text-slate-400">
-        Chargement des statistiques...
+        {t("stats_chargement")}
       </div>
     );
   }
@@ -199,11 +204,11 @@ function Statistiques() {
 
   const genreData = [
     {
-      name: "Féminin",
+      name: t("stats_genre_feminin"),
       value: chauffeursFeminin,
     },
     {
-      name: "Masculin",
+      name: t("stats_genre_masculin"),
       value: chauffeursMasculin,
     },
   ].filter((item) => item.value > 0);
@@ -250,11 +255,20 @@ function Statistiques() {
       (rendezVousParStatut[statut] || 0) + 1;
   });
 
+  // Traduction du libellé affiché, en gardant le statut brut pour la couleur
+  const traduireStatut = (statut) => {
+    if (statut === "Confirmé") return t("rdv_statut_confirme");
+    if (statut === "En attente") return t("rdv_statut_en_attente");
+    if (statut === "Annulé") return t("rdv_statut_annule");
+    return t("stats_rdv_statut_non_defini");
+  };
+
   const rendezVousData = Object.entries(
     rendezVousParStatut
   ).map(([statut, nombre]) => ({
-    name: statut,
+    name: traduireStatut(statut),
     value: nombre,
+    statutOriginal: statut,
   }));
 
   // =====================================================
@@ -274,7 +288,7 @@ function Statistiques() {
       return;
     }
 
-    const mois = date.toLocaleDateString("fr-FR", {
+    const mois = date.toLocaleDateString(localeParLangue[language] || "fr-FR", {
       month: "short",
       year: "numeric",
     });
@@ -294,28 +308,32 @@ function Statistiques() {
   const totalGenre = genreData.reduce((somme, item) => somme + item.value, 0);
   const totalRendezVous = rendezVousData.reduce((somme, item) => somme + item.value, 0);
 
+  // Libellé "X réservation(s)" traduit et accordé au singulier/pluriel
+  const libelleReservations = (nombre) =>
+    `${nombre} ${t(nombre > 1 ? "stats_reservation_pluriel" : "stats_reservation_singulier")}`;
+
   // Indicateurs du haut de page (mêmes valeurs qu'avant)
   const indicateurs = [
     {
-      titre: "Chauffeurs",
+      titre: t("stats_indic_chauffeurs"),
       valeur: chauffeurs.length,
       Icone: IconUsers,
       accent: "bg-[#E8F0E3] text-[#2F5233] dark:bg-emerald-900/30 dark:text-emerald-400",
     },
     {
-      titre: "Circuits",
+      titre: t("stats_indic_circuits"),
       valeur: circuits.length,
       Icone: IconMap,
       accent: "bg-[#E3ECEF] text-[#3F6B7A] dark:bg-sky-900/30 dark:text-sky-300",
     },
     {
-      titre: "Réservations",
+      titre: t("stats_indic_reservations"),
       valeur: reservations.length,
       Icone: IconTicket,
       accent: "bg-[#F3E4DA] text-[#B85C38] dark:bg-orange-900/30 dark:text-orange-300",
     },
     {
-      titre: "Rendez-vous",
+      titre: t("stats_indic_rendezvous"),
       valeur: rendezVous.length,
       Icone: IconCalendar,
       accent: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
@@ -332,11 +350,11 @@ function Statistiques() {
       {/* En-tête */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-[#232821] dark:text-white sm:text-3xl">
-          Statistiques
+          {t("stats_titre")}
         </h1>
 
         <p className="mt-2 text-sm text-[#6B7268] dark:text-slate-400">
-          Analyse des données et de l'activité de l'agence.
+          {t("stats_soustitre")}
         </p>
       </div>
 
@@ -377,11 +395,11 @@ function Statistiques() {
         <div className={`${carte} p-5`}>
 
           <h2 className="text-lg font-semibold text-[#232821] dark:text-white">
-            Chauffeurs par genre
+            {t("stats_genre_titre")}
           </h2>
 
           <p className="mt-1 text-sm text-[#8B9186] dark:text-slate-400">
-            Répartition des chauffeurs de l'agence.
+            {t("stats_genre_soustitre")}
           </p>
 
           <div className="h-72">
@@ -408,7 +426,7 @@ function Statistiques() {
                         fill={genreColors[index % genreColors.length]}
                       />
                     ))}
-                    <Label position="center" content={renderTotalCentre(totalGenre)} />
+                    <Label position="center" content={renderTotalCentre(totalGenre, t("stats_total"))} />
                   </Pie>
 
                   <Tooltip contentStyle={tooltipStyle} />
@@ -417,7 +435,7 @@ function Statistiques() {
               </ResponsiveContainer>
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-slate-400">
-                Aucune donnée disponible.
+                {t("stats_aucune_donnee")}
               </div>
             )}
           </div>
@@ -427,11 +445,11 @@ function Statistiques() {
         <div className={`${carte} p-5`}>
 
           <h2 className="text-lg font-semibold text-[#232821] dark:text-white">
-            Utilisation des circuits
+            {t("stats_circuits_titre")}
           </h2>
 
           <p className="mt-1 text-sm text-[#8B9186] dark:text-slate-400">
-            Nombre de réservations par circuit.
+            {t("stats_circuits_soustitre")}
           </p>
 
           <div className="mt-2 h-72">
@@ -467,7 +485,7 @@ function Statistiques() {
 
                   <Bar
                     dataKey="nombre"
-                    name="Réservations"
+                    name={t("stats_reservations_legend")}
                     fill="#3E8E63"
                     radius={[8, 8, 0, 0]}
                     maxBarSize={48}
@@ -476,7 +494,7 @@ function Statistiques() {
               </ResponsiveContainer>
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-slate-400">
-                Aucune donnée disponible.
+                {t("stats_aucune_donnee")}
               </div>
             )}
           </div>
@@ -486,11 +504,11 @@ function Statistiques() {
         <div className={`${carte} p-5`}>
 
           <h2 className="text-lg font-semibold text-[#232821] dark:text-white">
-            Rendez-vous par statut
+            {t("stats_rdv_titre")}
           </h2>
 
           <p className="mt-1 text-sm text-[#8B9186] dark:text-slate-400">
-            Répartition des rendez-vous selon leur statut.
+            {t("stats_rdv_soustitre")}
           </p>
 
           <div className="h-72">
@@ -514,10 +532,10 @@ function Statistiques() {
                     {rendezVousData.map((entry, index) => (
                       <Cell
                         key={`rdv-${index}`}
-                        fill={statutColors[entry.name] || fallbackColors[index % fallbackColors.length]}
+                        fill={statutColors[entry.statutOriginal] || fallbackColors[index % fallbackColors.length]}
                       />
                     ))}
-                    <Label position="center" content={renderTotalCentre(totalRendezVous)} />
+                    <Label position="center" content={renderTotalCentre(totalRendezVous, t("stats_total"))} />
                   </Pie>
 
                   <Tooltip contentStyle={tooltipStyle} />
@@ -526,7 +544,7 @@ function Statistiques() {
               </ResponsiveContainer>
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-slate-400">
-                Aucun rendez-vous disponible.
+                {t("stats_aucun_rdv")}
               </div>
             )}
           </div>
@@ -536,11 +554,11 @@ function Statistiques() {
         <div className={`${carte} p-5`}>
 
           <h2 className="text-lg font-semibold text-[#232821] dark:text-white">
-            Évolution des réservations
+            {t("stats_evolution_titre")}
           </h2>
 
           <p className="mt-1 text-sm text-[#8B9186] dark:text-slate-400">
-            Évolution du nombre de réservations dans le temps.
+            {t("stats_evolution_soustitre")}
           </p>
 
           <div className="mt-2 h-72">
@@ -573,7 +591,7 @@ function Statistiques() {
                   <Line
                     type="monotone"
                     dataKey="nombre"
-                    name="Réservations"
+                    name={t("stats_reservations_legend")}
                     stroke="#3E8E63"
                     strokeWidth={3}
                     dot={{ r: 5, fill: "#3E8E63", strokeWidth: 0 }}
@@ -583,7 +601,7 @@ function Statistiques() {
               </ResponsiveContainer>
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-slate-400">
-                Aucune réservation disponible.
+                {t("stats_aucune_reservation")}
               </div>
             )}
           </div>
@@ -600,7 +618,7 @@ function Statistiques() {
         <div className={`${carte} border-l-4 border-l-[#3E8E63] p-6`}>
 
           <p className="text-sm font-medium text-[#6B7268] dark:text-slate-400">
-            Circuit le plus utilisé
+            {t("stats_circuit_plus_utilise")}
           </p>
 
           {circuitPlusUtilise ? (
@@ -610,13 +628,12 @@ function Statistiques() {
               </h3>
 
               <p className="mt-2 text-sm font-medium text-[#3E8E63] dark:text-emerald-400">
-                {circuitPlusUtilise.nombre} réservation
-                {circuitPlusUtilise.nombre > 1 ? "s" : ""}
+                {libelleReservations(circuitPlusUtilise.nombre)}
               </p>
             </>
           ) : (
             <p className="mt-2 text-slate-400">
-              Aucune donnée disponible.
+              {t("stats_aucune_donnee")}
             </p>
           )}
         </div>
@@ -625,7 +642,7 @@ function Statistiques() {
         <div className={`${carte} border-l-4 border-l-[#C4693F] p-6`}>
 
           <p className="text-sm font-medium text-[#6B7268] dark:text-slate-400">
-            Circuit le moins utilisé
+            {t("stats_circuit_moins_utilise")}
           </p>
 
           {circuitMoinsUtilise ? (
@@ -635,13 +652,12 @@ function Statistiques() {
               </h3>
 
               <p className="mt-2 text-sm font-medium text-[#C4693F] dark:text-orange-300">
-                {circuitMoinsUtilise.nombre} réservation
-                {circuitMoinsUtilise.nombre > 1 ? "s" : ""}
+                {libelleReservations(circuitMoinsUtilise.nombre)}
               </p>
             </>
           ) : (
             <p className="mt-2 text-slate-400">
-              Aucune donnée disponible.
+              {t("stats_aucune_donnee")}
             </p>
           )}
         </div>

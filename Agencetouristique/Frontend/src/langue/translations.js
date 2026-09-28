@@ -12,6 +12,7 @@ import translationsVehicules from "./translationsVehicules";
 import translationsRendezVous from "./translationsRendezVous";
 import translationsRendezVousForm from "./translationsRendezVousForm";
 import translationsDashboard from "./translationsDashboard";
+import translationsStatistiques from "./translationsStatistiques";
 
 
 const translations = {
@@ -30,6 +31,8 @@ const translations = {
     ...translationsRendezVous.fr,
     ...translationsRendezVousForm.fr,
     ...translationsDashboard.fr,
+    ...translationsStatistiques.fr,
+    
   },
   mg: {
     ...translationsCommon.mg,
@@ -46,6 +49,7 @@ const translations = {
     ...translationsRendezVous.mg,
     ...translationsRendezVousForm.mg,
     ...translationsDashboard.mg,
+    ...translationsStatistiques.mg,
   },
   en: {
     ...translationsCommon.en,
@@ -62,6 +66,7 @@ const translations = {
     ...translationsRendezVous.en,
     ...translationsRendezVousForm.en,
     ...translationsDashboard.en,
+    ...translationsStatistiques.en,
   },
 };
 

@@ -15,7 +15,7 @@ const mainNav = [
   { key: "nav_rendezvous", icon: <Clock size={20} className="text-green-400" />, path: "/rendez-vous" },
   
   // Exemple si on voulait que l'icône statistiques ait sa propre couleur distinctive (ex: bleu/cyan)
-  { key: "Statistiques", icon: <BarChart3 size={20} className="text-yellow-400" />, path: "/statistiques" },
+  { key: "nav_statistiques", icon: <BarChart3 size={20} className="text-yellow-400" />, path: "/statistiques" },
 ];
 
 function Sidebar({ isOpen, onClose }) {
