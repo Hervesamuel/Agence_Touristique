@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Route, Routes, Outlet } from "react-router-dom";
+import { Navigate, Route, Routes, Outlet,useLocation } from "react-router-dom";
 // Importation du service d'authentification
 import { getToken } from "../services/authService";
 // Importation de la page de connexion
@@ -26,15 +26,15 @@ import Statistiques from "../pages/responsable/Statistique";
 
 
 
-
-
-
-
 function ProtectedLayout() {
+
+  
   // Gestion de l'état d'ouverture de la Sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Vérification du token JWT
   const token = getToken();
+  // Page courante (sert à relancer l'animation à chaque changement de page)
+  const location = useLocation();
 
   // Redirection vers la connexion si aucun token n'existe
   if (!token) return <Navigate to="/login" replace />;
@@ -54,7 +54,12 @@ function ProtectedLayout() {
 
         {/* Contenu des pages */}
         <main className="flex-1 overflow-y-auto">
-          <Outlet />
+                 {/* Contenu des pages */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div key={location.pathname} className="page-transition">
+            <Outlet />
+          </div>
+        </main>
         </main>
       </div>
     </div>

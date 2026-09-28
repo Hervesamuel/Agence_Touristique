@@ -8,3 +8,18 @@
   transition-duration: 3s;
   transition-timing-function: ease;
 }
+/* Animation de transition entre les pages : glissement + apparition en fondu */
+@keyframes page-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.page-transition {
+  animation: page-slide-in 1.5s ease-out;
+}
