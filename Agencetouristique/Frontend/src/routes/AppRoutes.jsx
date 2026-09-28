@@ -22,6 +22,9 @@ import RendezVous from "../pages/responsable/RendezVous";
 
 import Parametres from "../pages/responsable/Parametres";
 
+import Statistiques from "../pages/responsable/Statistique";
+
+
 
 
 
@@ -81,6 +84,8 @@ function AppRoutes() {
         <Route path="/rendez-vous" element={<RendezVous />} />
         {/* Gestion des paramètres */}
         <Route path="/parametres" element={<Parametres />} />
+        {/* Gestion des Statistiques */}
+        <Route path="/statistiques" element={<Statistiques />} />
 
       </Route>
        

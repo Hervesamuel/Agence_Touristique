@@ -6,16 +6,16 @@ import { LayoutDashboard, Route, Car, Contact, UserCheck, CalendarCheck, Clock, 
 // Structure des liens du menu principal
 const mainNav = [
   // Exemple en blanc/gris clair par défaut (style UI moderne pour thème sombre)
-  { key: "nav_dashboard", icon: <LayoutDashboard size={25} className="text-green-400" />, path: "/dashboard" },
+  { key: "nav_dashboard", icon: <LayoutDashboard size={20} className="text-green-400" />, path: "/dashboard" },
   { key: "nav_circuits", icon: <Route size={20} className="text-green-400 hover:text-green-400" />, path: "/circuits" },
   { key: "nav_vehicules", icon: <Car size={25} className="text-green-400" />, path: "/vehicules" },
-  { key: "nav_chauffeurs", icon: <Contact size={25} className="text-green-400" />, path: "/chauffeurs" },
+  { key: "nav_chauffeurs", icon: <Contact size={20} className="text-green-400" />, path: "/chauffeurs" },
   { key: "nav_agents", icon: <UserCheck size={25} className="text-green-400" />, path: "/agents" },
-  { key: "nav_reservations", icon: <CalendarCheck size={25} className="text-green-400" />, path: "/reservations" },
-  { key: "nav_rendezvous", icon: <Clock size={25} className="text-green-400" />, path: "/rendez-vous" },
+  { key: "nav_reservations", icon: <CalendarCheck size={20} className="text-green-400" />, path: "/reservations" },
+  { key: "nav_rendezvous", icon: <Clock size={20} className="text-green-400" />, path: "/rendez-vous" },
   
-  // // Exemple si on voulait que l'icône statistiques ait sa propre couleur distinctive (ex: bleu/cyan)
-  // { key: "Statistiques", icon: <BarChart3 size={20} className="text-yellow-400" />, path: "/statistiques" },
+  // Exemple si on voulait que l'icône statistiques ait sa propre couleur distinctive (ex: bleu/cyan)
+  { key: "Statistiques", icon: <BarChart3 size={20} className="text-yellow-400" />, path: "/statistiques" },
 ];
 
 function Sidebar({ isOpen, onClose }) {
@@ -79,7 +79,7 @@ function Sidebar({ isOpen, onClose }) {
               }`
             }
           >
-            <span className="w-5 text-center">⚙</span>
+            <span className="w-5.5 text-center text-xl leading-none">⚙</span>
             <span>{t("nav_parametres")}</span>
           </NavLink>
         </nav>
