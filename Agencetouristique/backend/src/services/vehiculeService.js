@@ -1,4 +1,3 @@
-
 // Chargement des variables d'environnement
 require("dotenv").config();
 
@@ -17,6 +16,8 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({
     adapter
 });
+// Importation de notification service
+const notificationsService = require("./notificationsService");
 
 // =====================================================
 // CREATION D'UN VEHICULE
@@ -49,6 +50,13 @@ const createVehicule = async (data) => {
             idchauffeur: true,
             idagc: true
         }
+    });
+     await notificationsService.notifierAgence({
+        idagc: vehicule.idagc,
+        type: "VEHICULE",
+        action: "CREATION",
+        reference: `${vehicule.marque} ${vehicule.modele} (${vehicule.immatriculation})`,
+        message: `Un nouveau véhicule (${vehicule.marque} ${vehicule.modele}) a été ajouté.`,
     });
 
     return vehicule;
@@ -190,6 +198,14 @@ const updateVehicule = async (id, data) => {
             }
         });
 
+        await notificationsService.notifierAgence({
+            idagc: vehicule.idagc,
+            type: "VEHICULE",
+            action: "MODIFICATION",
+            reference: `${vehicule.marque} ${vehicule.modele}`,
+            message: `Le véhicule ${vehicule.marque} ${vehicule.modele} a été modifié.`,
+        });
+
         return vehicule;
 
     } catch (error) {
@@ -259,6 +275,13 @@ const deleteVehicule = async (id) => {
         where: {
             idveh: id
         }
+    });
+    await notificationsService.notifierAgence({
+        idagc: existingVehicule.idagc,
+        type: "VEHICULE",
+        action: "SUPPRESSION",
+        reference: `${existingVehicule.marque} ${existingVehicule.modele}`,
+        message: `Le véhicule ${existingVehicule.marque} ${existingVehicule.modele} a été supprimé.`,
     });
 
     return {
