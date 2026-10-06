@@ -19,6 +19,7 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({
     adapter
 });
+// Importation de notification service
 const notificationsService = require("./notificationsService");
 
 // =====================================================

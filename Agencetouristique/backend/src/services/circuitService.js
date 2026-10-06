@@ -8,13 +8,26 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 const selectFields = { idcircuit: true, nom: true, description: true, destination: true, capacite: true, photo: true, status: true, idagc: true };
+// Importation de notification service
+const notificationsService = require("./notificationsService");
 
 // =====================================================// CREATION D'UN CIRCUIT// =====================================================
 const createCircuit = async (data) => {
-    return await prisma.circuit.create({
+    const circuit = await prisma.circuit.create({
         data: { nom: data.nom, description: data.description, destination: data.destination, capacite: data.capacite, photo: data.photo, status: data.status, idagc: data.idagc },
         select: selectFields
     });
+
+    // Diffusion de la notification à toute l'agence
+    await notificationsService.notifierAgence({
+        idagc: circuit.idagc,
+        type: "CIRCUIT",
+        action: "CREATION",
+        reference: circuit.nom,
+        message: `Un nouveau circuit (${circuit.nom}) a été ajouté.`,
+    });
+
+    return circuit;
 };
 
 // =====================================================// RECUPERATION DE TOUS LES CIRCUITS// =====================================================
@@ -46,7 +59,18 @@ const updateCircuit = async (id, data) => {
     if (data.idagc !== undefined) updateData.idagc = data.idagc;
 
     try {
-        return await prisma.circuit.update({ where: { idcircuit: id }, data: updateData, select: selectFields });
+        const circuit = await prisma.circuit.update({ where: { idcircuit: id }, data: updateData, select: selectFields });
+
+        // Diffusion de la notification à toute l'agence
+        await notificationsService.notifierAgence({
+            idagc: circuit.idagc,
+            type: "CIRCUIT",
+            action: "MODIFICATION",
+            reference: circuit.nom,
+            message: `Le circuit ${circuit.nom} a été modifié.`,
+        });
+
+        return circuit;
     } catch (error) {
         // Gestion d'une agence inexistante
         if (error.code === "P2003") { const err = new Error("L'agence indiquée n'existe pas"); err.statusCode = 400; throw err; }
@@ -59,6 +83,15 @@ const deleteCircuit = async (id) => {
     // Vérification de l'existence du circuit
     const existingCircuit = await prisma.circuit.findUnique({ where: { idcircuit: id } });
     if (!existingCircuit) { const error = new Error("Circuit introuvable"); error.statusCode = 404; throw error; }
+
+    // Diffusion de la notification à toute l'agence (avant suppression, pour garder le nom)
+    await notificationsService.notifierAgence({
+        idagc: existingCircuit.idagc,
+        type: "CIRCUIT",
+        action: "SUPPRESSION",
+        reference: existingCircuit.nom,
+        message: `Le circuit ${existingCircuit.nom} a été supprimé.`,
+    });
 
     // Suppression du circuit
     await prisma.circuit.delete({ where: { idcircuit: id } });
