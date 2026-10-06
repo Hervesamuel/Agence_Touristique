@@ -1,7 +1,3 @@
-// =====================================================
-// SERVICE : CHAUFFEUR
-// =====================================================
-
 // Chargement des variables d'environnement
 require("dotenv").config();
 
@@ -23,6 +19,7 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({
     adapter
 });
+const notificationsService = require("./notificationsService");
 
 // =====================================================
 // CREATION D'UN CHAUFFEUR
@@ -93,6 +90,14 @@ const createChauffeur = async (data) => {
             statut: true,
             idagc: true
         }
+    });
+        // Diffusion de la notification à toute l'agence
+    await notificationsService.notifierAgence({
+        idagc: chauffeur.idagc,
+        type: "CHAUFFEUR",
+        action: "CREATION",
+        reference: chauffeur.nom,
+        message: `Un nouveau chauffeur (${chauffeur.nom}) a été ajouté.`,
     });
 
     return chauffeur;
@@ -269,6 +274,15 @@ const updateChauffeur = async (id, data) => {
         }
     });
 
+        // Diffusion de la notification à toute l'agence
+    await notificationsService.notifierAgence({
+        idagc: chauffeur.idagc,
+        type: "CHAUFFEUR",
+        action: "MODIFICATION",
+        reference: chauffeur.nom,
+        message: `Le chauffeur ${chauffeur.nom} a été modifié.`,
+    });
+
     return chauffeur;
 };
 
@@ -296,6 +310,15 @@ const deleteChauffeur = async (id) => {
         where: {
             idchauffeur: id
         }
+    });
+
+    // Diffusion de la notification à toute l'agence (avant suppression, pour garder le nom)
+    await notificationsService.notifierAgence({
+        idagc: chauffeur.idagc,
+        type: "CHAUFFEUR",
+        action: "SUPPRESSION",
+        reference: chauffeur.nom,
+        message: `Le chauffeur ${chauffeur.nom} a été supprimé.`,
     });
 
     return {
