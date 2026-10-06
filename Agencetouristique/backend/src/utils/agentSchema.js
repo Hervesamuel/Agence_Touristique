@@ -9,8 +9,8 @@ const agentSchema = z.object({
         .max(100, "Le nom est trop long"),
 
     tel: z.string()
-        .min(8, "Le numéro de téléphone est invalide")
-        .max(20, "Le numéro de téléphone est trop long"),
+        .min(9, "Le numéro de téléphone est invalide")
+        .max(14, "Le numéro de téléphone est trop long"),
 
     photo: z.string().optional(),
 
@@ -39,8 +39,6 @@ const agentSchema = z.object({
 });
 
 const updateAgentSchema = agentSchema.partial();
-
-
 
 // Exportation des schémas
 module.exports = {

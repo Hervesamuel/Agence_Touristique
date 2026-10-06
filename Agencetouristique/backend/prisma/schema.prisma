@@ -34,6 +34,8 @@ model Agence {
 
   // Relation 1 — 0..* avec Circuit
   circuits     Circuit[]
+
+  notifications    Notifications[]
 }
 // =====================================================
 // MODELE : RESPONSABLE
@@ -213,39 +215,27 @@ model Recu {
   reservation  Reservation @relation(fields: [idres], references: [idres])
 }
 
-
 // =====================================================
-// MODELE : UTILISATEUR
-// =====================================================
-
-model Utilisateur {
-  idruti        Int            @id @default(autoincrement())
-  nom           String
-  tel           String
-  photo         String?
-  email         String         @unique
-  mdp           String
-  genre         String
-  ville         String
-
-  // Relation 1 — 0..* avec Notification
-  notifications Notification[]
-}
-
-
-// =====================================================
-// MODELE : NOTIFICATION
+// MODELE : NOTIFICATIONS
 // =====================================================
 
-model Notification {
-  idnot         Int         @id @default(autoincrement())
-  message       String      @db.Text
-  date          DateTime    @default(now())
-  reference     String
-  type          String
-  status        String
+model Notifications {
+  idnotif          Int      @id @default(autoincrement())
 
-  // Relation 0..* Notification — 1 Utilisateur
-  idutilisateur Int
-  utilisateur   Utilisateur @relation(fields: [idutilisateur], references: [idruti])
+  // Contenu de la notification
+  message          String   @db.Text
+  type             String   // ex: "AGENT", "CHAUFFEUR", "CIRCUIT", "VEHICULE"
+  action           String   // ex: "CREATION", "MODIFICATION", "SUPPRESSION"
+  reference        String?  // ex: le nom de l'agent/circuit concerné
+
+  // Date de création
+  date             DateTime @default(now())
+  // sont répartis sur 3 tables distinctes — Responsable, Agent, Chauffeur)
+  iddestinataire   Int
+  roleDestinataire String   // "RESPONSABLE" | "AGENT" | "CHAUFFEUR"
+
+  // Portée : limite la notification aux utilisateurs de la même agence
+  idagc            Int
+  agence           Agence   @relation(fields: [idagc], references: [idagc])
+  lue              Boolean  @default(false)
 }
