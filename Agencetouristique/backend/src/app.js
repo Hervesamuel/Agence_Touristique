@@ -24,8 +24,6 @@ const rendezVousRoutes = require("./routes/rendezVousRoutes");
 const recuRoutes = require("./routes/recuRoutes");
 // Importation de route utilisateur 
 const utilisateurRoutes = require("./routes/utilisateurRoutes");
-// Importation de route notification
-const notificationRoutes = require("./routes/notificationRoutes");
 // Importation de route authentification
 const authRoutes = require("./routes/authRoutes")
 // Importation de riute de notification
@@ -59,12 +57,12 @@ app.use("/api/rendez-vous", rendezVousRoutes);
 app.use("/api/recus", recuRoutes);
 // ROUTE UTILISATEUR 
 app.use("/api/utilisateurs", utilisateurRoutes);
-// ROUTE NOTIFICATION
-app.use("/api/notifications", notificationRoutes);
-// ROUTE AUTHENTIFICATION
+// ROUTE AUTHENTIFICATIONs
 app.use("/api/auth", authRoutes);
 // ROUTE NOTIFICATIONS
 app.use("/api/notifications", notificationsRoutes);
+
+
 
 // Route de test
 app.get("/", (req, res) => {

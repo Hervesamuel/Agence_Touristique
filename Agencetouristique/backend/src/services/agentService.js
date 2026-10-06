@@ -19,6 +19,8 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({
     adapter
 });
+// Importation de notification service
+const notificationsService = require("./notificationsService");
 
 // =====================================================
 // CREATION D'UN AGENT
@@ -72,6 +74,14 @@ const createAgent = async (data) => {
             idagc: data.idagc,
             idresp: data.idresp
         }
+    });
+
+    await notificationsService.notifierAgence({
+        idagc: agent.idagc,
+        type: "AGENT",
+        action: "CREATION",
+        reference: agent.nom,
+        message: `Un nouvel agent (${agent.nom}) a été ajouté.`,
     });
 
     return agent;
@@ -226,6 +236,14 @@ const updateAgent = async (id, data) => {
             idagc: true,
             idresp: true
         }
+    });
+
+    await notificationsService.notifierAgence({
+        idagc: agent.idagc,
+        type: "AGENT",
+        action: "MODIFICATION",
+        reference: agent.nom,
+        message: `L'agent ${agent.nom} a été modifié.`,
     });
 
     return agent;
