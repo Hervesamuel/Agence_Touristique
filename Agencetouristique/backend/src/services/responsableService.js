@@ -194,6 +194,44 @@ const updateResponsable = async (id, data) => {
     return responsable;
 };
 
+
+// =====================================================
+// CHANGEMENT DU MOT DE PASSE
+// =====================================================
+
+const changerMotDePasse = async (id, mdpActuel, mdpNouveau) => {
+
+    // Récupération du responsable avec son mot de passe hashé
+    const responsable = await prisma.responsable.findUnique({
+        where: { idresp: id }
+    });
+
+    if (!responsable) {
+        const error = new Error("Responsable introuvable");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    // Vérification du mot de passe actuel
+    const passwordCorrect = await bcrypt.compare(mdpActuel, responsable.mdp);
+
+    if (!passwordCorrect) {
+        const error = new Error("Le mot de passe actuel est incorrect");
+        error.statusCode = 401;
+        throw error;
+    }
+
+    // Hashage et enregistrement du nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(mdpNouveau, 10);
+
+    await prisma.responsable.update({
+        where: { idresp: id },
+        data: { mdp: hashedPassword }
+    });
+
+    return { message: "Mot de passe modifié avec succès" };
+};
+
 // =====================================================
 // EXPORTATION DU SERVICE
 // =====================================================
@@ -201,5 +239,6 @@ const updateResponsable = async (id, data) => {
 module.exports = {
     createResponsable,
     getResponsableById,
-    updateResponsable
+    updateResponsable,
+    changerMotDePasse
 };

@@ -29,6 +29,8 @@ import Reservations from "../pages/responsable/Reservation";
 
 import Notifications from "../pages/Notifications";
 
+import Profil from "../pages/Profil";
+
 function ProtectedLayout() {
 
   
@@ -98,6 +100,8 @@ function AppRoutes() {
         <Route path="/reservations" element={<Reservations />} />
         {/* Gestion des notifications */}
         <Route path="/notifications" element={<Notifications />} />
+        {/* Gestion du profil */}
+        <Route path="/profil" element={<Profil />} />
       </Route>
       
 

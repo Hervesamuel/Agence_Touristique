@@ -7,11 +7,8 @@ const responsableSchema = require("../utils/responsableSchema");
 // Création d'un responsable
 const createResponsable = async (req, res) => {
     try {
+        const result = responsableSchema.create.safeParse(req.body);
 
-        // Validation des données reçues
-        const result = responsableSchema.safeParse(req.body);
-
-        // Vérification du résultat de la validation
         if (!result.success) {
             return res.status(400).json({
                 message: "Données invalides",
@@ -19,10 +16,7 @@ const createResponsable = async (req, res) => {
             });
         }
 
-        // Envoi des données validées au service
-        const responsable = await responsableService.createResponsable(
-            result.data
-        );
+        const responsable = await responsableService.createResponsable(result.data);
 
         res.status(201).json({
             message: "Responsable créé avec succès",
@@ -30,7 +24,6 @@ const createResponsable = async (req, res) => {
         });
 
     } catch (error) {
-
         res.status(500).json({
             message: "Erreur lors de la création du responsable",
             error: error.message
@@ -58,7 +51,6 @@ const getMonProfil = async (req, res) => {
 
 const updateMonProfil = async (req, res) => {
     try {
-        // Validation des données reçues (schéma partiel)
         const result = responsableSchema.update.safeParse(req.body);
 
         if (!result.success) {
@@ -76,9 +68,36 @@ const updateMonProfil = async (req, res) => {
     }
 };
 
+// =====================================================
+// CHANGEMENT DU MOT DE PASSE
+// =====================================================
+
+const changerMotDePasse = async (req, res) => {
+    try {
+        const result = responsableSchema.changerMdp.safeParse(req.body);
+
+        if (!result.success) {
+            return res.status(400).json({
+                message: "Données invalides",
+                errors: result.error.issues
+            });
+        }
+
+        const { mdpActuel, mdpNouveau } = result.data;
+        const response = await responsableService.changerMotDePasse(req.user.id, mdpActuel, mdpNouveau);
+
+        res.status(200).json(response);
+    } catch (error) {
+        if (error.statusCode === 401) return res.status(401).json({ message: error.message });
+        if (error.statusCode === 404) return res.status(404).json({ message: error.message });
+        res.status(500).json({ message: "Erreur lors du changement de mot de passe", error: error.message });
+    }
+};
+
 // Exportation du contrôleur
 module.exports = {
     createResponsable,
     getMonProfil,
-    updateMonProfil
+    updateMonProfil,
+    changerMotDePasse
 };

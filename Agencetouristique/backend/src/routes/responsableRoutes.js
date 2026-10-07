@@ -21,5 +21,10 @@ router.get("/me", authenticateToken, responsableController.getMonProfil);
 // Route permettant de modifier mon propre profil
 router.put("/me", authenticateToken, responsableController.updateMonProfil);
 
+// Route permettant de changer mon mot de passe
+router.put("/me/mot-de-passe", authenticateToken, responsableController.changerMotDePasse);
+
+
+
 // Exportation du routeur
 module.exports = router;

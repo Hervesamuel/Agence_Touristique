@@ -2,6 +2,9 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useEffect, useState } from "react";
 import { getNombreNonLues } from "../../services/notificationsService";
+import { getUser } from "../../services/authService";
+import { getMonProfil } from "../../services/responsableService";
+
 // Mapping route -> clés de traduction (titre + description)
 const pageKeys = {
   "/dashboard": { titleKey: "navbar_dashboard_titre", descKey: "navbar_dashboard_description" },
@@ -25,10 +28,26 @@ function Navbar({ onMenuClick }) {
     descKey: "navbar_defaut_description",
   };
 
+  // Informations du profil connecté (nom + photo), rafraîchies à chaque navigation
+  const [profil, setProfil] = useState({ nom: getUser()?.nom || "", photo: "" });
+
+  useEffect(() => {
+    const fetchProfil = async () => {
+      try {
+        const response = await getMonProfil();
+        const data = response.data || response;
+        setProfil({ nom: data.nom, photo: data.photo || "" });
+      } catch {
+        // échec silencieux : on garde le nom déjà connu depuis le token
+      }
+    };
+    fetchProfil();
+  }, [location.pathname]);
+
   // Compteur de notifications non lues, rafraîchi à chaque changement de page
   const [nonLues, setNonLues] = useState(0);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchCount = async () => {
       try {
         const response = await getNombreNonLues();
@@ -41,8 +60,8 @@ function Navbar({ onMenuClick }) {
     // Premier chargement immédiat
     fetchCount();
 
-    // Actualisation automatique toutes les 10 secondes
-    const interval = setInterval(fetchCount, 500);
+    // Actualisation automatique toutes les 1 seconde
+    const interval = setInterval(fetchCount, 1000);
 
     // Nettoyage : arrête l'actualisation quand le composant est démonté
     return () => clearInterval(interval);
@@ -90,11 +109,15 @@ function Navbar({ onMenuClick }) {
 
         {/* Profil */}
         <NavLink to="/profil" className="flex items-center gap-2 sm:gap-3 border-l border-slate-200 dark:border-slate-700 pl-3 sm:pl-4">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-semibold shrink-0">
-            RP
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-semibold shrink-0 overflow-hidden">
+            {profil.photo ? (
+              <img src={profil.photo} alt={profil.nom} className="w-full h-full object-cover" />
+            ) : (
+              profil.nom?.[0]?.toUpperCase()
+            )}
           </div>
           <div className="hidden lg:block">
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{t("navbar_role")}</p>
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{profil.nom}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400">{t("navbar_sous_role")}</p>
           </div>
         </NavLink>

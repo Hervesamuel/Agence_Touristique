@@ -1,7 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { LayoutDashboard, Route, Car, Contact, UserCheck, CalendarCheck, Clock, BarChart3, Settings } from 'lucide-react';
-
+import { useEffect, useState } from "react";
+import { getUser } from "../../services/authService";
+import { getMonProfil } from "../../services/responsableService";
 
 // Structure des liens du menu principal
 const mainNav = [
@@ -13,13 +15,29 @@ const mainNav = [
   { key: "nav_agents", icon: <UserCheck size={25} className="text-green-400" />, path: "/agents" },
   { key: "nav_reservations", icon: <CalendarCheck size={20} className="text-green-400" />, path: "/reservations" },
   { key: "nav_rendezvous", icon: <Clock size={20} className="text-green-400" />, path: "/rendez-vous" },
-  
+
   // Exemple si on voulait que l'icône statistiques ait sa propre couleur distinctive (ex: bleu/cyan)
   { key: "nav_statistiques", icon: <BarChart3 size={20} className="text-yellow-400" />, path: "/statistiques" },
 ];
 
 function Sidebar({ isOpen, onClose }) {
   const { t } = useLanguage();
+
+  // Informations du profil connecté (nom + photo), rafraîchies au montage
+  const [profil, setProfil] = useState({ nom: getUser()?.nom || "", photo: "" });
+
+  useEffect(() => {
+    const fetchProfil = async () => {
+      try {
+        const response = await getMonProfil();
+        const data = response.data || response;
+        setProfil({ nom: data.nom, photo: data.photo || "" });
+      } catch {
+        // échec silencieux
+      }
+    };
+    fetchProfil();
+  }, []);
 
   // Fermeture du menu mobile après navigation
   const handleNavigation = () => {
@@ -84,18 +102,22 @@ function Sidebar({ isOpen, onClose }) {
           </NavLink>
         </nav>
 
-        {/* Profil de l'utilisateur connecté */}
+                {/* Profil de l'utilisateur connecté */}
         <div className="border-t border-slate-800 p-4 shrink-0">
           <NavLink
             to="/profil"
             onClick={handleNavigation}
             className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-800 transition"
           >
-            <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-semibold shrink-0">
-              RP
+            <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-semibold shrink-0 overflow-hidden">
+              {profil.photo ? (
+                <img src={profil.photo} alt={profil.nom} className="w-full h-full object-cover" />
+              ) : (
+                profil.nom?.[0]?.toUpperCase()
+              )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{t("sidebar_role")}</p>
+              <p className="text-sm font-medium truncate">{profil.nom}</p>
               <p className="text-xs text-slate-400 truncate">{t("sidebar_titre_role")}</p>
             </div>
           </NavLink>
