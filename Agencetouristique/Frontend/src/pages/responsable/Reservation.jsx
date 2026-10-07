@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import { CalendarDays, Search, Plus, Eye, Pencil, Trash2, RefreshCw } from "lucide-react";
 import { getReservations, deleteReservation } from "../../services/reservationService";
 import { getUser } from "../../services/authService";
+import { useLanguage } from "../../contexts/LanguageContext";
+
+// Locale de formatage de date selon la langue de l'application
+const localeParLangue = { fr: "fr-FR", mg: "mg-MG", en: "en-US" };
 
 function Reservation() {
+  const { t, language } = useLanguage();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -41,7 +46,7 @@ function Reservation() {
   // SUPPRESSION
   // =====================================================
   const handleDelete = async (id) => {
-    const confirmation = window.confirm("Voulez-vous vraiment supprimer cette réservation ?");
+    const confirmation = window.confirm(t("reservations_confirm_suppression"));
     if (!confirmation) return;
     try {
       await deleteReservation(id);
@@ -99,7 +104,7 @@ function Reservation() {
   // =====================================================
   const formatDate = (date) => {
     if (!date) return "-";
-    return new Date(date).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" });
+    return new Date(date).toLocaleDateString(localeParLangue[language] || "fr-FR", { day: "2-digit", month: "short", year: "numeric" });
   };
 
   // =====================================================
@@ -110,12 +115,12 @@ function Reservation() {
       {/* En-tête */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-800 dark:text-white">Réservations</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Gestion et suivi des réservations de l'agence</p>
+          <h1 className="text-2xl font-semibold text-slate-800 dark:text-white">{t("reservations_titre")}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("reservations_soustitre")}</p>
         </div>
         {isAgent && (
           <Link to="/reservations/nouveau" className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition">
-            <Plus size={18} /> Nouvelle réservation
+            <Plus size={18} /> {t("reservations_nouvelle")}
           </Link>
         )}
       </div>
@@ -123,17 +128,17 @@ function Reservation() {
       {/* Statistiques rapides */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Total</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("reservations_total")}</p>
           <p className="text-2xl font-semibold text-slate-800 dark:text-white mt-1">{reservations.length}</p>
         </div>
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
-          <p className="text-sm text-slate-500 dark:text-slate-400">À venir</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("reservations_a_venir")}</p>
           <p className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
             {reservations.filter((reservation) => new Date(reservation.datevoyage) >= new Date(new Date().setHours(0, 0, 0, 0))).length}
           </p>
         </div>
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Affichées</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("reservations_affichees")}</p>
           <p className="text-2xl font-semibold text-slate-800 dark:text-white mt-1">{filteredReservations.length}</p>
         </div>
       </div>
@@ -144,7 +149,7 @@ function Reservation() {
           {/* Recherche */}
           <div className="relative">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher..." className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm outline-none focus:ring-2 focus:ring-emerald-500" />
+            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("reservations_rechercher_placeholder")} className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
 
           {/* Date précise */}
@@ -158,16 +163,16 @@ function Reservation() {
 
           {/* Période */}
           <select value={periodFilter} onChange={(e) => setPeriodFilter(e.target.value)} className="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-            <option value="a-venir">À venir</option>
-            <option value="aujourdhui">Aujourd'hui</option>
-            <option value="passees">Passées</option>
-            <option value="toutes">Toutes</option>
+            <option value="a-venir">{t("reservations_periode_a_venir")}</option>
+            <option value="aujourdhui">{t("reservations_periode_aujourdhui")}</option>
+            <option value="passees">{t("reservations_periode_passees")}</option>
+            <option value="toutes">{t("reservations_periode_toutes")}</option>
           </select>
         </div>
 
         {/* Réinitialisation */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-20 gap-3 mt-3">
-          <button type="button" onClick={() => { setSearch(""); setDateFilter(""); setMonthFilter(""); setPeriodFilter("a-venir"); loadReservations(); }} className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-slate-700 dark:bg-slate-600 hover:bg-slate-600 dark:hover:bg-slate-500 text-slate-200 text-sm font-medium transition" title="Actualiser les réservations">
+          <button type="button" onClick={() => { setSearch(""); setDateFilter(""); setMonthFilter(""); setPeriodFilter("a-venir"); loadReservations(); }} className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-slate-700 dark:bg-slate-600 hover:bg-slate-600 dark:hover:bg-slate-500 text-slate-200 text-sm font-medium transition" title={t("reservations_actualiser_title")}>
             <RefreshCw size={20} />
           </button>
         </div>
@@ -179,25 +184,25 @@ function Reservation() {
       {/* Tableau */}
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
-          <h2 className="font-semibold text-slate-800 dark:text-white">Réservations</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{filteredReservations.length} réservation(s) affichée(s)</p>
+          <h2 className="font-semibold text-slate-800 dark:text-white">{t("reservations_liste_titre")}</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{filteredReservations.length} {t("reservations_count_suffix")}</p>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-slate-500 dark:text-slate-400">Chargement des réservations...</div>
+          <div className="p-8 text-center text-slate-500 dark:text-slate-400">{t("reservations_chargement")}</div>
         ) : filteredReservations.length === 0 ? (
-          <div className="p-8 text-center text-slate-500 dark:text-slate-400">Aucune réservation trouvée.</div>
+          <div className="p-8 text-center text-slate-500 dark:text-slate-400">{t("reservations_aucune")}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 dark:bg-slate-900/50">
                 <tr>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">Voyage</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">Circuit</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">Retour</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">Lieu</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">Agent</th>
-                  <th className="text-right px-5 py-3 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_voyage")}</th>
+                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_circuit")}</th>
+                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_retour")}</th>
+                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_lieu")}</th>
+                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_agent")}</th>
+                  <th className="text-right px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -205,23 +210,23 @@ function Reservation() {
                   <tr key={reservation.idres} className="border-t border-slate-200 dark:border-slate-700">
                     <td className="px-5 py-4">
                       <div className="font-medium text-slate-800 dark:text-white">{formatDate(reservation.datevoyage)}</div>
-                      <div className="text-xs text-slate-400">Réservation : {formatDate(reservation.datereservation)}</div>
+                      <div className="text-xs text-slate-400">{t("reservations_label_reservation")} : {formatDate(reservation.datereservation)}</div>
                     </td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.circuit?.nom || reservation.circuit?.libelle || `Circuit #${reservation.idcircuit}`}</td>
+                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.circuit?.nom || reservation.circuit?.libelle || `${t("reservations_circuit_fallback")} #${reservation.idcircuit}`}</td>
                     <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{formatDate(reservation.dateretour)}</td>
                     <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.lieu}</td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.agent?.nom || reservation.agent?.prenom || `Agent #${reservation.idagt}`}</td>
+                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.agent?.nom || reservation.agent?.prenom || `${t("reservations_agent_fallback")} #${reservation.idagt}`}</td>
                     <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
-                        <Link to={`/reservations/${reservation.idres}`} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" title="Consulter">
+                        <Link to={`/reservations/${reservation.idres}`} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" title={t("reservations_action_consulter")}>
                           <Eye size={17} />
                         </Link>
                         {isAgent && (
                           <>
-                            <Link to={`/reservations/${reservation.idres}/modifier`} className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-700" title="Modifier">
+                            <Link to={`/reservations/${reservation.idres}/modifier`} className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-700" title={t("reservations_action_modifier")}>
                               <Pencil size={17} />
                             </Link>
-                            <button type="button" onClick={() => handleDelete(reservation.idres)} className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-slate-700" title="Supprimer">
+                            <button type="button" onClick={() => handleDelete(reservation.idres)} className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-slate-700" title={t("reservations_action_supprimer")}>
                               <Trash2 size={17} />
                             </button>
                           </>
