@@ -246,7 +246,7 @@ function Dashboard() {
     <main className="p-4 sm:p-6 lg:p-8 bg-[#FAF8F3] dark:bg-slate-900 min-h-full">
 
       {/* Message de bienvenue */}
-      <section className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+      <section className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold text-[#232821] dark:text-slate-100">
             {t("dashboard_bienvenue")}
@@ -257,9 +257,12 @@ function Dashboard() {
           </p>
         </div>
 
-        <p className="text-xs font-medium text-[#8B9186] dark:text-slate-500 capitalize sm:text-right shrink-0">
-          {aujourdHui}
-        </p>
+        <div className="inline-flex items-center gap-2 self-start sm:self-auto px-3.5 py-2 rounded-xl bg-[#E8F0E3] dark:bg-emerald-900/30 text-[#2F5233] dark:text-emerald-400 shrink-0">
+          <IconCalendar className="w-4 h-4 shrink-0" />
+          <span className="text-sm font-semibold capitalize">
+            {aujourdHui}
+          </span>
+        </div>
       </section>
 
       {/* Statistiques */}
