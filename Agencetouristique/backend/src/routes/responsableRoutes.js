@@ -10,5 +10,16 @@ const responsableController = require("../controllers/responsableController");
 // Route permettant de créer un responsable
 router.post("/", responsableController.createResponsable);
 
+const authenticateToken = require("../middlewares/authMiddleware");
+
+// Route permettant de créer un responsable
+router.post("/", responsableController.createResponsable);
+
+// Route permettant de récupérer mon propre profil
+router.get("/me", authenticateToken, responsableController.getMonProfil);
+
+// Route permettant de modifier mon propre profil
+router.put("/me", authenticateToken, responsableController.updateMonProfil);
+
 // Exportation du routeur
 module.exports = router;
