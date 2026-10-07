@@ -14,6 +14,7 @@ import translationsRendezVousForm from "./translationsRendezVousForm";
 import translationsDashboard from "./translationsDashboard";
 import translationsStatistiques from "./translationsStatistiques";
 import translationsReservations from "./translationsReservations";
+import translationsNotifications from "./translationsNotifications";
 
 const translations = {
   fr: {
@@ -33,6 +34,7 @@ const translations = {
     ...translationsDashboard.fr,
     ...translationsStatistiques.fr,
     ...translationsReservations.fr,
+    ...translationsNotifications.fr,
   },
   mg: {
     ...translationsCommon.mg,
@@ -51,6 +53,7 @@ const translations = {
     ...translationsDashboard.mg,
     ...translationsStatistiques.mg,
     ...translationsReservations.mg,
+    ...translationsNotifications.mg,
   },
   en: {
     ...translationsCommon.en,
@@ -69,6 +72,7 @@ const translations = {
     ...translationsDashboard.en,
     ...translationsStatistiques.en,
     ...translationsReservations.en,
+    ...translationsNotifications.en,
   },
 };
 

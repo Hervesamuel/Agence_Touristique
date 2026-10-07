@@ -268,6 +268,14 @@ const deleteAgent = async (id) => {
         error.statusCode = 404;
         throw error;
     }
+     // Diffusion de la notification à toute l'agence (avant suppression, pour garder le nom)
+    await notificationsService.notifierAgence({
+        idagc: existingAgent.idagc,
+        type: "AGENT",
+        action: "SUPPRESSION",
+        reference: existingAgent.nom,
+        message: `L'agent ${existingAgent.nom} a été supprimé.`,
+    });
 
     // Suppression de l'agent
     await prisma.agent.delete({

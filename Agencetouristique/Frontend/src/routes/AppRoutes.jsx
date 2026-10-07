@@ -27,6 +27,8 @@ import Statistiques from "../pages/responsable/Statistique";
 // Importation de la page de gestion des réservations
 import Reservations from "../pages/responsable/Reservation";
 
+import Notifications from "../pages/Notifications";
+
 function ProtectedLayout() {
 
   
@@ -94,9 +96,10 @@ function AppRoutes() {
         <Route path="/statistiques" element={<Statistiques />} />
         {/* Gestion des réservations */}
         <Route path="/reservations" element={<Reservations />} />
-
+        {/* Gestion des notifications */}
+        <Route path="/notifications" element={<Notifications />} />
       </Route>
-       
+      
 
       {/* Route par défaut */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

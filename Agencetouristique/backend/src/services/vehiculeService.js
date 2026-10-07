@@ -270,18 +270,20 @@ const deleteVehicule = async (id) => {
         throw error;
     }
 
-    // Suppression du véhicule
-    await prisma.vehicule.delete({
-        where: {
-            idveh: id
-        }
-    });
+    // Diffusion de la notification à toute l'agence (avant suppression, pour garder les infos)
     await notificationsService.notifierAgence({
         idagc: existingVehicule.idagc,
         type: "VEHICULE",
         action: "SUPPRESSION",
         reference: `${existingVehicule.marque} ${existingVehicule.modele}`,
         message: `Le véhicule ${existingVehicule.marque} ${existingVehicule.modele} a été supprimé.`,
+    });
+
+    // Suppression du véhicule
+    await prisma.vehicule.delete({
+        where: {
+            idveh: id
+        }
     });
 
     return {

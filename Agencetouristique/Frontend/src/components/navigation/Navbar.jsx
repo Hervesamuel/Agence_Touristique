@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
-
+import { useEffect, useState } from "react";
+import { getNombreNonLues } from "../../services/notificationsService";
 // Mapping route -> clés de traduction (titre + description)
 const pageKeys = {
   "/dashboard": { titleKey: "navbar_dashboard_titre", descKey: "navbar_dashboard_description" },
@@ -23,6 +24,29 @@ function Navbar({ onMenuClick }) {
     titleKey: "navbar_defaut_titre",
     descKey: "navbar_defaut_description",
   };
+
+  // Compteur de notifications non lues, rafraîchi à chaque changement de page
+  const [nonLues, setNonLues] = useState(0);
+
+    useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const response = await getNombreNonLues();
+        setNonLues(response.count || 0);
+      } catch {
+        // échec silencieux, pas critique pour l'affichage
+      }
+    };
+
+    // Premier chargement immédiat
+    fetchCount();
+
+    // Actualisation automatique toutes les 10 secondes
+    const interval = setInterval(fetchCount, 500);
+
+    // Nettoyage : arrête l'actualisation quand le composant est démonté
+    return () => clearInterval(interval);
+  }, [location.pathname]);
 
   return (
     <header className="sticky top-0 z-30 h-20 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0">
@@ -55,17 +79,19 @@ function Navbar({ onMenuClick }) {
               isActive ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" : "hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
             }`
           }
-          aria-label={t("navbar_notifications_aria")}
-        >
+          aria-label={t("navbar_notifications_aria")} >
           <span className="text-lg">🔔</span>
-          {/* Badge des notifications */}
-          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-800" />
+          {nonLues > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 min-w-[19px] h-[20px] px-1.5 flex items-center justify-center bg-red-500 text-white text-xs font-bold leading-none rounded-full border-2 border-white dark:border-slate-800">
+              {nonLues > 99 ? "99+" : nonLues}
+            </span>
+          )}
         </NavLink>
 
         {/* Profil */}
         <NavLink to="/profil" className="flex items-center gap-2 sm:gap-3 border-l border-slate-200 dark:border-slate-700 pl-3 sm:pl-4">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-semibold shrink-0">
-            RS
+            RP
           </div>
           <div className="hidden lg:block">
             <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{t("navbar_role")}</p>

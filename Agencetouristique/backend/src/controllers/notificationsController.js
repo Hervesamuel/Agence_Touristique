@@ -14,6 +14,7 @@ const getMesNotifications = async (req, res) => {
         const notifications = await notificationsService.getNotificationsUtilisateur(id, role);
         res.status(200).json({ data: notifications });
     } catch (error) {
+        console.error("ERREUR NOTIFICATIONS :", error);   // ← ajoute cette ligne
         res.status(500).json({ message: "Erreur lors de la récupération des notifications", error: error.message });
     }
 };
