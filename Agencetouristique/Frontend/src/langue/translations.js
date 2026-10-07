@@ -16,6 +16,9 @@ import translationsStatistiques from "./translationsStatistiques";
 import translationsReservations from "./translationsReservations";
 import translationsNotifications from "./translationsNotifications";
 import translationsProfil from "./translationsProfil";
+import translationsLogin from "./translationsLogin";
+
+
 const translations = {
   fr: {
     ...translationsCommon.fr,
@@ -36,6 +39,7 @@ const translations = {
     ...translationsReservations.fr,
     ...translationsNotifications.fr,
     ...translationsProfil.fr,
+    ...translationsLogin.fr,
   },
   mg: {
     ...translationsCommon.mg,
@@ -56,6 +60,7 @@ const translations = {
     ...translationsReservations.mg,
     ...translationsNotifications.mg,
     ...translationsProfil.mg,
+    ...translationsLogin.mg,
   },
   en: {
     ...translationsCommon.en,
@@ -76,6 +81,7 @@ const translations = {
     ...translationsReservations.en,
     ...translationsNotifications.en,
     ...translationsProfil.en,
+    ...translationsLogin.en,
   },
 };
 
