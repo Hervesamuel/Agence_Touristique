@@ -15,8 +15,8 @@ const API = {
   reservations: `${API_URL}/reservations`,
   rendezVous: `${API_URL}/rendez-vous`,
   recus: `${API_URL}/recus`,
-  utilisateurs: `${API_URL}/utilisateurs`,
   notifications: `${API_URL}/notifications`,
+  reservations: `${API_URL}/reservations`,
 };
 
 // =====================================================

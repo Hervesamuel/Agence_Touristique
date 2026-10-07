@@ -24,7 +24,8 @@ import Parametres from "../pages/responsable/Parametres";
 
 import Statistiques from "../pages/responsable/Statistique";
 
-
+// Importation de la page de gestion des réservations
+import Reservations from "../pages/responsable/Reservation";
 
 function ProtectedLayout() {
 
@@ -91,6 +92,8 @@ function AppRoutes() {
         <Route path="/parametres" element={<Parametres />} />
         {/* Gestion des Statistiques */}
         <Route path="/statistiques" element={<Statistiques />} />
+        {/* Gestion des réservations */}
+        <Route path="/reservations" element={<Reservations />} />
 
       </Route>
        
