@@ -28,6 +28,8 @@ const utilisateurRoutes = require("./routes/utilisateurRoutes");
 const authRoutes = require("./routes/authRoutes")
 // Importation de riute de notification
 const notificationsRoutes = require("./routes/notificationsRoutes");
+// Importation de route de profil
+const profilRoutes = require("./routes/profilRoutes");
 
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
@@ -35,7 +37,6 @@ app.use(express.json());
 app.use(cors());
 // ROUTE DE L'AGENCE
 app.use("/api/agences", agenceRoutes);
-
 // ROUTE DE RESPONSABLE
 app.use("/api/responsables", responsableRoutes);
 
@@ -61,7 +62,8 @@ app.use("/api/utilisateurs", utilisateurRoutes);
 app.use("/api/auth", authRoutes);
 // ROUTE NOTIFICATIONS
 app.use("/api/notifications", notificationsRoutes);
-
+// ROUTE PROFIL
+app.use("/api/profil", profilRoutes);
 
 
 // Route de test

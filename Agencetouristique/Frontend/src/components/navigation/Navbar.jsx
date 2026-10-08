@@ -3,7 +3,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { useEffect, useState } from "react";
 import { getNombreNonLues } from "../../services/notificationsService";
 import { getUser } from "../../services/authService";
-import { getMonProfil } from "../../services/responsableService";
+import { getMonProfil } from "../../services/profilService";
 
 // Mapping route -> clés de traduction (titre + description)
 const pageKeys = {
@@ -22,6 +22,8 @@ const pageKeys = {
 function Navbar({ onMenuClick }) {
   const location = useLocation();
   const { t } = useLanguage();
+  const role = getUser()?.role;
+  const roleLabel = role === "RESPONSABLE" ? t("navbar_sous_role") : t(`role_${(role || "").toLowerCase()}`);
 
   const currentPageKeys = pageKeys[location.pathname] || {
     titleKey: "navbar_defaut_titre",

@@ -37,6 +37,9 @@ const translationsCommon = {
     sidebar_role: "Responsable",
     sidebar_titre_role: "Administrateur",
     nav_statistiques: "Statistiques",
+
+    role_agent: "Agent",
+    role_chauffeur: "Chauffeur",
   },
   mg: {
     retour_dashboard: "Hiverina any amin'ny Dashboard",
@@ -76,6 +79,9 @@ const translationsCommon = {
     sidebar_role: "Tompon'andraikitra",
     sidebar_titre_role: "Mpitantana",
     nav_statistiques: "Antontan'isa",
+
+    role_agent: "Mpiasa",
+    role_chauffeur: "Mpamily",
     
   },
   en: {
@@ -116,6 +122,9 @@ const translationsCommon = {
     sidebar_role: "Manager",
     sidebar_titre_role: "Administrator",
     nav_statistiques: "Statistics",
+
+    role_agent: "Agent",
+    role_chauffeur: "Driver",
   },
 };
 

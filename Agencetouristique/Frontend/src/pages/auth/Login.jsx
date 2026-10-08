@@ -32,22 +32,22 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
-      <div className="w-full max-w-md p-8 rounded-3xl bg-white shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-slate-900 px-4">
+      <div className="w-full max-w-md p-8 rounded-3xl bg-white dark:bg-slate-800 shadow-lg">
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-extrabold text-teal-600">{t("login_plateforme_titre")}</h1>
-          <p className="text-gray-500 mt-2">{t("login_plateforme_soustitre")}</p>
+          <h1 className="text-4xl font-extrabold text-teal-600 dark:text-teal-400">{t("login_plateforme_titre")}</h1>
+          <p className="text-gray-500 dark:text-slate-400 mt-2">{t("login_plateforme_soustitre")}</p>
         </div>
 
         {error && (
-          <div className="mb-5 rounded-lg bg-red-50 border border-red-200 text-red-600 p-4">
+          <div className="mb-5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4">
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin}>
           <div className="mb-5">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
               {t("login_email_label")}
             </label>
             <input
@@ -57,12 +57,12 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("login_email_placeholder")}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
           <div className="mb-6">
-            <label htmlFor="mdp" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="mdp" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
               {t("login_mdp_label")}
             </label>
             <input
@@ -72,14 +72,14 @@ function Login() {
               onChange={(e) => setMdp(e.target.value)}
               placeholder={t("login_mdp_placeholder")}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
           <div className="flex justify-end mb-6">
             <button
               type="button"
-              className="text-sm text-teal-600 hover:underline"
+              className="text-sm text-teal-600 dark:text-teal-400 hover:underline"
             >
               {t("login_mdp_oublie")}
             </button>
@@ -88,13 +88,13 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 font-semibold text-white rounded-lg transition ${loading ? 'bg-gray-400' : 'bg-teal-600 hover:bg-teal-700'}`}
+            className={`w-full py-3 font-semibold text-white rounded-lg transition ${loading ? 'bg-gray-400 dark:bg-slate-600' : 'bg-teal-600 hover:bg-teal-700'}`}
           >
             {loading ? t("login_btn_en_cours") : t("login_btn")}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <p className="text-center text-sm text-gray-500 dark:text-slate-400 mt-6">
           {t("login_footer")}
         </p>
       </div>

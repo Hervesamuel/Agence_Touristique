@@ -1,7 +1,6 @@
 // =====================================================
 // CONFIGURATION DES API
 // =====================================================
-
 const API_URL = "http://localhost:5000/api";
 
 const API = {
@@ -16,16 +15,17 @@ const API = {
   rendezVous: `${API_URL}/rendez-vous`,
   recus: `${API_URL}/recus`,
   notifications: `${API_URL}/notifications`,
-  reservations: `${API_URL}/reservations`,
+  profil: `${API_URL}/profil`,
 };
 
 // =====================================================
 // REQUETE AUTHENTIFIEE
 // =====================================================
-
 const fetchAuth = async (url, options = {}) => {
+  // Récupération du token JWT
   const token = localStorage.getItem("token");
 
+  // Création des en-têtes HTTP
   const headers = {
     "Content-Type": "application/json",
     ...options.headers,
@@ -36,12 +36,32 @@ const fetchAuth = async (url, options = {}) => {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  return fetch(url, {
+  // Envoi de la requête
+  const response = await fetch(url, {
     ...options,
     headers,
   });
+
+  // =====================================================
+  // VERIFICATION DE L'EXPIRATION DU TOKEN
+  // =====================================================
+  if (response.status === 401) {
+    // Suppression du token JWT
+    localStorage.removeItem("token");
+    // Suppression des informations utilisateur
+    localStorage.removeItem("user");
+    // Redirection vers la page de connexion
+    window.location.href = "/login";
+    // Arrêt du traitement de la réponse
+    return response;
+  }
+
+  // Retour de la réponse
+  return response;
 };
 
+// =====================================================
+// EXPORTATION
+// =====================================================
 export { fetchAuth };
-
 export default API;

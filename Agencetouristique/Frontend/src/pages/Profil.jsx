@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getMonProfil, updateMonProfil } from "../services/responsableService";
+import { getMonProfil, updateMonProfil, changerMotDePasse } from "../services/profilService";
 import { useLanguage } from "../contexts/LanguageContext";
 
 function Profil() {
@@ -114,7 +114,7 @@ function Profil() {
   };
 
     // Soumission du changement de mot de passe
-  const handleSubmitMdp = async (e) => {
+    const handleSubmitMdp = async (e) => {
     e.preventDefault();
     setMdpError("");
     setMdpSuccess("");
@@ -130,9 +130,7 @@ function Profil() {
 
     try {
       setSubmittingMdp(true);
-      // Le backend ne vérifie pas le mot de passe actuel pour l'instant,
-      // il est inclus ici pour une future validation côté serveur
-      await updateMonProfil({ mdp: mdpData.mdpNouveau });
+      await changerMotDePasse(mdpData.mdpActuel, mdpData.mdpNouveau);
       setMdpSuccess(t("profil_mdp_succes"));
       setMdpData({ mdpActuel: "", mdpNouveau: "", mdpConfirmer: "" });
     } catch (err) {
