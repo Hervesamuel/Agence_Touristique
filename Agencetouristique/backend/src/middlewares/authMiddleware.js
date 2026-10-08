@@ -12,6 +12,7 @@ const authenticateToken = (req, res, next) => {
     // Vérification de la présence du token
     if (!authHeader) {
         return res.status(401).json({
+            code: "TOKEN_INVALID",
             message: "Token d'authentification requis"
         });
     }
@@ -21,6 +22,7 @@ const authenticateToken = (req, res, next) => {
 
     if (parts.length !== 2 || parts[0] !== "Bearer") {
         return res.status(401).json({
+            code: "TOKEN_INVALID",
             message: "Format du token invalide"
         });
     }
@@ -47,6 +49,7 @@ const authenticateToken = (req, res, next) => {
 
         // Token invalide ou expiré
         return res.status(401).json({
+            code: "TOKEN_INVALID",
             message: "Token invalide ou expiré"
         });
     }
