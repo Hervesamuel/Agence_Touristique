@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { getNombreNonLues } from "../../services/notificationsService";
 import { getUser } from "../../services/authService";
 import { getMonProfil } from "../../services/profilService";
+import useProfil from "../../hooks/useProfil";
+
+
+  const [profil, setProfil] = useState({ nom: getUser()?.nom || "", photo: "" });
 
 // Mapping route -> clés de traduction (titre + description)
 const pageKeys = {
@@ -18,6 +22,7 @@ const pageKeys = {
   "/profil": { titleKey: "navbar_profil_titre", descKey: "navbar_profil_description" },
   "/notifications": { titleKey: "navbar_notifications_titre", descKey: "navbar_notifications_description" },
 };
+
 
 function Navbar({ onMenuClick }) {
   const location = useLocation();

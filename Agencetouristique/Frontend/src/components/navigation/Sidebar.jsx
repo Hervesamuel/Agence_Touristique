@@ -11,9 +11,8 @@ import {
   BarChart3,
   LogOut,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { getUser, logout } from "../../services/authService";
-import { getMonProfil } from "../../services/responsableService";
+import useProfil from "../../hooks/useProfil";
 import { peutAcceder } from "../../utils/roleAccess";
 // Structure des liens du menu principal
 const mainNav = [
@@ -67,37 +66,14 @@ function Sidebar({ isOpen, onClose }) {
 
   // Informations de l'utilisateur connecté
   const user = getUser();
+  const role = user?.role;
 
-  // Informations du profil connecté
-  const [profil, setProfil] = useState({
-    nom: user?.nom || "",
-    photo: "",
-  });
+  // Nom et photo du profil, actualisés automatiquement toutes les 3 secondes
+  const profil = useProfil();
 
-    const role = getUser()?.role;
   // Seuls les liens autorisés pour le rôle connecté sont affichés
   const liensAutorises = mainNav.filter((item) => peutAcceder(role, item.path));
   const roleLabel = role === "RESPONSABLE" ? t("sidebar_titre_role") : t(`role_${(role || "").toLowerCase()}`);
-
-  // Récupération du profil
-  useEffect(() => {
-    const fetchProfil = async () => {
-      try {
-        const response = await getMonProfil();
-
-        const data = response.data || response;
-
-        setProfil({
-          nom: data.nom,
-          photo: data.photo || "",
-        });
-      } catch {
-        // échec silencieux
-      }
-    };
-
-    fetchProfil();
-  }, []);
 
   // Fermeture du menu mobile après navigation
   const handleNavigation = () => {
@@ -153,7 +129,7 @@ function Sidebar({ isOpen, onClose }) {
           </p>
 
           <div className="space-y-1">
-            {mainNav.map((item) => (
+            {liensAutorises.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
@@ -232,7 +208,7 @@ function Sidebar({ isOpen, onClose }) {
               </p>
 
               <p className="text-xs text-slate-400 truncate">
-                {t("sidebar_titre_role")}
+                {roleLabel}
               </p>
             </div>
           </NavLink>

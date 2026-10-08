@@ -31,6 +31,8 @@ import Notifications from "../pages/Notifications";
 
 import Profil from "../pages/Profil";
 
+
+
 function ProtectedLayout() {
 
   

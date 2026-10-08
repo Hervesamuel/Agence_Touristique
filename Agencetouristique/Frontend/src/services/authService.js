@@ -71,6 +71,30 @@ const logout = () => {
 };
 
 // =====================================================
+// EXPIRATION DU TOKEN
+// =====================================================
+
+// Date d'expiration du token (en millisecondes), lue dans le payload du JWT
+const getTokenExpiration = (token) => {
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+        return payload.exp ? payload.exp * 1000 : null;
+    } catch {
+        return null;
+    }
+};
+
+// Déconnexion forcée : nettoie la session et renvoie vers la page de connexion
+// avec un message d'explication (affiché par Login.jsx)
+const expireSession = () => {
+    logout();
+    sessionStorage.setItem("sessionExpired", "1");
+    window.location.replace("/login");
+};
+
+
+// =====================================================
 // EXPORTATION DU SERVICE
 // =====================================================
-export { login, getToken, getUser, logout };
+
+export { login, getToken, getUser, logout, getTokenExpiration, expireSession };

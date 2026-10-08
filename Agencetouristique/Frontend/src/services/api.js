@@ -1,3 +1,4 @@
+import { expireSession } from "./authService"
 // =====================================================
 // CONFIGURATION DES API
 // =====================================================
@@ -45,15 +46,10 @@ const fetchAuth = async (url, options = {}) => {
   // =====================================================
   // VERIFICATION DE L'EXPIRATION DU TOKEN
   // =====================================================
+  // Token refusé par le serveur (expiré ou invalide) : fin de session
   if (response.status === 401) {
-    // Suppression du token JWT
-    localStorage.removeItem("token");
-    // Suppression des informations utilisateur
-    localStorage.removeItem("user");
-    // Redirection vers la page de connexion
-    window.location.href = "/login";
-    // Arrêt du traitement de la réponse
-    return response;
+    const body = await response.clone().json().catch(() => null);
+    if (body?.code === "TOKEN_INVALID") expireSession();
   }
 
   // Retour de la réponse
