@@ -17,6 +17,7 @@ function Reservation() {
   const [dateFilter, setDateFilter] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
   const [periodFilter, setPeriodFilter] = useState("a-venir");
+  const [selectedIds, setSelectedIds] = useState([]); // ids des réservations cochées
 
   const user = getUser();
   const role = user?.role?.toLowerCase();
@@ -73,8 +74,9 @@ function Reservation() {
       const circuitName = [reservation.circuit?.nom, reservation.circuit?.libelle, reservation.circuit?.titre, reservation.circuit?.description].filter(Boolean).join(" ").toLowerCase();
       const agentName = [reservation.agent?.nom, reservation.agent?.prenom, reservation.agent?.matricule].filter(Boolean).join(" ").toLowerCase();
       const lieu = (reservation.lieu || "").toLowerCase();
+      const clientInfo = [reservation.nomclient, reservation.telclient, reservation.emailclient].filter(Boolean).join(" ").toLowerCase();
 
-      const matchesSearch = !searchValue || lieu.includes(searchValue) || circuitName.includes(searchValue) || agentName.includes(searchValue);
+            const matchesSearch = !searchValue || lieu.includes(searchValue) || circuitName.includes(searchValue) || agentName.includes(searchValue) || clientInfo.includes(searchValue);
       if (!matchesSearch) return false;
 
       // Recherche par date précise
@@ -98,6 +100,23 @@ function Reservation() {
       return true;
     });
   }, [reservations, search, dateFilter, monthFilter, periodFilter]);
+
+    // =====================================================
+  // SELECTION (CASES A COCHER)
+  // =====================================================
+  // Seules les réservations visibles ET cochées comptent (évite de notifier des lignes cachées par un filtre)
+  const selectedReservations = filteredReservations.filter((r) => selectedIds.includes(r.idres));
+
+  // Toutes les réservations affichées sont-elles cochées ?
+  const allSelected = filteredReservations.length > 0 && selectedReservations.length === filteredReservations.length;
+
+  // Cocher / décocher une réservation
+  const toggleSelect = (id) =>
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
+  // Tout cocher / tout décocher (réservations affichées)
+  const toggleSelectAll = () =>
+    setSelectedIds(allSelected ? [] : filteredReservations.map((r) => r.idres));
 
   // =====================================================
   // FORMATAGE DES DATES
@@ -181,6 +200,16 @@ function Reservation() {
       {/* Erreur */}
       {error && <div className="mb-5 p-3 rounded-lg bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm">{error}</div>}
 
+              {/* Barre de sélection (visible seulement si au moins une réservation est cochée) */}
+      {isAgent && selectedReservations.length > 0 && (
+        <div className="mb-4 flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm">
+          <span className="text-emerald-700 dark:text-emerald-300">{selectedReservations.length} réservation(s) sélectionnée(s)</span>
+          <button type="button" onClick={() => setSelectedIds([])} className="text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-white">
+            Tout désélectionner
+          </button>
+        </div>
+      )}
+
       {/* Tableau */}
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
@@ -193,30 +222,66 @@ function Reservation() {
         ) : filteredReservations.length === 0 ? (
           <div className="p-8 text-center text-slate-500 dark:text-slate-400">{t("reservations_aucune")}</div>
         ) : (
-          <div className="overflow-x-auto">
+                   <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 dark:bg-slate-900/50">
                 <tr>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_voyage")}</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_circuit")}</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_retour")}</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_lieu")}</th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_agent")}</th>
-                  <th className="text-right px-5 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_actions")}</th>
+                  {/* Case "tout sélectionner" (agent uniquement) */}
+                  {isAgent && (
+                    <th className="pl-5 pr-2 py-3 w-10">
+                      <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} title="Tout sélectionner" className="w-4 h-4 accent-emerald-600" />
+                    </th>
+                  )}
+                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{t("reservations_th_voyage")}</th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Client</th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_circuit")}</th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{t("reservations_th_retour")}</th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_lieu")}</th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_agent")}</th>
+                  <th className="text-right px-4 py-3 font-medium text-slate-500 dark:text-slate-400">{t("reservations_th_actions")}</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredReservations.map((reservation) => (
                   <tr key={reservation.idres} className="border-t border-slate-200 dark:border-slate-700">
-                    <td className="px-5 py-4">
+                    {/* Case à cocher de la ligne (agent uniquement) */}
+                    {isAgent && (
+                      <td className="pl-5 pr-2 py-4">
+                        <input type="checkbox" checked={selectedIds.includes(reservation.idres)} onChange={() => toggleSelect(reservation.idres)} className="w-4 h-4 accent-emerald-600" />
+                      </td>
+                    )}
+
+                    {/* Voyage */}
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <div className="font-medium text-slate-800 dark:text-white">{formatDate(reservation.datevoyage)}</div>
                       <div className="text-xs text-slate-400">{t("reservations_label_reservation")} : {formatDate(reservation.datereservation)}</div>
                     </td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.circuit?.nom || reservation.circuit?.libelle || `${t("reservations_circuit_fallback")} #${reservation.idcircuit}`}</td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{formatDate(reservation.dateretour)}</td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.lieu}</td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{reservation.agent?.nom || reservation.agent?.prenom || `${t("reservations_agent_fallback")} #${reservation.idagt}`}</td>
-                    <td className="px-5 py-4">
+
+                    {/* Client : nom, téléphone, email */}
+                    <td className="px-4 py-4">
+                      <div className="font-medium text-slate-800 dark:text-white">{reservation.nomclient || "-"}</div>
+                      <div className="text-xs text-slate-400">{reservation.telclient || "-"}</div>
+                      <div className="text-xs text-slate-400 break-all">{reservation.emailclient || "-"}</div>
+                    </td>
+
+                    {/* Circuit */}
+                    <td className="px-4 py-4 text-slate-600 dark:text-slate-300">
+                      {reservation.circuit?.nom || reservation.circuit?.libelle || `${t("reservations_circuit_fallback")} #${reservation.idcircuit}`}
+                    </td>
+
+                    {/* Retour */}
+                    <td className="px-4 py-4 text-slate-600 dark:text-slate-300 whitespace-nowrap">{formatDate(reservation.dateretour)}</td>
+
+                    {/* Lieu */}
+                    <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{reservation.lieu}</td>
+
+                    {/* Agent */}
+                    <td className="px-4 py-4 text-slate-600 dark:text-slate-300">
+                      {reservation.agent?.nom || reservation.agent?.prenom || `${t("reservations_agent_fallback")} #${reservation.idagt}`}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-4">
                       <div className="flex justify-end gap-2">
                         <Link to={`/reservations/${reservation.idres}`} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" title={t("reservations_action_consulter")}>
                           <Eye size={17} />

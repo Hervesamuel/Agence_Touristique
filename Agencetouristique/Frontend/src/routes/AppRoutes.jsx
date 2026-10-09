@@ -31,7 +31,7 @@ import Notifications from "../pages/Notifications";
 
 import Profil from "../pages/Profil";
 
-
+import ReservationForm from "../pages/agent/ReservationForm";
 
 function ProtectedLayout() {
 
@@ -104,6 +104,11 @@ function AppRoutes() {
         <Route path="/notifications" element={<Notifications />} />
         {/* Gestion du profil */}
         <Route path="/profil" element={<Profil />} />
+        {/* Formulaire de réservation */}
+        <Route path="/reservations/nouveau" element={<ReservationForm />} />
+        {/* Formulaire de modification de réservation */}
+        <Route path="/reservations/:id/modifier" element={<ReservationForm />} />
+
       </Route>
       
 

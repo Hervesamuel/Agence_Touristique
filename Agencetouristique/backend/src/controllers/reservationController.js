@@ -4,7 +4,11 @@ const reservationService = require("../services/reservationService");
 // =====================================================// CREATION D'UNE RESERVATION// =====================================================
 const createReservation = async (req, res) => {
     try {
-        const reservation = await reservationService.createReservation(req.body);
+                // L'agent connecté vient du token (jamais du formulaire), pour éviter toute usurpation
+        const reservation = await reservationService.createReservation({
+            ...req.body,
+            idagt: req.user.id
+        });
         res.status(201).json({ message: "Réservation créée avec succès", data: reservation });
     } catch (error) {
         if (error.statusCode === 400) return res.status(400).json({ message: error.message });

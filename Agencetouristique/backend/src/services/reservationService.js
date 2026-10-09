@@ -14,6 +14,9 @@ const selectFields = {
     datevoyage: true,
     dateretour: true,
     lieu: true,
+    nomclient: true,
+    emailclient: true,
+    telclient: true,
     idcircuit: true,
     idagt: true,
     agent: {
@@ -27,7 +30,16 @@ const selectFields = {
 const createReservation = async (data) => {
     try {
         return await prisma.reservation.create({
-            data: { datevoyage: data.datevoyage, dateretour: data.dateretour, lieu: data.lieu, idcircuit: data.idcircuit, idagt: data.idagt },
+                        data: {
+                datevoyage: data.datevoyage,
+                dateretour: data.dateretour,
+                lieu: data.lieu,
+                nomclient: data.nomclient,
+                emailclient: data.emailclient ?? null,
+                telclient: data.telclient,
+                idcircuit: data.idcircuit,
+                idagt: data.idagt
+            },
             select: selectFields
         });
     } catch (error) {
@@ -74,6 +86,9 @@ const updateReservation = async (id, data) => {
     if (data.lieu !== undefined) updateData.lieu = data.lieu;
     if (data.idcircuit !== undefined) updateData.idcircuit = data.idcircuit;
     if (data.idagt !== undefined) updateData.idagt = data.idagt;
+    if (data.nomclient !== undefined) updateData.nomclient = data.nomclient;
+    if (data.emailclient !== undefined) updateData.emailclient = data.emailclient;
+    if (data.telclient !== undefined) updateData.telclient = data.telclient;
 
     try {
         return await prisma.reservation.update({ where: { idres: id }, data: updateData, select: selectFields });
