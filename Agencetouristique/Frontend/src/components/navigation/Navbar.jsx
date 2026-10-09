@@ -3,11 +3,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { useEffect, useState } from "react";
 import { getNombreNonLues } from "../../services/notificationsService";
 import { getUser } from "../../services/authService";
-import { getMonProfil } from "../../services/profilService";
 import useProfil from "../../hooks/useProfil";
-
-
-  const [profil, setProfil] = useState({ nom: getUser()?.nom || "", photo: "" });
 
 // Mapping route -> clés de traduction (titre + description)
 const pageKeys = {
@@ -23,35 +19,23 @@ const pageKeys = {
   "/notifications": { titleKey: "navbar_notifications_titre", descKey: "navbar_notifications_description" },
 };
 
-
 function Navbar({ onMenuClick }) {
   const location = useLocation();
   const { t } = useLanguage();
+
+  // Rôle du compte connecté (libellé affiché sous le nom)
   const role = getUser()?.role;
   const roleLabel = role === "RESPONSABLE" ? t("navbar_sous_role") : t(`role_${(role || "").toLowerCase()}`);
+
+  // Nom et photo du profil, actualisés automatiquement toutes les 3 secondes
+  const profil = useProfil();
 
   const currentPageKeys = pageKeys[location.pathname] || {
     titleKey: "navbar_defaut_titre",
     descKey: "navbar_defaut_description",
   };
 
-  // Informations du profil connecté (nom + photo), rafraîchies à chaque navigation
-  const [profil, setProfil] = useState({ nom: getUser()?.nom || "", photo: "" });
-
-  useEffect(() => {
-    const fetchProfil = async () => {
-      try {
-        const response = await getMonProfil();
-        const data = response.data || response;
-        setProfil({ nom: data.nom, photo: data.photo || "" });
-      } catch {
-        // échec silencieux : on garde le nom déjà connu depuis le token
-      }
-    };
-    fetchProfil();
-  }, [location.pathname]);
-
-  // Compteur de notifications non lues, rafraîchi à chaque changement de page
+  // Compteur de notifications non lues
   const [nonLues, setNonLues] = useState(0);
 
   useEffect(() => {
@@ -67,8 +51,8 @@ function Navbar({ onMenuClick }) {
     // Premier chargement immédiat
     fetchCount();
 
-    // Actualisation automatique toutes les 1 seconde
-    const interval = setInterval(fetchCount, 1000);
+    // Actualisation automatique toutes les 0.5 secondes
+    const interval = setInterval(fetchCount, 500);
 
     // Nettoyage : arrête l'actualisation quand le composant est démonté
     return () => clearInterval(interval);
@@ -105,7 +89,8 @@ function Navbar({ onMenuClick }) {
               isActive ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" : "hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
             }`
           }
-          aria-label={t("navbar_notifications_aria")} >
+          aria-label={t("navbar_notifications_aria")}
+        >
           <span className="text-lg">🔔</span>
           {nonLues > 0 && (
             <span className="absolute -top-1.5 -right-1.5 min-w-[19px] h-[20px] px-1.5 flex items-center justify-center bg-red-500 text-white text-xs font-bold leading-none rounded-full border-2 border-white dark:border-slate-800">
@@ -125,7 +110,7 @@ function Navbar({ onMenuClick }) {
           </div>
           <div className="hidden lg:block">
             <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{profil.nom}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">{t("navbar_sous_role")}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{roleLabel}</p>
           </div>
         </NavLink>
       </div>

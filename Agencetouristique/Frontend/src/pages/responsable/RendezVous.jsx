@@ -4,13 +4,16 @@ import { getRendezVous, updateRendezVous } from "../../services/rendezVousServic
 import { getAgents } from "../../services/agentService";
 import { useLanguage } from "../../contexts/LanguageContext";
 import RendezVousForm from "./RendezVousForm";
-
+import { getUser } from "../../services/authService";
 // Locale de formatage de date/heure selon la langue de l'application
 const localeParLangue = { fr: "fr-FR", mg: "mg-MG", en: "en-US" };
 
 function RendezVous() {
   const { t, language } = useLanguage();
   const [rendezVous, setRendezVous] = useState([]);
+  const role = getUser()?.role;
+  const estAgent = role === "AGENT";
+  const estResponsable = role === "RESPONSABLE";
   const [agents, setAgents] = useState([]);
   const [search, setSearch] = useState("");
   const [statutFilter, setStatutFilter] = useState("Tous");
@@ -145,15 +148,17 @@ function RendezVous() {
                   <p className="font-semibold text-slate-900 dark:text-slate-100 truncate">{rdv.motif}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{getAgentNom(rdv.idagt)}</p>
                 </div>
-                <button
-                  type="button" onClick={() => setEditingRdv(rdv)} title={t("rdv_modifier_title")}
-                  className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-200 transition-colors shrink-0"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
-                </button>
+                                {estAgent && (
+                  <button
+                    type="button" onClick={() => setEditingRdv(rdv)} title="Modifier"
+                    className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors shrink-0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                )}
               </div>
 
               <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">{formatDate(rdv.date)} {t("rdv_a")} {formatHeure(rdv.heure)}</p>
@@ -164,12 +169,12 @@ function RendezVous() {
                 </span>
 
                 {/* Actions rapides selon le statut actuel */}
-                {rdv.statut === "En attente" && (
-                  <div className="flex gap-1.5">
-                    <button onClick={() => handleChangeStatut(rdv, "Confirmé")} className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{t("rdv_confirmer_btn")}</button>
-                    <span className="text-slate-300 dark:text-slate-600">|</span>
-                    <button onClick={() => handleChangeStatut(rdv, "Annulé")} className="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline">{t("rdv_annuler_btn")}</button>
-                  </div>
+                {estResponsable && rdv.statut === "En attente" && (
+                <div className="flex gap-1.5">
+                  <button onClick={() => handleChangeStatut(rdv, "Confirmé")} className="text-xs font-semibold text-emerald-600 hover:underline">Confirmer</button>
+                  <span className="text-slate-300">|</span>
+                  <button onClick={() => handleChangeStatut(rdv, "Annulé")} className="text-xs font-semibold text-red-600 hover:underline">Annuler</button>
+                </div>
                 )}
               </div>
 
