@@ -149,6 +149,7 @@ model Circuit {
   photo        String?
   status       String
 
+
   // Relation 0..* Circuit — 1 Agence
   idagc        Int
   agence       Agence        @relation(fields: [idagc], references: [idagc])
@@ -168,6 +169,11 @@ model Reservation {
   datevoyage      DateTime
   dateretour      DateTime
   lieu            String
+
+  
+  nomclient       String?    @db.VarChar(100)
+  emailclient     String?    @db.VarChar(100)
+  telclient       String?    @db.VarChar(20)
 
   // Relation 0..* Reservation — 1 Circuit
   idcircuit       Int
