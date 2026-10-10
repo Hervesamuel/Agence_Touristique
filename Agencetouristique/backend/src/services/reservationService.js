@@ -70,7 +70,7 @@ const getReservationById = async (id) => {
 };
 
 // =====================================================// MODIFICATION D'UNE RESERVATION// =====================================================
-const updateReservation = async (id, data) => {
+const updateReservation = async (id, data, idagtActeur) => {
     // Vérification de l'existence de la réservation
     const existingReservation = await prisma.reservation.findUnique({ where: { idres: id } });
     if (!existingReservation) {
@@ -84,15 +84,23 @@ const updateReservation = async (id, data) => {
     if (data.datevoyage !== undefined) updateData.datevoyage = data.datevoyage;
     if (data.dateretour !== undefined) updateData.dateretour = data.dateretour;
     if (data.lieu !== undefined) updateData.lieu = data.lieu;
-    if (data.idcircuit !== undefined) updateData.idcircuit = data.idcircuit;
-    if (data.idagt !== undefined) updateData.idagt = data.idagt;
     if (data.nomclient !== undefined) updateData.nomclient = data.nomclient;
     if (data.emailclient !== undefined) updateData.emailclient = data.emailclient;
     if (data.telclient !== undefined) updateData.telclient = data.telclient;
+    if (data.idcircuit !== undefined) updateData.idcircuit = data.idcircuit;
+    if (data.idagt !== undefined) updateData.idagt = data.idagt;
 
     try {
-       // Notification : modification
+        // Mise à jour de la réservation
+        const reservation = await prisma.reservation.update({
+            where: { idres: id },
+            data: updateData,
+            select: selectFields
+        });
+
+        // Notification : modification (responsable + agent qui agit)
         await notifierReservation("MODIFICATION", reservation, idagtActeur);
+
         return reservation;
     } catch (error) {
         if (error.code === "P2003") {
