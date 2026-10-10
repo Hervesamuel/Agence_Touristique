@@ -4,9 +4,14 @@ import { CalendarDays, Search, Plus, Eye, Pencil, Trash2, RefreshCw } from "luci
 import { getReservations, deleteReservation } from "../../services/reservationService";
 import { getUser } from "../../services/authService";
 import { useLanguage } from "../../contexts/LanguageContext";
+import emailjs from "@emailjs/browser";
+
 
 // Locale de formatage de date selon la langue de l'application
 const localeParLangue = { fr: "fr-FR", mg: "mg-MG", en: "en-US" };
+
+// EMAILJS (1/5) : pause entre deux envois (EmailJS limite le nombre de requêtes par seconde)
+const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function Reservation() {
   const { t, language } = useLanguage();
@@ -21,6 +26,11 @@ function Reservation() {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("email");
+
+  const [sending, setSending] = useState(false);
+  const [notificationStatus, setNotificationStatus] = useState("");
+  // EMAILJS (2/5) : message d'erreur affiché dans le modal
+  const [notificationError, setNotificationError] = useState("");
 
   const user = getUser();
   const role = user?.role?.toLowerCase();
@@ -130,6 +140,77 @@ function Reservation() {
   };
 
   // =====================================================
+  // EMAILJS (3/5) : ENVOI DU MESSAGE AUX CLIENTS
+  // =====================================================
+  const handleSendMessage = async () => {
+    setNotificationStatus("");
+    setNotificationError("");
+
+    if (!notificationMessage.trim()) {
+      setNotificationError("Saisissez un message avant d'envoyer.");
+      return;
+    }
+
+    // EmailJS envoie uniquement des e-mails (pas de SMS)
+    if (notificationType === "sms") {
+      setNotificationError("L'envoi par SMS n'est pas encore disponible. Choisissez E-mail.");
+      return;
+    }
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    if (!serviceId || !templateId || !publicKey) {
+      setNotificationError("Configuration EmailJS manquante (fichier .env.local).");
+      return;
+    }
+
+    // Un seul envoi par adresse, même si le client a plusieurs réservations cochées
+    const destinataires = new Map();
+    selectedReservations.forEach((r) => {
+      const email = r.emailclient?.trim();
+      if (email && !destinataires.has(email)) destinataires.set(email, r.nomclient || "Client");
+    });
+
+    if (destinataires.size === 0) {
+      setNotificationError("Aucune des réservations sélectionnées n'a d'adresse e-mail.");
+      return;
+    }
+
+    setSending(true);
+    let envoyes = 0;
+    let echecs = 0;
+    let derniereErreur = "";
+    const liste = Array.from(destinataires);
+
+    for (let i = 0; i < liste.length; i++) {
+      const [email, nom] = liste[i];
+      try {
+        await emailjs.send(
+          serviceId,
+          templateId,
+          { to_email: email, to_name: nom, message: notificationMessage.trim() },
+          { publicKey }
+        );
+        envoyes += 1;
+      } catch (err) {
+        echecs += 1;
+        // EmailJS renvoie { status, text } plutôt qu'une Error classique
+        derniereErreur = err?.text || err?.message || "Erreur inconnue";
+        console.error("Échec EmailJS :", err);
+      }
+      if (i < liste.length - 1) await pause(1100);
+    }
+
+    setSending(false);
+    if (envoyes > 0) {
+      setNotificationStatus(`${envoyes} message(s) envoyé(s).`);
+      setNotificationMessage("");
+    }
+    if (echecs > 0) setNotificationError(`${echecs} échec(s) : ${derniereErreur}`);
+  };
+
+  // =====================================================
   // AFFICHAGE
   // =====================================================
   return (
@@ -220,9 +301,14 @@ function Reservation() {
       </button>
     </div>
 
+    {/* EMAILJS (4/5) : on efface les anciens messages à l'ouverture du modal */}
     <button
         type="button"
-        onClick={() => setShowNotificationModal(true)}
+        onClick={() => {
+          setNotificationStatus("");
+          setNotificationError("");
+          setShowNotificationModal(true);
+        }}
         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition"
       >
         <span>Envoyer Message</span>
@@ -374,6 +460,25 @@ function Reservation() {
         rows={5}
         className="mb-4 w-full resize-y rounded-lg border border-slate-300 bg-white p-3 text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
       />
+      
+      {notificationStatus && (
+        <p
+          role="status"
+          className="mb-4 text-sm text-emerald-600 dark:text-emerald-400"
+        >
+          {notificationStatus}
+        </p>
+      )}
+
+      {/* EMAILJS (5/5) : affichage des erreurs d'envoi */}
+      {notificationError && (
+        <p
+          role="alert"
+          className="mb-4 text-sm text-red-600 dark:text-red-400"
+        >
+          {notificationError}
+        </p>
+      )}
 
       <div className="mb-5 max-h-32 overflow-y-auto rounded-lg bg-slate-50 p-3 dark:bg-slate-900">
         <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-200">
@@ -399,20 +504,15 @@ function Reservation() {
           className="rounded-lg border border-slate-300 px-4 py-2 text-slate-600 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700"
         >
           Annuler
-        </button>
-
-        <button
+        </button>     
+         <button
           type="button"
-          disabled={!notificationMessage.trim()}
-          onClick={() => {
-            console.log("Type :", notificationType);
-            console.log("Message :", notificationMessage);
-            console.log("Destinataires :", selectedReservations);
-          }}
-          className="rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={handleSendMessage}
+          disabled={sending}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 disabled:opacity-60"
         >
-          Envoyer
-          </button>
+          {sending ? "Envoi en cours..." : "Envoyer Message"}
+         </button>
         </div>
 
       </div>
