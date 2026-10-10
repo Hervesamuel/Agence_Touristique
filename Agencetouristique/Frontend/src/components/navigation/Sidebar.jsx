@@ -152,8 +152,43 @@ function Sidebar({ isOpen, onClose }) {
               </NavLink>
             ))}
           </div>
+        </nav>
 
-          {/* Section système */}
+        {/* Profil de l'utilisateur connecté */}
+        <div className="border-t border-slate-800 p-4 shrink-0">
+
+          {/* Accès au profil */}
+          {/* <NavLink
+            to="/profil"
+            onClick={handleNavigation}
+            className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-800 transition"
+          >
+            {/* Photo ou initiale */}
+            {/* <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-semibold shrink-0 overflow-hidden">
+              {profil.photo ? (
+                <img
+                  src={profil.photo}
+                  alt={profil.nom}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                profil.nom?.[0]?.toUpperCase()
+              )}
+            </div> */}
+
+            {/* Informations utilisateur */}
+            {/* <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">
+                {profil.nom || user?.nom || "Utilisateur"}
+              </p>
+
+              <p className="text-xs text-slate-400 truncate">
+                {roleLabel}
+              </p>
+            </div> */}
+          {/* </NavLink> */}
+
+           {/* Section système */}
           <p className="text-xs uppercase tracking-wider text-slate-500 px-3 mb-3 mt-8">
             {t("nav_systeme")}
           </p>
@@ -176,41 +211,6 @@ function Sidebar({ isOpen, onClose }) {
             <span>
               {t("nav_parametres")}
             </span>
-          </NavLink>
-        </nav>
-
-        {/* Profil de l'utilisateur connecté */}
-        <div className="border-t border-slate-800 p-4 shrink-0">
-
-          {/* Accès au profil */}
-          <NavLink
-            to="/profil"
-            onClick={handleNavigation}
-            className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-800 transition"
-          >
-            {/* Photo ou initiale */}
-            <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-semibold shrink-0 overflow-hidden">
-              {profil.photo ? (
-                <img
-                  src={profil.photo}
-                  alt={profil.nom}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                profil.nom?.[0]?.toUpperCase()
-              )}
-            </div>
-
-            {/* Informations utilisateur */}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">
-                {profil.nom || user?.nom || "Utilisateur"}
-              </p>
-
-              <p className="text-xs text-slate-400 truncate">
-                {roleLabel}
-              </p>
-            </div>
           </NavLink>
 
           {/* Bouton de déconnexion */}

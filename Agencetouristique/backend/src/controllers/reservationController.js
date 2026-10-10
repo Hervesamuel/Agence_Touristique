@@ -50,7 +50,7 @@ const updateReservation = async (req, res) => {
         // Vérification de l'identifiant
         if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: "Identifiant de la réservation invalide" });
 
-        const reservation = await reservationService.updateReservation(id, req.body);
+        const reservation = await reservationService.updateReservation(id, req.body, req.user.id);
         res.status(200).json({ message: "Réservation modifiée avec succès", data: reservation });
     } catch (error) {
         if (error.statusCode === 404) return res.status(404).json({ message: error.message });
@@ -67,7 +67,7 @@ const deleteReservation = async (req, res) => {
         // Vérification de l'identifiant
         if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: "Identifiant de la réservation invalide" });
 
-        const result = await reservationService.deleteReservation(id);
+        const result = await reservationService.deleteReservation(id, req.user.id);
         res.status(200).json(result);
     } catch (error) {
         if (error.statusCode === 404) return res.status(404).json({ message: error.message });

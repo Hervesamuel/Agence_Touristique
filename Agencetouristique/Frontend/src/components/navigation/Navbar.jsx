@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { getNombreNonLues } from "../../services/notificationsService";
 import { getUser } from "../../services/authService";
 import useProfil from "../../hooks/useProfil";
+import { formaterBadge } from "../../utils/formaterBadge";
+
 
 // Mapping route -> clés de traduction (titre + description)
 const pageKeys = {
@@ -94,7 +96,7 @@ function Navbar({ onMenuClick }) {
           <span className="text-lg">🔔</span>
           {nonLues > 0 && (
             <span className="absolute -top-1.5 -right-1.5 min-w-[19px] h-[20px] px-1.5 flex items-center justify-center bg-red-500 text-white text-xs font-bold leading-none rounded-full border-2 border-white dark:border-slate-800">
-              {nonLues > 99 ? "99+" : nonLues}
+             {formaterBadge(nonLues)}
             </span>
           )}
         </NavLink>

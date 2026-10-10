@@ -125,10 +125,59 @@ const deleteNotification = async (idnotif) => {
     return { message: "Notification supprimée" };
 };
 
+// =====================================================
+// NOTIFICATION CIBLEE : RESPONSABLE DE L'AGENCE + AGENT AUTEUR DE L'ACTION
+// =====================================================
+const notifierResponsableEtAgent = async ({ idagt, type, action, reference, verbe, description }) => {
+    try {
+        if (!idagt) return;
+
+        // Récupération de l'agent (nom et agence) puis du responsable de son agence
+        const agent = await prisma.agent.findUnique({
+            where: { idagt },
+            select: { nom: true, idagc: true },
+        });
+        if (!agent?.idagc) return;
+
+        const agence = await prisma.agence.findUnique({
+            where: { idagc: agent.idagc },
+            select: { idresp: true },
+        });
+
+        // Notification pour l'agent lui-même
+        const notifications = [{
+            message: `Vous avez ${verbe} ${description}`,
+            type, action,
+            reference: reference || null,
+            idagc: agent.idagc,
+            iddestinataire: idagt,
+            roleDestinataire: "AGENT",
+        }];
+
+        // Notification pour le responsable de l'agence
+        if (agence?.idresp) {
+            notifications.push({
+                message: `${agent.nom} a ${verbe} ${description}`,
+                type, action,
+                reference: reference || null,
+                idagc: agent.idagc,
+                iddestinataire: agence.idresp,
+                roleDestinataire: "RESPONSABLE",
+            });
+        }
+
+        await prisma.notifications.createMany({ data: notifications });
+    } catch (error) {
+        // Une notification ratée ne doit jamais faire échouer l'action principale
+        console.error("Erreur lors de la notification responsable/agent :", error.message);
+    }
+};
+
 module.exports = {
     notifierAgence,
     getNotificationsUtilisateur,
     getNombreNonLues,
+    notifierResponsableEtAgent,
     marquerCommeLue,
     marquerToutesCommeLues,
     deleteNotification,

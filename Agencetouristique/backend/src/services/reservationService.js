@@ -2,7 +2,7 @@
 require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const { PrismaPg } = require("@prisma/adapter-pg");
-
+const { notifierResponsableEtAgent } = require("./notificationsService");
 // Configuration de l'adaptateur PostgreSQL
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 // Création de l'instance Prisma
@@ -91,7 +91,9 @@ const updateReservation = async (id, data) => {
     if (data.telclient !== undefined) updateData.telclient = data.telclient;
 
     try {
-        return await prisma.reservation.update({ where: { idres: id }, data: updateData, select: selectFields });
+       // Notification : modification
+        await notifierReservation("MODIFICATION", reservation, idagtActeur);
+        return reservation;
     } catch (error) {
         if (error.code === "P2003") {
             const err = new Error("Le circuit ou l'agent indiqué n'existe pas");
@@ -101,6 +103,7 @@ const updateReservation = async (id, data) => {
         throw error;
     }
 };
+
 
 // =====================================================// SUPPRESSION D'UNE RESERVATION// =====================================================
 const deleteReservation = async (id) => {
@@ -114,7 +117,7 @@ const deleteReservation = async (id) => {
 
     // Suppression de la réservation
     try {
-        await prisma.reservation.delete({ where: { idres: id } });
+            const existingReservation = await prisma.reservation.findUnique({ where: { idres: id }, select: selectFields });
     } catch (error) {
         // Une réservation peut être liée à un reçu
         if (error.code === "P2003") {
@@ -128,4 +131,19 @@ const deleteReservation = async (id) => {
     return { message: "Réservation supprimée avec succès" };
 };
 
-module.exports = { createReservation, getAllReservations, getReservationById, updateReservation, deleteReservation };
+
+// Verbes utilisés dans les messages de notification
+const verbes = { CREATION: "créé", MODIFICATION: "modifié", SUPPRESSION: "supprimé" };
+
+// Envoie la notification liée à une réservation (au responsable et à l'agent qui agit)
+const notifierReservation = (action, reservation, idagtActeur) =>
+    notifierResponsableEtAgent({
+        idagt: idagtActeur,
+        type: "RESERVATION",
+        action,
+        reference: reservation.nomclient || null,
+        verbe: verbes[action],
+        description: `la réservation ${reservation.circuit?.nom || "#" + reservation.idres} (client : ${reservation.nomclient || "non renseigné"})`,
+    });
+
+module.exports = { createReservation, getAllReservations, getReservationById, updateReservation, deleteReservation, notifierReservation };
