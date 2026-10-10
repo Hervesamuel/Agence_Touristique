@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { createReservation, getReservationById, updateReservation } from "../../services/reservationService";
 import { getCircuits } from "../../services/circuitService";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 // Limites de saisie : le clavier est bloqué au-delà (attribut maxLength)
 const LIMITES = { nomclient: 100, emailclient: 100, telclient: 13, lieu: 100 };
@@ -36,23 +37,25 @@ const nettoyer = {
 };
 
 // Validation complète avant envoi : retourne un objet { champ: "message" }
-const valider = (f, modeEdition = false) => {
+// (t = fonction de traduction, passée en paramètre car cette fonction est hors du composant)
+const valider = (f, modeEdition, t) => {
   const e = {};
-  if (!f.nomclient.trim()) e.nomclient = "Le nom du client est obligatoire";
-  if (!f.telclient) e.telclient = "Le téléphone est obligatoire";
-  else if (!REGEX_TEL.test(f.telclient)) e.telclient = "Numéro invalide (ex : 034 12 345 67)";
-  if (f.emailclient && !REGEX_EMAIL.test(f.emailclient)) e.emailclient = "Adresse email invalide";
-  if (!f.idcircuit) e.idcircuit = "Choisissez un circuit";
-  if (!f.lieu.trim()) e.lieu = "Le lieu est obligatoire";
-  if (!f.datevoyage) e.datevoyage = "La date de voyage est obligatoire";
-  else if (!modeEdition && f.datevoyage < aujourdhui()) e.datevoyage = "La date ne peut pas être dans le passé";
-  if (!f.dateretour) e.dateretour = "La date de retour est obligatoire";
-  else if (f.dateretour < f.datevoyage) e.dateretour = "Le retour doit être après le départ";
+  if (!f.nomclient.trim()) e.nomclient = t("resform_err_nom");
+  if (!f.telclient) e.telclient = t("resform_err_tel_obligatoire");
+  else if (!REGEX_TEL.test(f.telclient)) e.telclient = t("resform_err_tel_invalide");
+  if (f.emailclient && !REGEX_EMAIL.test(f.emailclient)) e.emailclient = t("resform_err_email");
+  if (!f.idcircuit) e.idcircuit = t("resform_err_circuit");
+  if (!f.lieu.trim()) e.lieu = t("resform_err_lieu");
+  if (!f.datevoyage) e.datevoyage = t("resform_err_datevoyage_obligatoire");
+  else if (!modeEdition && f.datevoyage < aujourdhui()) e.datevoyage = t("resform_err_datevoyage_passe");
+  if (!f.dateretour) e.dateretour = t("resform_err_dateretour_obligatoire");
+  else if (f.dateretour < f.datevoyage) e.dateretour = t("resform_err_dateretour_avant");
   return e;
 };
 
 function ReservationForm() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   // Identifiant présent dans l'URL = mode modification
   const { id } = useParams();
   const modeEdition = Boolean(id);
@@ -104,7 +107,7 @@ function ReservationForm() {
   // Envoi du formulaire (création ou modification)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const e2 = valider(form, modeEdition);
+    const e2 = valider(form, modeEdition, t);
     setErreurs(e2);
     if (Object.keys(e2).length > 0) return; // on arrête s'il y a des erreurs
 
@@ -146,7 +149,7 @@ function ReservationForm() {
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl w-full max-w-2xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
         {/* En-tête de la Modal */}
         <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
-          <h1 className="text-xl font-semibold text-slate-800 dark:text-white">Nouvelle réservation</h1>
+          <h1 className="text-xl font-semibold text-slate-800 dark:text-white">{t("resform_titre")}</h1>
           <button onClick={fermerModal} className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
             <X size={20} />
           </button>
@@ -160,7 +163,7 @@ function ReservationForm() {
         <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Nom du client */}
           <div>
-            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">Nom du client *</label>
+            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">{t("resform_nom_label")}</label>
             <input name="nomclient" value={form.nomclient} onChange={handleChange} maxLength={LIMITES.nomclient} className={classeChamp("nomclient")} />
             <div className="flex justify-between text-xs mt-1">
               <span className="text-red-500">{erreurs.nomclient}</span>
@@ -170,25 +173,25 @@ function ReservationForm() {
 
           {/* Téléphone */}
           <div>
-            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">Téléphone *</label>
+            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">{t("resform_tel_label")}</label>
             <input name="telclient" value={form.telclient} onChange={handleChange} maxLength={LIMITES.telclient} inputMode="tel" placeholder="0341234567" className={classeChamp("telclient")} />
             <span className="text-xs text-red-500">{erreurs.telclient}</span>
           </div>
 
           {/* Email (optionnel) */}
           <div>
-            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">Email (optionnel)</label>
+            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">{t("resform_email_label")}</label>
             <input type="email" name="emailclient" value={form.emailclient} onChange={handleChange} maxLength={LIMITES.emailclient} className={classeChamp("emailclient")} />
             <span className="text-xs text-red-500">{erreurs.emailclient}</span>
           </div>
 
           {/* Circuit */}
           <div>
-            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">Circuit *</label>
+            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">{t("resform_circuit_label")}</label>
             <select name="idcircuit" value={form.idcircuit} onChange={handleChange} className={classeChamp("idcircuit")}>
-              <option value="">-- Choisir --</option>
+              <option value="">{t("resform_choisir")}</option>
               {circuits.map((c) => (
-                <option key={c.idcircuit} value={c.idcircuit}>{c.nom || c.libelle || c.titre || `Circuit #${c.idcircuit}`}</option>
+                <option key={c.idcircuit} value={c.idcircuit}>{c.nom || c.libelle || c.titre || `${t("resform_circuit_prefix")} #${c.idcircuit}`}</option>
               ))}
             </select>
             <span className="text-xs text-red-500">{erreurs.idcircuit}</span>
@@ -196,19 +199,19 @@ function ReservationForm() {
 
           {/* Lieu */}
           <div className="md:col-span-2">
-            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">Lieu *</label>
+            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">{t("resform_lieu_label")}</label>
             <input name="lieu" value={form.lieu} onChange={handleChange} maxLength={LIMITES.lieu} className={classeChamp("lieu")} />
             <span className="text-xs text-red-500">{erreurs.lieu}</span>
           </div>
 
           {/* Dates */}
           <div>
-            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">Date de voyage *</label>
+            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">{t("resform_datevoyage_label")}</label>
             <input type="date" name="datevoyage" value={form.datevoyage} onChange={handleChange} min={aujourdhui()} className={classeChamp("datevoyage")} />
             <span className="text-xs text-red-500">{erreurs.datevoyage}</span>
           </div>
           <div>
-            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">Date de retour *</label>
+            <label className="block text-xs uppercase font-medium text-slate-500 dark:text-slate-400 mb-1">{t("resform_dateretour_label")}</label>
             <input type="date" name="dateretour" value={form.dateretour} onChange={handleChange} min={form.datevoyage || aujourdhui()} className={classeChamp("dateretour")} />
             <span className="text-xs text-red-500">{erreurs.dateretour}</span>
           </div>
@@ -216,10 +219,10 @@ function ReservationForm() {
           {/* Boutons de la Modal */}
           <div className="md:col-span-2 flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700 mt-2">
             <button type="button" onClick={fermerModal} className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
-              Annuler
+              {t("btn_annuler")}
             </button>
             <button type="submit" disabled={envoi} className="px-5 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 disabled:opacity-60 transition">
-              {envoi ? "Enregistrement..." : "Créer la réservation"}
+              {envoi ? t("resform_enregistrement") : t("resform_creer_btn")}
             </button>
           </div>
         </form>
