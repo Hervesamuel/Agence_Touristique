@@ -365,10 +365,10 @@ const forgotPassword = async (email) => {
     // Email inconnu : on répond sans rien faire
     if (!cible) return reponse;
 
-    // Génération du code, chiffrement et expiration (5 minutes)
+    // Génération du code, chiffrement et expiration (30 minutes)
     const code = genererCode();
     const codeHash = await bcrypt.hash(code, 10);
-    const expiration = new Date(Date.now() + 5 * 60 * 1000);
+    const expiration = new Date(Date.now() + 30 * 60 * 1000);
 
     await prisma[cible.table].update({
         where: cible.where,
