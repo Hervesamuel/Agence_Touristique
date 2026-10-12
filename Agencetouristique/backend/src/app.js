@@ -30,6 +30,10 @@ const authRoutes = require("./routes/authRoutes")
 const notificationsRoutes = require("./routes/notificationsRoutes");
 // Importation de route de profil
 const profilRoutes = require("./routes/profilRoutes");
+// Importation de Route d'envoei de SMS
+const smsRoutes = require("./routes/smsRoutes");
+
+
 
 // Middleware permettant à Express de comprendre les données JSON
 app.use(express.json());
@@ -64,7 +68,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/notifications", notificationsRoutes);
 // ROUTE PROFIL
 app.use("/api/profil", profilRoutes);
-
+// ROUTE SMS
+app.use("/api/sms", smsRoutes);
 
 // Route de test
 app.get("/", (req, res) => {
