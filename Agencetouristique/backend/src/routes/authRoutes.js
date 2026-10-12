@@ -16,11 +16,18 @@ const authSchema = require("../utils/authSchema");
 // Création du routeur
 const router = express.Router();
 
+
 // =====================================================
 // ROUTE : CONNEXION
 // =====================================================
 // POST /api/auth/login
 router.post("/login", validate(authSchema.login), authController.login);
+
+// =====================================================
+// ROUTE : MOT DE PASSE OUBLIE
+// =====================================================
+// POST /api/auth/forgot-password
+router.post("/forgot-password", validate(authSchema.forgotPasswordSchema), authController.forgotPassword);
 
 // =====================================================
 // ROUTE : RECUPERATION DU PROFIL

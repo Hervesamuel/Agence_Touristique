@@ -71,6 +71,25 @@ const updatePassword = async (req, res) => {
         // Gestion des erreurs
         return res.status(error.statusCode || 500).json({ message: error.message || "Erreur lors de la modification du mot de passe" });
     }
+
+    
+};
+
+// =====================================================
+// MOT DE PASSE OUBLIE
+// =====================================================
+const forgotPassword = async (req, res) => {
+    try {
+        // Récupération de l'email envoyé
+        const { email } = req.body;
+        // Appel du service d'envoi du code temporaire
+        const result = await authService.forgotPassword(email);
+        // Retour de la réponse
+        return res.status(200).json(result);
+    } catch (error) {
+        // Gestion des erreurs
+        return res.status(error.statusCode || 500).json({ message: error.message || "Erreur lors de la demande du code" });
+    }
 };
 
 // =====================================================
@@ -80,5 +99,6 @@ module.exports = {
     login,
     getProfile,
     updateProfile,
-    updatePassword
+    updatePassword,
+    forgotPassword
 };

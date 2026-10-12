@@ -11,7 +11,13 @@ const loginSchema = z.object({
         .min(8, "Le mot de passe doit contenir au moins 8 caractères")
 });
 
+// Schéma de validation : mot de passe oublié
+const forgotPasswordSchema = z.object({
+    email: z.string().email("Adresse email invalide")
+});
+
 // Exportation du schéma
 module.exports = {
-    login: loginSchema
+    login: loginSchema,
+    forgotPasswordSchema
 };

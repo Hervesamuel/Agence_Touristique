@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
+const crypto = require("crypto");
+const { envoyerCodeReset } = require("./emailmdpoublierService");
 // Chargement des variables d'environnement
 require("dotenv").config();
 
@@ -14,6 +15,31 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 // Création de l'instance Prisma Client
 const prisma = new PrismaClient({ adapter });
 
+
+// =====================================================
+// OUTILS : CODE TEMPORAIRE
+// =====================================================
+
+// Génère un code aléatoire de 8 caractères (ex : "A3F9C21B")
+const genererCode = () => crypto.randomBytes(4).toString("hex").toUpperCase();
+
+// Vérifie le mot de passe OU le code temporaire encore valide
+const verifierMdp = async (utilisateur, mdp) => {
+    // Cas 1 : mot de passe normal
+    if (await bcrypt.compare(mdp, utilisateur.mdp)) {
+        return { ok: true, viaCode: false };
+    }
+
+    // Cas 2 : code temporaire non expiré
+    if (utilisateur.codeReset && utilisateur.codeResetExpire && utilisateur.codeResetExpire > new Date()) {
+        if (await bcrypt.compare(mdp.trim().toUpperCase(), utilisateur.codeReset)) {
+            return { ok: true, viaCode: true };
+        }
+    }
+
+    return { ok: false, viaCode: false };
+};
+
 // =====================================================
 // CONNEXION
 // =====================================================
@@ -25,8 +51,8 @@ const login = async (email, mdp) => {
 
     if (responsable) {
         // Vérification du mot de passe
-        const passwordCorrect = await bcrypt.compare(mdp, responsable.mdp);
-        if (!passwordCorrect) {
+        const verif = await verifierMdp(responsable, mdp);
+        if (!verif.ok) {
             const error = new Error("Email ou mot de passe incorrect");
             error.statusCode = 401;
             throw error;
@@ -49,6 +75,7 @@ const login = async (email, mdp) => {
         return {
             message: "Connexion réussie",
             token: token,
+            doitChangerMdp: verif.viaCode,
             user: { id: responsable.idresp, idresp: responsable.idresp, idagc: agence?.idagc, nom: responsable.nom, email: responsable.email, role: "RESPONSABLE" }
         };
     }
@@ -59,9 +86,9 @@ const login = async (email, mdp) => {
     const agent = await prisma.agent.findUnique({ where: { email: email } });
 
     if (agent) {
-        // Vérification du mot de passe
-        const passwordCorrect = await bcrypt.compare(mdp, agent.mdp);
-        if (!passwordCorrect) {
+        // Vérification du mot de passe (ou du code temporaire)
+        const verif = await verifierMdp(agent, mdp);
+        if (!verif.ok) {
             const error = new Error("Email ou mot de passe incorrect");
             error.statusCode = 401;
             throw error;
@@ -84,6 +111,7 @@ const login = async (email, mdp) => {
         return {
             message: "Connexion réussie",
             token: token,
+            doitChangerMdp: verif.viaCode,
             user: { id: agent.idagt, nom: agent.nom, email: agent.email, role: "AGENT" }
         };
     }
@@ -95,8 +123,8 @@ const login = async (email, mdp) => {
 
     if (chauffeur) {
         // Vérification du mot de passe
-        const passwordCorrect = await bcrypt.compare(mdp, chauffeur.mdp);
-        if (!passwordCorrect) {
+        const verif = await verifierMdp(chauffeur, mdp);
+        if (!verif.ok) {
             const error = new Error("Email ou mot de passe incorrect");
             error.statusCode = 401;
             throw error;
@@ -119,6 +147,7 @@ const login = async (email, mdp) => {
         return {
             message: "Connexion réussie",
             token: token,
+            doitChangerMdp: verif.viaCode,
             user: { id: chauffeur.idchauffeur, nom: chauffeur.nom, email: chauffeur.email, role: "CHAUFFEUR" }
         };
     }
@@ -241,29 +270,24 @@ const updateProfile = async (user, data) => {
     throw error;
 };
 
+
 // =====================================================
 // MODIFICATION DU MOT DE PASSE
 // =====================================================
 const updatePassword = async (user, ancienMdp, nouveauMdp) => {
     let utilisateur = null;
 
-    // =================================================
-    // RECHERCHE DU RESPONSABLE
-    // =================================================
+    // Recherche du Responsable
     if (user.role === "RESPONSABLE") {
         utilisateur = await prisma.responsable.findUnique({ where: { idresp: user.id } });
     }
 
-    // =================================================
-    // RECHERCHE DE L'AGENT
-    // =================================================
+    // Recherche de l'Agent
     if (user.role === "AGENT") {
         utilisateur = await prisma.agent.findUnique({ where: { idagt: user.id } });
     }
 
-    // =================================================
-    // RECHERCHE DU CHAUFFEUR
-    // =================================================
+    // Recherche du Chauffeur
     if (user.role === "CHAUFFEUR") {
         utilisateur = await prisma.chauffeur.findUnique({ where: { idchauffeur: user.id } });
     }
@@ -275,9 +299,9 @@ const updatePassword = async (user, ancienMdp, nouveauMdp) => {
         throw error;
     }
 
-    // Vérification de l'ancien mot de passe
-    const passwordCorrect = await bcrypt.compare(ancienMdp, utilisateur.mdp);
-    if (!passwordCorrect) {
+    // Vérification de l'ancien mot de passe (ou du code temporaire)
+    const verif = await verifierMdp(utilisateur, ancienMdp);
+    if (!verif.ok) {
         const error = new Error("L'ancien mot de passe est incorrect");
         error.statusCode = 401;
         throw error;
@@ -293,29 +317,72 @@ const updatePassword = async (user, ancienMdp, nouveauMdp) => {
     // Chiffrement du nouveau mot de passe
     const nouveauMdpHash = await bcrypt.hash(nouveauMdp, 10);
 
-    // =================================================
-    // MODIFICATION DU MOT DE PASSE DU RESPONSABLE
-    // =================================================
+    // Données à enregistrer : nouveau mot de passe + suppression du code temporaire
+    const donnees = { mdp: nouveauMdpHash, codeReset: null, codeResetExpire: null };
+
+    // Modification du mot de passe du Responsable
     if (user.role === "RESPONSABLE") {
-        await prisma.responsable.update({ where: { idresp: user.id }, data: { mdp: nouveauMdpHash } });
+        await prisma.responsable.update({ where: { idresp: user.id }, data: donnees });
     }
 
-    // =================================================
-    // MODIFICATION DU MOT DE PASSE DE L'AGENT
-    // =================================================
+    // Modification du mot de passe de l'Agent
     if (user.role === "AGENT") {
-        await prisma.agent.update({ where: { idagt: user.id }, data: { mdp: nouveauMdpHash } });
+        await prisma.agent.update({ where: { idagt: user.id }, data: donnees });
     }
 
-    // =================================================
-    // MODIFICATION DU MOT DE PASSE DU CHAUFFEUR
-    // =================================================
+    // Modification du mot de passe du Chauffeur
     if (user.role === "CHAUFFEUR") {
-        await prisma.chauffeur.update({ where: { idchauffeur: user.id }, data: { mdp: nouveauMdpHash } });
+        await prisma.chauffeur.update({ where: { idchauffeur: user.id }, data: donnees });
     }
 
     // Retour du résultat
     return { message: "Mot de passe modifié avec succès" };
+};
+
+// =====================================================
+// MOT DE PASSE OUBLIE : ENVOI DU CODE TEMPORAIRE
+// =====================================================
+const forgotPassword = async (email) => {
+    // Réponse identique que l'email existe ou non (sécurité)
+    const reponse = { message: "Si cet email existe, un code temporaire a été envoyé." };
+
+    // Recherche de l'email dans les 3 tables
+    let cible = null;
+
+    const responsable = await prisma.responsable.findUnique({ where: { email } });
+    if (responsable) cible = { table: "responsable", where: { idresp: responsable.idresp }, nom: responsable.nom };
+
+    if (!cible) {
+        const agent = await prisma.agent.findUnique({ where: { email } });
+        if (agent) cible = { table: "agent", where: { idagt: agent.idagt }, nom: agent.nom };
+    }
+
+    if (!cible) {
+        const chauffeur = await prisma.chauffeur.findUnique({ where: { email } });
+        if (chauffeur) cible = { table: "chauffeur", where: { idchauffeur: chauffeur.idchauffeur }, nom: chauffeur.nom };
+    }
+
+    // Email inconnu : on répond sans rien faire
+    if (!cible) return reponse;
+
+    // Génération du code, chiffrement et expiration (5 minutes)
+    const code = genererCode();
+    const codeHash = await bcrypt.hash(code, 10);
+    const expiration = new Date(Date.now() + 5 * 60 * 1000);
+
+    await prisma[cible.table].update({
+        where: cible.where,
+        data: { codeReset: codeHash, codeResetExpire: expiration }
+    });
+
+    // Envoi de l'email (une erreur d'envoi ne doit pas révéler l'existence du compte)
+    try {
+        await envoyerCodeReset(email, cible.nom, code);
+    } catch (err) {
+        console.error("Erreur d'envoi de l'email :", err.message);
+    }
+
+    return reponse;
 };
 
 // =====================================================
@@ -325,5 +392,6 @@ module.exports = {
     login,
     getProfile,
     updateProfile,
-    updatePassword
+    updatePassword,
+    forgotPassword
 };
