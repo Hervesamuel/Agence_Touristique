@@ -5,6 +5,8 @@ import { getReservations, deleteReservation } from "../../services/reservationSe
 import { getUser } from "../../services/authService";
 import { useLanguage } from "../../contexts/LanguageContext";
 import emailjs from "@emailjs/browser";
+// SMS (1/2) : envoi de SMS via le backend (API Orange Madagascar)
+import { envoyerSms } from "../../services/smsService";
 
 
 // Locale de formatage de date selon la langue de l'application
@@ -140,6 +142,38 @@ function Reservation() {
   };
 
   // =====================================================
+  // SMS (2/2) : ENVOI DU SMS AUX CLIENTS (API Orange via le backend)
+  // =====================================================
+  const handleSendSms = async () => {
+    const message = notificationMessage.trim();
+
+    if (message.length > 160) {
+      setNotificationError("Un SMS est limité à 160 caractères.");
+      return;
+    }
+
+    try {
+      setSending(true);
+      const bilan = await envoyerSms(selectedReservations.map((r) => r.idres), message);
+
+      if (bilan.envoyes > 0) {
+        setNotificationStatus(
+          `${bilan.envoyes} SMS envoyé(s).` +
+          (bilan.invalides > 0 ? ` ${bilan.invalides} numéro(s) invalide(s) ignoré(s).` : "")
+        );
+        setNotificationMessage("");
+      }
+      if (bilan.echecs > 0) {
+        setNotificationError(`${bilan.echecs} échec(s) : ${bilan.derniereErreur}`);
+      }
+    } catch (err) {
+      setNotificationError(err.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  // =====================================================
   // EMAILJS (3/5) : ENVOI DU MESSAGE AUX CLIENTS
   // =====================================================
   const handleSendMessage = async () => {
@@ -151,9 +185,9 @@ function Reservation() {
       return;
     }
 
-    // EmailJS envoie uniquement des e-mails (pas de SMS)
+    // SMS : envoyé par le backend via l'API Orange
     if (notificationType === "sms") {
-      setNotificationError("L'envoi par SMS n'est pas encore disponible. Choisissez E-mail.");
+      await handleSendSms();
       return;
     }
 

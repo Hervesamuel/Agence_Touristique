@@ -48,6 +48,9 @@ model Responsable {
   photo        String?
   email        String   @unique
   mdp          String
+  // Code temporaire de récupération (haché) et sa date d'expiration
+  codeReset        String?
+  codeResetExpire  DateTime?
   genre        String
   ville        String
 
@@ -69,6 +72,9 @@ model Agent {
   photo        String?
   email        String        @unique
   mdp          String
+  // Code temporaire de récupération (haché) et sa date d'expiration
+  codeReset        String?
+  codeResetExpire  DateTime?
   genre        String
   ville        String
   statut       String
@@ -100,6 +106,9 @@ model Chauffeur {
   photo        String?
   email        String     @unique
   mdp          String
+  // Code temporaire de récupération (haché) et sa date d'expiration
+  codeReset        String?
+  codeResetExpire  DateTime?
   genre        String
   ville        String
   statut       String
