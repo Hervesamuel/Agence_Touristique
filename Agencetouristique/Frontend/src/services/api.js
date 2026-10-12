@@ -17,6 +17,7 @@ const API = {
   recus: `${API_URL}/recus`,
   notifications: `${API_URL}/notifications`,
   profil: `${API_URL}/profil`,
+  sms: `${API_URL}/sms`,
 };
 
 // =====================================================
