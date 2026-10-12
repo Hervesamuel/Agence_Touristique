@@ -30,8 +30,46 @@ const login = async (email, mdp) => {
 
         // Stockage des informations utilisateur
         localStorage.setItem("user", JSON.stringify(data.user));
+                // Mémorisation : l'utilisateur s'est connecté avec un code temporaire
+        if (data.doitChangerMdp) {
+            sessionStorage.setItem("doitChangerMdp", "1");
+        } else {
+            sessionStorage.removeItem("doitChangerMdp");
+        }
 
         // Retour des informations de connexion
+        return data;
+
+    } catch (error) {
+        // Gestion des erreurs de connexion au serveur
+        if (error instanceof TypeError) {
+            throw new Error("Impossible de contacter le serveur. Veuillez réessayer.");
+        }
+
+        throw error;
+    }
+};
+
+// =====================================================
+// MOT DE PASSE OUBLIE
+// =====================================================
+const forgotPassword = async (email) => {
+    try {
+        // Envoi de l'email au backend
+        const response = await fetch(`${API_URL}/forgot-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+
+        // Conversion de la réponse en JSON
+        const data = await response.json();
+
+        // Vérification de la réponse
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de l'envoi du code");
+        }
+
         return data;
 
     } catch (error) {
@@ -68,6 +106,8 @@ const logout = () => {
     localStorage.removeItem("token");
     // Suppression des informations utilisateur
     localStorage.removeItem("user");
+    // Suppression du drapeau de changement de mot de passe obligatoire
+    sessionStorage.removeItem("doitChangerMdp");
 };
 
 // =====================================================
@@ -97,4 +137,4 @@ const expireSession = () => {
 // EXPORTATION DU SERVICE
 // =====================================================
 
-export { login, getToken, getUser, logout, getTokenExpiration, expireSession };
+export { login, forgotPassword, getToken, getUser, logout, getTokenExpiration, expireSession };

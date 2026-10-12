@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
+// AJOUT : importation de useRef
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { getMonProfil, updateMonProfil, changerMotDePasse } from "../services/profilService";
 import { useLanguage } from "../contexts/LanguageContext";
 
 function Profil() {
   const { t } = useLanguage();
+
+  // AJOUT : connexion avec un code temporaire, changement de mot de passe obligatoire
+  const [doitChangerMdp, setDoitChangerMdp] = useState(
+    sessionStorage.getItem("doitChangerMdp") === "1"
+  );
+
+  // AJOUT : référence vers l'avertissement du mot de passe
+  const mdpRef = useRef(null);
 
   const [formData, setFormData] = useState({
     nom: "",
@@ -52,6 +62,13 @@ function Profil() {
     };
     fetchProfil();
   }, []);
+
+  // AJOUT : défilement automatique vers l'avertissement
+  useEffect(() => {
+    if (!loading && doitChangerMdp && mdpRef.current) {
+      mdpRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [loading, doitChangerMdp]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -133,6 +150,9 @@ function Profil() {
       await changerMotDePasse(mdpData.mdpActuel, mdpData.mdpNouveau);
       setMdpSuccess(t("profil_mdp_succes"));
       setMdpData({ mdpActuel: "", mdpNouveau: "", mdpConfirmer: "" });
+      // AJOUT : le changement obligatoire est terminé, on retire l'avertissement
+      sessionStorage.removeItem("doitChangerMdp");
+      setDoitChangerMdp(false);
     } catch (err) {
       setMdpError(err.message || t("profil_erreur_defaut"));
     } finally {
@@ -282,6 +302,18 @@ function Profil() {
           </button>
         </form>
       </div>
+
+      {/* AJOUT : avertissement, connexion avec un code temporaire */}
+      {doitChangerMdp && (
+        <div
+          ref={mdpRef}
+          className="mb-4 max-w-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-sm rounded-xl p-3 font-medium"
+        >
+          Vous êtes connecté avec un code temporaire. Dans le formulaire « Changer le mot de passe »
+          ci-dessous, saisissez ce code dans « Mot de passe actuel », puis choisissez votre nouveau
+          mot de passe (8 caractères minimum).
+        </div>
+      )}
 
       {/* Changement de mot de passe */}
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm max-w-lg">

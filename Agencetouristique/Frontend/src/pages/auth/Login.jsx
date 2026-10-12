@@ -19,7 +19,12 @@ function Login() {
     try {
       const data = await login(email, mdp);
       console.log("Connexion réussie :", data);
-      navigate("/dashboard", { replace: true });
+      // Connexion avec un code temporaire : obligation de changer le mot de passe
+      if (data.doitChangerMdp) {
+        navigate("/profil", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
     } catch (error) {
       if (error.message === "Failed to fetch") {
         setError(t("login_erreur_serveur"));
@@ -77,8 +82,9 @@ function Login() {
           </div>
 
           <div className="flex justify-end mb-6">
-            <button
+                        <button
               type="button"
+              onClick={() => navigate("/mot-de-passe-oublie")}
               className="text-sm text-teal-600 dark:text-teal-400 hover:underline"
             >
               {t("login_mdp_oublie")}

@@ -33,6 +33,11 @@ import Profil from "../pages/Profil";
 
 import ReservationForm from "../pages/agent/ReservationForm";
 
+// Importation de la page mot de passe oublié
+import ForgotPassword from "../pages/auth/ForgotPassword";
+
+
+
 function ProtectedLayout() {
 
   
@@ -78,6 +83,8 @@ function AppRoutes() {
     <Routes>
       {/* Page de connexion */}
       <Route path="/login" element={<Login />} />
+       {/* Page mot de passe oublié */}
+      <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
 
       {/* Pages protégées */}
       <Route element={<ProtectedLayout />}>
