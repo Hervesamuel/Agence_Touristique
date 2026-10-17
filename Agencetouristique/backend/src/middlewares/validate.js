@@ -9,7 +9,7 @@ const validate = (schema) => {
         // Vérification du résultat de la validation
         if (!result.success) {
             return res.status(400).json({
-                message: "Données invalides",
+                message: "Le mot de passe doit être au moins 8 caractères",
                 errors: result.error.issues
             });
         }
