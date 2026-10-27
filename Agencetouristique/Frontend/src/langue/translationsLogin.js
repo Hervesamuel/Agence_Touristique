@@ -11,7 +11,7 @@ const translationsLogin = {
     login_mdp_oublie: "Mot de passe oublié ?",
     login_btn: "Se connecter",
     login_btn_en_cours: "Connexion...",
-    login_erreur_serveur: "Impossible de contacter le serveur. Veuillez réessayer.",
+    login_erreur_serveur: ".",
     login_footer: "Plateforme de gestion d'agence touristique",
   },
   mg: {

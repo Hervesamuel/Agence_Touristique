@@ -245,7 +245,7 @@ model Notifications {
 
   // Date de création
   date             DateTime @default(now())
-  // sont répartis sur 3 tables distinctes — Responsable, Agent, Chauffeur)
+  // sont répartis sur 3 tables distinctes — Responsable, Agent, Chauffeur
   iddestinataire   Int
   roleDestinataire String   // "RESPONSABLE" | "AGENT" | "CHAUFFEUR"
 

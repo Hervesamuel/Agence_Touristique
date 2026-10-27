@@ -43,7 +43,7 @@ const login = async (email, mdp) => {
     } catch (error) {
         // Gestion des erreurs de connexion au serveur
         if (error instanceof TypeError) {
-            throw new Error("Impossible de contacter le serveur. Veuillez réessayer.");
+            throw new Error("Impossible de contacter le serveur. Veuillez Rédemarrer!.");
         }
 
         throw error;
@@ -75,7 +75,7 @@ const forgotPassword = async (email) => {
     } catch (error) {
         // Gestion des erreurs de connexion au serveur
         if (error instanceof TypeError) {
-            throw new Error("Impossible de contacter le serveur. Veuillez réessayer.");
+            throw new Error("Impossible de contacter le serveur. Veuillez Rédemarrer!.");
         }
 
         throw error;

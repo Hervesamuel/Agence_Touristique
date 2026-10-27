@@ -62,6 +62,31 @@ const IconInbox = (p) => (
   </svg>
 );
 
+// Icônes décoratives du tableau des réservations
+const IconUser = (p) => (
+  <svg viewBox="0 0 20 20" fill="none" {...p}>
+    <circle cx="10" cy="7" r="3" stroke="currentColor" strokeWidth="1.4" />
+    <path
+      d="M4 16.5c0-3 2.7-5 6-5s6 2 6 5"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const IconPin = (p) => (
+  <svg viewBox="0 0 20 20" fill="none" {...p}>
+    <path
+      d="M10 17s5.5-4.6 5.5-9A5.5 5.5 0 0 0 4.5 8c0 4.4 5.5 9 5.5 9z"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinejoin="round"
+    />
+    <circle cx="10" cy="8" r="2" stroke="currentColor" strokeWidth="1.4" />
+  </svg>
+);
+
 function Dashboard() {
   const { language, t } = useLanguage();
 
@@ -246,18 +271,25 @@ function Dashboard() {
     <main className="p-4 sm:p-6 lg:p-8 bg-[#FAF8F3] dark:bg-slate-900 min-h-full">
 
       {/* Message de bienvenue */}
-      <section className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#232821] dark:text-slate-100">
+      <section className="relative overflow-hidden mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 sm:p-7 rounded-2xl border border-[#E9E4D6] dark:border-slate-700 bg-gradient-to-br from-[#E8F0E3] via-white to-[#FAF8F3] dark:from-emerald-900/25 dark:via-slate-800 dark:to-slate-900 shadow-sm">
+
+        {/* Décor : halo lumineux en arrière-plan */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-12 -top-12 w-48 h-48 rounded-full bg-[#2F5233]/10 dark:bg-emerald-400/10 blur-2xl"
+        />
+
+        <div className="relative">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#232821] dark:text-slate-100">
             {t("dashboard_bienvenue")}
           </h1>
 
-          <p className="text-[#6B7268] dark:text-slate-400 mt-1">
+          <p className="text-[#6B7268] dark:text-slate-400 mt-1.5">
             {t("dashboard_apercu")}
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2 self-start sm:self-auto px-3.5 py-2 rounded-xl bg-[#E8F0E3] dark:bg-emerald-900/30 text-[#2F5233] dark:text-emerald-400 shrink-0">
+        <div className="relative inline-flex items-center gap-2 self-start sm:self-auto px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-900/60 backdrop-blur ring-1 ring-[#2F5233]/15 dark:ring-emerald-400/20 text-[#2F5233] dark:text-emerald-400 shrink-0">
           <IconCalendar className="w-4 h-4 shrink-0" />
           <span className="text-sm font-semibold capitalize">
             {aujourdHui}
@@ -278,14 +310,14 @@ function Dashboard() {
         {/* Réservations */}
         <div className="xl:col-span-2 bg-white dark:bg-slate-800 border border-[#E9E4D6] dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm">
 
-          <div className="flex items-center justify-between p-6 border-b border-[#E9E4D6] dark:border-slate-700">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3 p-6 border-b border-[#E9E4D6] dark:border-slate-700">
+            <div className="flex items-center gap-3 min-w-0">
 
-              <div className="w-9 h-9 shrink-0 rounded-lg bg-[#E8F0E3] dark:bg-emerald-900/30 text-[#2F5233] dark:text-emerald-400 flex items-center justify-center">
+              <div className="w-10 h-10 shrink-0 rounded-xl bg-[#E8F0E3] dark:bg-emerald-900/30 text-[#2F5233] dark:text-emerald-400 ring-1 ring-[#2F5233]/10 dark:ring-emerald-400/10 flex items-center justify-center">
                 <IconMap className="w-5 h-5" />
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <h2 className="font-semibold text-[#232821] dark:text-slate-100">
                   {t("dashboard_reservations_titre")}
                 </h2>
@@ -298,10 +330,10 @@ function Dashboard() {
 
             <Link
               to="/reservations"
-              className="inline-flex items-center gap-1 text-sm text-[#2F5233] dark:text-emerald-400 font-medium hover:text-[#22391F] dark:hover:text-emerald-300 shrink-0"
+              className="group inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#E8F0E3] dark:bg-emerald-900/30 text-[#2F5233] dark:text-emerald-400 hover:bg-[#DCE8D4] dark:hover:bg-emerald-900/50 transition-colors shrink-0"
             >
               {t("dashboard_voir_tout")}
-              <IconArrow className="w-3.5 h-3.5" />
+              <IconArrow className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
@@ -310,19 +342,19 @@ function Dashboard() {
 
               <thead className="bg-[#F4F0E6] dark:bg-slate-900/50 text-[#6B7268] dark:text-slate-400">
                 <tr>
-                  <th className="text-left px-6 py-3.5 font-medium">
+                  <th scope="col" className="text-left px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">
                     {t("dashboard_agent")}
                   </th>
 
-                  <th className="text-left px-6 py-3.5 font-medium">
+                  <th scope="col" className="text-left px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">
                     {t("dashboard_circuit")}
                   </th>
 
-                  <th className="text-left px-6 py-3.5 font-medium">
+                  <th scope="col" className="text-left px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">
                     {t("dashboard_date_voyage")}
                   </th>
 
-                  <th className="text-left px-6 py-3.5 font-medium">
+                  <th scope="col" className="text-left px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">
                     {t("dashboard_lieu")}
                   </th>
                 </tr>
@@ -336,9 +368,17 @@ function Dashboard() {
                       key={reservation.idres || index}
                       className="hover:bg-[#FBFAF6] dark:hover:bg-slate-700/40 transition-colors"
                     >
-                      <td className="px-6 py-4 font-medium text-[#232821] dark:text-slate-200">
-                        {reservation.agent?.nom ||
-                          `Agent #${reservation.idagt}`}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <span className="w-8 h-8 shrink-0 rounded-full bg-[#E8F0E3] dark:bg-emerald-900/30 text-[#2F5233] dark:text-emerald-400 flex items-center justify-center">
+                            <IconUser className="w-4 h-4" />
+                          </span>
+
+                          <span className="font-medium text-[#232821] dark:text-slate-200">
+                            {reservation.agent?.nom ||
+                              `Agent #${reservation.idagt}`}
+                          </span>
+                        </div>
                       </td>
 
                       <td className="px-6 py-4 text-[#6B7268] dark:text-slate-400">
@@ -346,19 +386,25 @@ function Dashboard() {
                           `Circuit #${reservation.idcircuit}`}
                       </td>
 
-                      <td className="px-6 py-4 text-[#6B7268] dark:text-slate-400">
-                        {formatDate(reservation.datevoyage)}
+                      <td className="px-6 py-4 text-[#6B7268] dark:text-slate-400 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-2 tabular-nums">
+                          <IconCalendar className="w-4 h-4 shrink-0 text-[#8B9186] dark:text-slate-500" />
+                          {formatDate(reservation.datevoyage)}
+                        </span>
                       </td>
 
                       <td className="px-6 py-4 text-[#6B7268] dark:text-slate-400">
-                        {reservation.lieu || "-"}
+                        <span className="inline-flex items-center gap-1.5">
+                          <IconPin className="w-4 h-4 shrink-0 text-[#8B9186] dark:text-slate-500" />
+                          {reservation.lieu || "-"}
+                        </span>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="px-6 py-14">
-                      <div className="flex flex-col items-center text-center gap-2">
+                    <td colSpan="4" className="px-6 py-8">
+                      <div className="flex flex-col items-center text-center gap-2 py-10 rounded-xl border border-dashed border-[#E0DAC8] dark:border-slate-600">
                         <IconInbox className="w-10 h-10 text-[#C7C2AE] dark:text-slate-600" />
 
                         <p className="text-[#8B9186] dark:text-slate-400 font-medium">
@@ -379,7 +425,7 @@ function Dashboard() {
 
           <div className="p-6 border-b border-[#E9E4D6] dark:border-slate-700 flex items-center gap-3">
 
-            <div className="w-9 h-9 shrink-0 rounded-lg bg-[#EFEBDE] dark:bg-slate-700 text-[#6B8E6B] dark:text-slate-300 flex items-center justify-center">
+            <div className="w-10 h-10 shrink-0 rounded-xl bg-[#EFEBDE] dark:bg-slate-700 text-[#6B8E6B] dark:text-slate-300 ring-1 ring-[#6B8E6B]/15 dark:ring-slate-500/20 flex items-center justify-center">
               <IconCalendar className="w-5 h-5" />
             </div>
 
@@ -394,15 +440,15 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="p-4 space-y-1">
+          <div className="p-4 space-y-1.5">
 
             {rendezVous.length > 0 ? (
               rendezVous.slice(0, 5).map((rdv, index) => (
                 <div
                   key={rdv.idrdv || index}
-                  className="flex items-center gap-3 p-2.5 hover:bg-[#FBFAF6] dark:hover:bg-slate-700/40 rounded-xl transition-colors"
+                  className="flex items-center gap-3 p-2.5 rounded-xl border border-transparent hover:border-[#E9E4D6] hover:bg-[#FBFAF6] dark:hover:border-slate-600 dark:hover:bg-slate-700/40 transition-colors"
                 >
-                  <div className="w-11 h-11 shrink-0 rounded-xl bg-[#E8F0E3] dark:bg-emerald-900/30 text-[#2F5233] dark:text-emerald-400 flex flex-col items-center justify-center leading-none">
+                  <div className="w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br from-[#E8F0E3] to-[#D3E3C9] dark:from-emerald-900/40 dark:to-emerald-900/20 text-[#2F5233] dark:text-emerald-400 ring-1 ring-[#2F5233]/10 dark:ring-emerald-400/10 flex flex-col items-center justify-center leading-none">
 
                     <span className="text-sm font-bold">
                       {rdv.date ? new Date(rdv.date).getDate() : "—"}
@@ -429,16 +475,17 @@ function Dashboard() {
                   </div>
 
                   <span
-                    className={`shrink-0 px-2 py-0.5 rounded-full text-xxs font-medium ${getStatusStyle(
+                    className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${getStatusStyle(
                       rdv.statut
                     )}`}
                   >
+                    <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-current" />
                     {translateStatus(rdv.statut)}
                   </span>
                 </div>
               ))
             ) : (
-              <div className="flex flex-col items-center text-center gap-2 py-10">
+              <div className="flex flex-col items-center text-center gap-2 py-10 rounded-xl border border-dashed border-[#E0DAC8] dark:border-slate-600">
                 <IconInbox className="w-10 h-10 text-[#C7C2AE] dark:text-slate-600" />
 
                 <p className="text-sm text-[#8B9186] dark:text-slate-400 font-medium">
@@ -454,4 +501,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Dashboard; 
