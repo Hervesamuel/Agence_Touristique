@@ -72,7 +72,12 @@ function Sidebar({ isOpen, onClose }) {
   const profil = useProfil();
 
   // Seuls les liens autorisés pour le rôle connecté sont affichés
-  const liensAutorises = mainNav.filter((item) => peutAcceder(role, item.path));
+  // Définition des menus accessibles selon le rôle
+const liensAutorises = role === "CHAUFFEUR"
+  ? mainNav.filter((item) =>
+      ["/dashboard", "/circuits", "/vehicules"].includes(item.path)
+    )
+  : mainNav.filter((item) => peutAcceder(role, item.path));
   const roleLabel = role === "RESPONSABLE" ? t("sidebar_titre_role") : t(`role_${(role || "").toLowerCase()}`);
 
   // Fermeture du menu mobile après navigation

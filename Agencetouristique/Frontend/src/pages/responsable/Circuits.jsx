@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { getCircuits, updateCircuit } from "../../services/circuitService";
 import { useLanguage } from "../../contexts/LanguageContext";
 import CircuitForm from "./CircuitForm";
+import { getUser } from "../../services/authService";
+
 
 function Circuits() {
   const { t } = useLanguage();
@@ -13,6 +15,10 @@ function Circuits() {
   const [error, setError] = useState("");
   const [togglingId, setTogglingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
+
+  // AJOUT : récupération du rôle de l'utilisateur connecté
+  const user = getUser();
+  const isChauffeur = user?.role === "CHAUFFEUR";
 
   useEffect(() => {
     const fetchCircuits = async () => {
@@ -93,13 +99,16 @@ function Circuits() {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">{t("circuits_titre")}</h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">{t("circuits_soustitre")}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowForm(true)}
-            className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all"
-          >
-            <span>＋</span> {t("circuits_ajouter")}
-          </button>
+          {/* AJOUT : bouton d'ajout masqué pour le chauffeur */}
+          {!isChauffeur && (
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all"
+            >
+              <span>＋</span> {t("circuits_ajouter")}
+            </button>
+          )}
         </div>
 
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -145,50 +154,52 @@ function Circuits() {
                 key={circuit.idcircuit}
                 className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
               >
-                {/* Badge de statut */}
+                {/* Badge de statut (AJOUT : collé au bord pour le chauffeur) */}
                 <span
-                  className={`absolute top-3 right-14 text-xxs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
+                  className={`absolute top-3 ${isChauffeur ? "right-3" : "right-14"} text-xxs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
                     isAvailable ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
                   }`}
                 >
                   {isAvailable ? t("circuits_statut_disponible") : t("circuits_statut_indisponible")}
                 </span>
 
-                {/* Bouton bascule disponibilité */}
-                <button
-                  type="button"
-                  onClick={() => handleToggleStatus(circuit)}
-                  disabled={isToggling}
-                  aria-label={
-                    isAvailable
-                      ? t("circuits_aria_rendre_indisponible").replace("{nom}", circuit.nom)
-                      : t("circuits_aria_rendre_disponible").replace("{nom}", circuit.nom)
-                  }
-                  title={isAvailable ? t("circuits_title_rendre_indisponible") : t("circuits_title_rendre_disponible")}
-                  className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isAvailable
-                      ? "text-emerald-600 dark:text-emerald-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
-                      : "text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400"
-                  }`}
-                >
-                  {isToggling ? (
-                    <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-emerald-600 rounded-full animate-spin" />
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-5 h-5"
-                    >
-                      <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
-                      <line x1="12" y1="2" x2="12" y2="12" />
-                    </svg>
-                  )}
-                </button>
+                {/* Bouton bascule disponibilité (AJOUT : masqué pour le chauffeur) */}
+                {!isChauffeur && (
+                  <button
+                    type="button"
+                    onClick={() => handleToggleStatus(circuit)}
+                    disabled={isToggling}
+                    aria-label={
+                      isAvailable
+                        ? t("circuits_aria_rendre_indisponible").replace("{nom}", circuit.nom)
+                        : t("circuits_aria_rendre_disponible").replace("{nom}", circuit.nom)
+                    }
+                    title={isAvailable ? t("circuits_title_rendre_indisponible") : t("circuits_title_rendre_disponible")}
+                    className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                      isAvailable
+                        ? "text-emerald-600 dark:text-emerald-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
+                        : "text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400"
+                    }`}
+                  >
+                    {isToggling ? (
+                      <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-emerald-600 rounded-full animate-spin" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-5 h-5"
+                      >
+                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+                        <line x1="12" y1="2" x2="12" y2="12" />
+                      </svg>
+                    )}
+                  </button>
+                )}
 
                 <div className="flex items-start gap-3 mb-3 pr-8 mt-6">
                   <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
@@ -212,7 +223,8 @@ function Circuits() {
         </div>
       )}
 
-      {showForm && (
+      {/* AJOUT : formulaire jamais affiché pour le chauffeur */}
+      {showForm && !isChauffeur && (
         <CircuitForm onClose={() => setShowForm(false)} onCreated={handleCircuitCreated} />
       )}
     </div>

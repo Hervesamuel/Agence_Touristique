@@ -1,11 +1,9 @@
-// Pages ouvertes à tous les comptes connectés
-// ("/dashboard" doit y figurer : c'est la page de repli quand une page est interdite)
 const PAGES_COMMUNES = ["/dashboard", "/parametres", "/profil", "/notifications"];
 
 // Pages supplémentaires selon le rôle. Le responsable a accès à tout.
 const PAGES_PAR_ROLE = {
-  AGENT: ["/reservations", "/rendez-vous"],
-  CHAUFFEUR: [],
+  AGENT: ["/reservations", "/rendez-vous", "/circuits", "/vehicules"],
+  CHAUFFEUR: ["/circuits", "/vehicules"],
 };
 
 export const peutAcceder = (role, path) =>

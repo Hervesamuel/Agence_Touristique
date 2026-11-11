@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getVehicules, updateVehicule } from "../../services/vehiculeService";
 import { useLanguage } from "../../contexts/LanguageContext";
 import VehiculeForm from "./VehiculeForm";
+import { getUser } from "../../services/authService";
 
 function Vehicules() {
   const { t } = useLanguage();
@@ -16,6 +17,10 @@ function Vehicules() {
   const [showForm, setShowForm] = useState(false);
   // Véhicule actuellement en cours de modification (null = aucun)
   const [editingVehicule, setEditingVehicule] = useState(null);
+
+  // Récupération du rôle de l'utilisateur connecté
+  const user = getUser();
+  const isChauffeur = user?.role === "CHAUFFEUR";
 
   useEffect(() => {
     const fetchVehicules = async () => {
@@ -96,9 +101,11 @@ function Vehicules() {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">{t("vehicules_titre")}</h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">{t("vehicules_soustitre")}</p>
           </div>
-          <button type="button" onClick={() => setShowForm(true)} className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all">
-            <span>＋</span> {t("vehicules_ajouter")}
-          </button>
+           {!isChauffeur && (
+            <button type="button" onClick={() => setShowForm(true)} className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-emerald-600/10 hover:shadow-lg hover:from-emerald-700 hover:to-teal-700 transition-all">
+              <span>＋</span> {t("vehicules_ajouter")}
+            </button>
+          )}
         </div>
 
         {/* Zone de recherche et filtres */}
@@ -150,6 +157,7 @@ function Vehicules() {
                 </span>
 
                 {/* Bouton modifier */}
+                 {!isChauffeur && (
                 <button
                   type="button"
                   onClick={() => setEditingVehicule(vehicule)}
@@ -161,8 +169,10 @@ function Vehicules() {
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </button>
+                )}
 
                 {/* Bouton bascule disponibilité */}
+                {!isChauffeur && (
                 <button
                   type="button" onClick={() => handleToggleStatus(vehicule)} disabled={isToggling}
                   title={isAvailable ? t("vehicules_rendre_indisponible") : t("vehicules_rendre_disponible")}
@@ -176,6 +186,7 @@ function Vehicules() {
                     </svg>
                   )}
                 </button>
+                 )}
 
                 {/* Photo du véhicule, sous les boutons du haut */}
                 <div className="w-full h-32 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden mb-4 mt-8 flex items-center justify-center">
@@ -206,11 +217,11 @@ function Vehicules() {
         </div>
       )}
 
-      {showForm && (
+      {showForm && !isChauffeur &&(
         <VehiculeForm onClose={() => setShowForm(false)} onCreated={handleVehiculeSaved} />
       )}
 
-      {editingVehicule && (
+      {editingVehicule && !isChauffeur && (
         <VehiculeForm
           vehicule={editingVehicule}
           onClose={() => setEditingVehicule(null)}
