@@ -37,6 +37,7 @@ const translationsCommon = {
     sidebar_role: "Responsable",
     sidebar_titre_role: "Administrateur",
     nav_statistiques: "Statistiques",
+    nav_deconnexion: "Déconnexion",
 
     role_agent: "Agent",
     role_chauffeur: "Chauffeur",
@@ -82,6 +83,7 @@ const translationsCommon = {
 
     role_agent: "Mpiasa",
     role_chauffeur: "Mpamily",
+    nav_deconnexion: "Hivoaka",
     
   },
   en: {
@@ -125,6 +127,7 @@ const translationsCommon = {
 
     role_agent: "Agent",
     role_chauffeur: "Driver",
+    nav_deconnexion: "Logout",
   },
 };
 

@@ -225,9 +225,9 @@ const liensAutorises = role === "CHAUFFEUR"
             className="w-full flex items-center gap-3 px-3 py-3 mt-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition"
           >
             <LogOut size={19} />
-
+            
             <span>
-              Déconnexion
+              {t("nav_deconnexion")}
             </span>
           </button>
 
